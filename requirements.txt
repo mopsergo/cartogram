@@ -1,0 +1,8 @@
+# Energieverbrauch 3D · 1820–2020  (getestet mit Python 3.13)
+# Dash 4: dcc.Graph rendert #map3d als Wrapper (.dash-graph), der Slider
+# nutzt Radix-Klassen (dash-slider-*) – clientside.js/style.css sind darauf
+# abgestimmt.
+dash>=4.4
+plotly>=7.1
+pandas>=3.0
+shapely>=2.1
