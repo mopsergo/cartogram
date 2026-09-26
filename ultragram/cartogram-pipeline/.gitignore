@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Build-Artefakte
+build-cache/
+dist/
+debug_frames/
+
+# Daten (Rohdaten + Referenz werden versioniert)
+data/intermediate/

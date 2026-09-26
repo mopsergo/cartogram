@@ -18,7 +18,7 @@ import pandas as pd
 from meshdata import height_of
 
 BASE = Path(__file__).resolve().parent
-POP_CSV = BASE / "data" / "TableP2_population_per_country_annual.csv"
+POP_CSV = BASE / "datasets" / "TableP2_population_per_country_annual.csv"
 
 KWH_PER_MTOE = 1.163e10
 UNIT = "kWh/Kopf"

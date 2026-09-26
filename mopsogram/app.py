@@ -280,12 +280,12 @@ app.layout = layout
 # in assets/clientside.js (pointerdown / focusin / wheel via set_props).
 app.clientside_callback(
     ClientsideFunction(namespace="map3d", function_name="playState"),
-    Output("playing", "data"),
+    Output("playing", "datasets"),
     Output("interval", "disabled"),
     Output("play-btn", "children"),
     Output("play-btn", "className"),
     Input("play-btn", "n_clicks"),
-    State("playing", "data"),
+    State("playing", "datasets"),
     prevent_initial_call=True,
 )
 
@@ -306,7 +306,7 @@ app.clientside_callback(
     Output("total-label", "children"),
     Input("year-slider", "value"),
     Input("scale-dd", "value"),
-    State("store", "data"),
+    State("store", "datasets"),
 )
 
 

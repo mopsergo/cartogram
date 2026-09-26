@@ -35,8 +35,8 @@ from shapely.geometry import shape
 from meshdata import SPECIAL, _parts, _simplify
 
 BASE = Path(__file__).resolve().parent
-GEOJSON = BASE / "data" / "ne_110m_admin_0_countries.geojson"
-POP_CSV = BASE / "data" / "TableP2_population_per_country_annual.csv"
+GEOJSON = BASE / "datasets" / "ne_110m_admin_0_countries.geojson"
+POP_CSV = BASE / "datasets" / "TableP2_population_per_country_annual.csv"
 CACHE = BASE / "cartogram_cache.json"
 
 RES = 0.5          # Rasterweite in Grad

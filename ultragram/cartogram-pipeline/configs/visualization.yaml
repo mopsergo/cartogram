@@ -1,0 +1,37 @@
+# =====================================================================
+# Visualisierungs-Skalen (Plan §8) – dokumentiert im Manifest
+# =====================================================================
+
+# Fläche bleibt ausschließlich solverbasiert proportional zu world_share
+# (Plan §8) – hier steht sie nur zur Dokumentation.
+area:
+  metric: world_share
+
+color:
+  # Standard-Kennzahl: Energieverbrauch pro Kopf (Plan §11)
+  metric: per_capita_energy_consumption
+  # Normalisierung: LINEAR (bewusst nicht logarithmisch) – die krassen
+  # Unterschiede zwischen Ländern und die Entwicklung über die Zeit
+  # bleiben voll sichtbar; die Legende zeigt die echten Einheiten.
+  transform: linear
+  # Sequenzielle Farbskala (plasma, invertiert wie im Bassogram-Prototyp)
+  ramp: plasma_r
+  # Umschaltbare Farbkennzahlen im Renderer (Plan §7.5)
+  available_metrics:
+    - per_capita_energy_consumption
+    - energy_consumption
+    - population
+    - world_share
+
+height:
+  # Höhe im 2.5D-Modus: standardmäßig Energieverbrauch pro Kopf;
+  # im Renderer umschaltbar auf Gesamtenergie, Bevölkerung oder
+  # Weltbevölkerungsanteil.
+  metric: per_capita_energy_consumption
+  # LINEAR (analog zu den Farbskalen): height = value / global_max ×
+  # max_fraction × Weltbreite – im Manifest dokumentiert.
+  transform: linear
+  # Maximale Höhe relativ zur halben Weltbreite (2.5D-Modus)
+  max_fraction: 0.09
+  # Begrenzte Höhe zur Vermeidung visueller Überdeckung (Plan §7.3)
+  clamp: true

@@ -1,7 +1,7 @@
 export default async function run(page) {
   const t0 = Date.now();
   const states = [];
-  // Poll bis zu 90 s: wann verschwindet "pending", wann erscheint .data?
+  // Poll bis zu 90 s: wann verschwindet "pending", wann erscheint .datasets?
   while (Date.now() - t0 < 90000) {
     const s = await page.evaluate(() => {
       const el = document.querySelector('#map3d .js-plotly-plot');

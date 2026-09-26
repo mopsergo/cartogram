@@ -1,0 +1,57 @@
+# =====================================================================
+# Solver-Konfiguration (Plan §5.4)
+# ---------------------------------------------------------------------
+# Abstraktion: CartogramSolver.solve(geometry, targets, config)
+#
+#   cartogram_cpp  – Produktionssolver laut Plan. Benötigt externe
+#                    cartogram-cpp-Bindings (pip: flowbasedcartograms,
+#                    verfügbar bis Python 3.12). Auf dieser Maschine
+#                    (Python 3.13) nicht installierbar; der Wrapper
+#                    meldet sich mit einer klaren Meldung und die
+#                    Kette fällt auf carto_flow zurück.
+#   carto_flow     – Flow-basierter Solver (Gastner/Seguy/More 2018),
+#                    Weiterentwicklung des bewährten mopsogram-Prototyps
+#                    für die Equal-Earth-Ebene und das kanonische Mesh.
+#                    Effektiver Produktionssolver in diesem Build.
+#   legacy_tiles   – Recycelter Tile-Prototyp aus bassogram (Phase 1):
+#                    Largest-Remainder-Tilung + Form-erhaltende
+#                    Skalierung + Bassogram-Layout-Optimizer (MTV-Push,
+#                    Overlap-Projektion, Warm-Start). Vergleichs- und
+#                    Regressionsmodus, nicht produktiv.
+#
+# Kette = Reihenfolge; der erste verfügbarer Solver gewinnt.
+# =====================================================================
+
+solver_chain: [cartogram_cpp, carto_flow]
+
+flow:
+  # Gitterbreite in Zellen (projizierte x-Richtung). Equal Earth ist
+  # ~2:1.06 verzerrt, die Zellhöhe ergibt sich aus dem Seitenverhältnis
+  # der projizierten Weltbounds. Flächentreu => Dichten physikalisch
+  # konsistent.
+  grid_width: 1024
+  # Gauß-Stabilisierung der Dichte in Zellen (Gastner-Seguy-More).
+  # 2.5 Zellen halten die äußere Iteration bei exakten Flächen
+  # (p90 < 2%), während interior Dreieckslappen (Folds bei extremer
+  # Kontraktion, siehe quality.py) klein bleiben.
+  blur_sigma: 2.5
+  # Integrationsschritte pro äußerer Iteration (t: 0 -> 1)
+  steps: 60
+  # Maximale äußere Iterationen (Flächenfehler-Regelung); frühe Jahre
+  # brauchen wegen extremer Kontraktionen (1820: Kanada ~150x) mehr
+  # Durchläufe bis zur Konvergenz.
+  max_iterations: 16
+  # Abbruch, wenn p90 des relativen Flächenfehlers darunter liegt
+  area_tolerance: 0.03
+  # Untere Dichtegrenze nach Stabilisierung
+  min_density: 0.05
+
+# --- legacy_tiles (Portierung aus bassogram/cartogram_macroarea_temporal_3a.py)
+legacy_tiles:
+  # Gesamt-Tilebudget pro Jahr (Summe der Weltbevölkerungsanteile = 1)
+  total_tiles: 3000
+  iterations: 400
+  overlap_strength: 0.3
+  neighbor_strength: 0.8
+  anchor_strength: 0.9
+  damping: 0.8

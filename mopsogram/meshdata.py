@@ -18,8 +18,8 @@ from shapely.geometry import shape
 from shapely.ops import triangulate, unary_union
 
 BASE = Path(__file__).resolve().parent
-DATA_CSV = BASE / "data" / "TableA13_energy_consumption_per_country_annual.csv"
-GEOJSON = BASE / "data" / "ne_110m_admin_0_countries.geojson"
+DATA_CSV = BASE / "datasets" / "TableA13_energy_consumption_per_country_annual.csv"
+GEOJSON = BASE / "datasets" / "ne_110m_admin_0_countries.geojson"
 
 SIMPLIFY_TOL = 0.18   # Grad - Detailreduktion der Polygone (Weltmaßstab)
 HMAX = 30.0           # maximale "Höhe" (in Grad-Äquivalenten) fuer vmax

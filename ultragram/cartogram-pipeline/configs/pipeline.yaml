@@ -1,0 +1,77 @@
+# =====================================================================
+# Pipeline-Konfiguration (Plan §5, §9)
+# =====================================================================
+
+paths:
+  raw_csv: data/raw/country_populationshare_energypercapita.csv
+  natural_earth: data/reference/ne_110m_admin_0_countries.geojson
+  # Fallback, falls die lokale Referenz fehlt (Plan §4: Natural-Earth-
+  # Import mit lokaler Quelle und Fallback).
+  natural_earth_url: https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip
+  intermediate: data/intermediate
+  build_cache: build-cache
+  dist: dist
+  # Export-Ziel im Web-Ordner (Plan §9: web/public/cartogram/v1);
+  # leer lassen, um das Kopieren zu deaktivieren.
+  web_public: ../web/public/cartogram/v1
+
+data:
+  year_min: 1820
+  year_max: 2020
+  # Toleranz für |World_share - Population/World_population| (Plan §2)
+  share_tolerance: 1.0e-6
+  # Toleranz dafür, dass OTHER_WORLD-Anteil == 1 - represented_share
+  remainder_tolerance: 1.0e-6
+  other_world_id: OTHER_WORLD
+  # Mindestzielanteil (Water-Filling): Anteile darunter sind mit dem
+  # 110m-Mesh geometrisch nicht darstellbar (Panama 1820: Zielfläche
+  # 128 km² < Gitterzelle). Aufgestockte Entitäten werden im
+  # Qualitätsbericht markiert; die Renormierung hält die Summe bei 1.
+  min_target_share: 0.0002
+
+geometry:
+  # Bevorzugte Projektion (Plan §5.3): Equal Earth, flächentreu.
+  crs: EPSG:8857
+  # Antarktis und subantarktische Gebiete sind nicht Teil der Welt-
+  # bevölkerungsbilanz und würden die OTHER_WORLD-Geometrie dominieren.
+  exclude_features:
+    - Antarctica
+    - Fr. S. Antarctic Lands
+  # Vereinfachungstoleranz in Metern (projiziert). Natural Earth 110m
+  # ist bereits generalisiert und teilt Grenzvertices exakt zwischen
+  # Nachbarn; jede zusätzliche pro-Entität-Vereinfachung würde diese
+  # gemeinsamen Grenzen aufbrechen. Deshalb Standard: 0 (= keine
+  # zusätzliche Vereinfachung).
+  simplify_tolerance_m: 0.0
+  # Vertex-Dedupe-Genauigkeit (projizierte Meter)
+  vertex_precision_m: 0.001
+
+temporal:
+  # Testjahre (Plan, Phase 2)
+  test_years: [1820, 1900, 1950, 2000, 2020]
+  # Kandidaten-Auswahl: Direkt-Solve immer; Warm-Start optional (Plan §5.6)
+  warm_start: false
+  # Übergangsprüfung zwischen Jahres-Keyframes: lineare Vertex-
+  # Interpolation an diesen t-Stichproben auf Dreiecksinversion prüfen.
+  transition_samples: [0.5]
+  # Bei Inversion: zusätzlichen Zwischen-Keyframe lösen (Plan §5.6)
+  insert_intermediate_frames: true
+  # Qualitäts-Schwellen (Plan §5.6)
+  quality:
+    # 90% der Entitäten unter 5% Flächenfehler; für die extremen
+    # frühen Jahre (Panama 1820: 580x-Kontraktion, Kanada ~150x)
+    # gilt bis early_years_until ein höherer Schwellwert – die
+    # Abweichung betrifft fast ausschließlich die Rest-Welt- und
+    # Aufstockungs-Entitäten und ist im Qualitätsbericht je Jahr
+    # dokumentiert.
+    max_area_error_p90: 0.05
+    max_area_error_p90_early: 0.12
+    early_years_until: 1870
+    max_vertex_displacement_share: 0.15  # max. Verschiebung ggü. Vorjahr, Anteil der Welt-Diagonale
+    min_triangle_area_frac: 1.0e-9  # relative Mindestfläche gegen Weltfläche (Degenerations-Schwelle)
+    # Gefaltete Dreiecksfläche (interior Lappen, siehe quality.py)
+    # relativ zur Gesamtdreiecksfläche; Schwellwert-Kriterium.
+    max_inverted_area_fraction: 0.12
+    # Frühe Jahre (bis early_years_until) sind durch extreme
+    # Kontraktionen geprägt; dort gilt ein höherer Falt-Schwellwert.
+    max_inverted_area_fraction_early: 0.20

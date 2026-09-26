@@ -77,7 +77,7 @@ function cameraDragActive(gd) {
 
 /* Plotly-Element einer Karte holen. Achtung: Ab Dash 4 ist die Graph-id
    nur der Wrapper (div.dash-graph), das eigentliche Plotly-Element
-   (.data, .layout) ist das Kindelement .js-plotly-plot. Aeltere
+   (.datasets, .layout) ist das Kindelement .js-plotly-plot. Aeltere
    Dash-Versionen legen die id direkt auf das Plotly-Element. */
 function graphEl(id) {
   const w = document.getElementById(id);
