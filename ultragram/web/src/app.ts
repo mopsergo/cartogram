@@ -4,11 +4,15 @@
  */
 import * as THREE from "three";
 import { Artifacts, VALUE } from "./data/types";
+import {
+  LoadedApp, VariantId, VARIANT_LABELS, fetchVariantPositions,
+} from "./data/artifacts";
 import { Timeline } from "./timeline/timeline";
 import { FlatCartogram } from "./renderers/FlatCartogram";
 import { ExtrudedCartogram } from "./renderers/ExtrudedCartogram";
 import { ReferenceGlobe } from "./renderers/ReferenceGlobe";
-import { FrameUpdate } from "./renderers/shared";
+import { FrameUpdate, PickResult, lerpPositions }
+  from "./renderers/shared";
 import { NO_DATA_COLOR, ValueScale, formatValue, formatYear, rampColor }
   from "./renderers/colormap";
 import { Legend } from "./ui/legend";
@@ -23,11 +27,12 @@ interface View {
   applyCamera(): void;
   resize(w: number, h: number): void;
   resetCamera(): void;
-  pick(x: number, y: number, w: number, h: number): number | null;
+  pick(x: number, y: number, w: number, h: number): PickResult | null;
 }
 
 export class App {
   private art: Artifacts;
+  private run: LoadedApp["run"];
   private timeline: Timeline;
   private renderer: THREE.WebGLRenderer;
   private views: Record<ViewMode, View>;
@@ -35,15 +40,38 @@ export class App {
   private metric: number = VALUE.per_capita_energy_consumption;
   private heightEnabled = true;
   private ghostVisible = true;
+  private geoMode = false;
+  /** 0 = Kartogramm .. 1 = unverzerrte Original-Geografie (linearer Faktor) */
+  private geoBlend = 0;
+  private geoBlendTarget = 0;
+
+  // ---- Flächen-Varianten (Kartogramm-Grundlage) -------------------
+  private variant: VariantId;
+  private variantsAvailable: VariantId[];
+  /** geladene Positions-Sätze je Variante (current-Lauf) */
+  private variantPositions = new Map<VariantId, Float32Array>();
+  /** Positionssatz der Variante, von der gerade weggemorpht wird */
+  private morphFrom: Float32Array | null = null;
+  /** 0 = Ausgangsvariante .. 1 = Zielvariante (linearer Faktor) */
+  private variantBlend = 1;
+  private variantBlendTarget = 1;
+
+  // ---- Positions-Puffer (kanonisch, nV × 2) ------------------------
+  private interpXY: Float32Array;
+  private morphXY: Float32Array;
+  private vertexXY: Float32Array;
   private hovered: number | null = null;
   private selected: number | null = null;
+  private selectedTriangle: number | null = null;
 
   private interpValues: Float32Array;
   private entityColors: Float32Array;
   private heights: Float32Array;
   private scales: Record<number, ValueScale>;
-  private valueMax: Record<number, number>;
   private heightMetric: number;
+  /** Höhen-Transformation: Wurzel (kleine Werte betont, Standard),
+   *  linear (proportional) oder Quadrat (Spitzenwerte differenzieren) */
+  private heightTransform: "sqrt" | "linear" | "square" = "sqrt";
   private worldWidth: number;
   private lastFrameKey = "";
   private legend: Legend;
@@ -54,16 +82,24 @@ export class App {
   private yearSlider: HTMLInputElement;
   private yearDisplay: HTMLElement;
 
-  constructor(art: Artifacts, dom: HTMLElement) {
-    this.art = art;
-    const nE = art.manifest.dimensions.num_entities;
+  constructor(loaded: LoadedApp, dom: HTMLElement) {
+    this.art = loaded.art;
+    this.run = loaded.run;
+    this.variant = loaded.variant;
+    this.variantsAvailable = loaded.variantsAvailable;
+    this.variantPositions.set(this.variant, this.art.positions);
+    const nE = this.art.manifest.dimensions.num_entities;
+    const nV = this.art.manifest.dimensions.num_vertices;
+    this.interpXY = new Float32Array(nV * 2);
+    this.morphXY = new Float32Array(nV * 2);
+    this.vertexXY = new Float32Array(nV * 2);
     this.interpValues = new Float32Array(nE * 4);
     this.entityColors = new Float32Array(nE * 3);
     this.heights = new Float32Array(nE);
 
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)").matches;
-    this.timeline = new Timeline(art.manifest.years.frames,
+    this.timeline = new Timeline(this.art.manifest.years.frames,
       !reduced, 5);
 
     this.renderer = new THREE.WebGLRenderer({
@@ -75,16 +111,16 @@ export class App {
     dom.appendChild(this.renderer.domElement);
 
     this.views = {
-      flat: new FlatCartogram(art),
-      extruded: new ExtrudedCartogram(art, this.renderer.domElement),
-      globe: new ReferenceGlobe(art, this.renderer.domElement),
+      flat: new FlatCartogram(this.art),
+      extruded: new ExtrudedCartogram(this.art, this.renderer.domElement),
+      globe: new ReferenceGlobe(this.art, this.renderer.domElement),
     };
     (this.views.flat as FlatCartogram).attachControls(this.renderer.domElement);
 
     // Skalen: globale Minima/Maxima aus dem Manifest (Plan §8).
     // LINEAR (bewusst nicht logarithmisch): die krassen Unterschiede
     // zwischen Ländern und über die Zeit bleiben sichtbar.
-    const ranges = art.manifest.scales.color.value_ranges;
+    const ranges = this.art.manifest.scales.color.value_ranges;
     this.scales = {
       [VALUE.per_capita_energy_consumption]: new ValueScale(
         ranges.per_capita_energy_consumption.min ?? 0,
@@ -97,26 +133,18 @@ export class App {
       [VALUE.world_share]: new ValueScale(
         ranges.world_share.min ?? 0, ranges.world_share.max ?? 1, false),
     };
-    this.valueMax = {
-      [VALUE.per_capita_energy_consumption]:
-        ranges.per_capita_energy_consumption.max ?? 1,
-      [VALUE.energy_consumption]: ranges.energy_consumption.max ?? 1,
-      [VALUE.population]: ranges.population.max ?? 1,
-      [VALUE.world_share]: ranges.world_share.max ?? 1,
-    };
     this.heightMetric = VALUE.per_capita_energy_consumption;
 
     let minX = Infinity, maxX = -Infinity;
-    const nV = art.manifest.dimensions.num_vertices;
     for (let i = 0; i < nV; i++) {
-      const x = art.positionsOriginal[i * 2];
+      const x = this.art.positionsOriginal[i * 2];
       if (x < minX) minX = x;
       if (x > maxX) maxX = x;
     }
     this.worldWidth = maxX - minX;
 
     this.legend = new Legend();
-    this.panel = new DetailPanel(art);
+    this.panel = new DetailPanel(this.art);
     this.panel.onClose = () => { this.selected = null; this.markDirty(); };
 
     this.tooltip = document.getElementById("tooltip")!;
@@ -126,6 +154,7 @@ export class App {
 
     this.wireControls();
     this.updateLegend();
+    this.updateAreaLabel();
     this.resize();
     window.addEventListener("resize", () => this.resize());
 
@@ -136,6 +165,22 @@ export class App {
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       this.timeline.tick(dt);
+      // Sanfter Übergang Kartogramm <-> Original-Geografie (600 ms)
+      if (this.geoBlend !== this.geoBlendTarget) {
+        const step = dt / 0.6;
+        this.geoBlend = this.geoBlendTarget > this.geoBlend
+          ? Math.min(this.geoBlend + step, this.geoBlendTarget)
+          : Math.max(this.geoBlend - step, this.geoBlendTarget);
+        this.markDirty();
+      }
+      // Sanfter Übergang zwischen Flächen-Varianten (600 ms)
+      if (this.variantBlend !== this.variantBlendTarget) {
+        const step = dt / 0.6;
+        this.variantBlend = this.variantBlendTarget > this.variantBlend
+          ? Math.min(this.variantBlend + step, this.variantBlendTarget)
+          : Math.max(this.variantBlend - step, this.variantBlendTarget);
+        this.markDirty();
+      }
       this.syncUI();
       this.updateFrameIfNeeded();
       const view = this.views[this.mode];
@@ -156,7 +201,9 @@ export class App {
     const s = this.timeline.state;
     const key = `${s.frameA}|${s.frameB}|${s.t.toFixed(5)}|${this.metric}` +
       `|${this.hovered}|${this.selected}|${this.heightEnabled}` +
-      `|${this.heightMetric}|${this.mode}`;
+      `|${this.heightMetric}|${this.heightTransform}|${this.mode}` +
+      `|${this.geoBlend.toFixed(3)}|${this.variant}` +
+      `|${this.variantBlend.toFixed(3)}`;
     if (key === this.lastFrameKey) return;
     this.lastFrameKey = key;
     this.updateFrame();
@@ -167,7 +214,11 @@ export class App {
         Math.abs(this.timeline.displayYear - this.lastPanelYear) >= 0.25) {
       this.lastPanelYear = this.timeline.displayYear;
       this.panel.show(this.selected, this.timeline.displayYear,
-        this.interpValues);
+        this.interpValues,
+        this.countryNameFor({
+          entity: this.selected,
+          triangle: this.selectedTriangle ?? -1,
+        }));
     }
   }
 
@@ -178,6 +229,24 @@ export class App {
     const nE = art.manifest.dimensions.num_entities;
     const s = this.timeline.state;
     const fa = s.frameA, fb = s.frameB, t = s.t;
+
+    // Positionen: Jahres-Interpolation der aktiven Flächen-Variante
+    // (Plan §7.1), ggf. weich überblendet von der Ausgangs-Variante
+    if (this.variantBlend >= 1) this.morphFrom = null;
+    lerpPositions(art, fa, fb, t, this.interpXY);
+    if (this.morphFrom !== null) {
+      lerpPositions(art, fa, fb, t, this.morphXY, this.morphFrom);
+      // Smoothstep-Ease auf dem linearen Blend-Faktor
+      const q = this.variantBlend * this.variantBlend
+        * (3 - 2 * this.variantBlend);
+      const inv = 1 - q;
+      const n = this.vertexXY.length;
+      for (let i = 0; i < n; i++) {
+        this.vertexXY[i] = this.morphXY[i] * inv + this.interpXY[i] * q;
+      }
+    } else {
+      this.vertexXY.set(this.interpXY);
+    }
 
     // Werte interpolieren (Plan §7.1)
     for (let i = 0; i < nE * 4; i++) {
@@ -213,21 +282,37 @@ export class App {
       this.entityColors[e * 3 + 2] = rgb[2];
     }
 
-    // Höhen: LINEAR skaliert (wie die Farbskalen) auf die gewählte
-    // Höhenkennzahl; Formel im Manifest dokumentiert.
+    // Höhen: empfindliche Skala – linear gegen das MAXIMUM DES JAHRES
+    // (nicht das globale Maximum 1820–2020: frühe Jahre hatten sonst
+    // fast keine sichtbaren Unterschiede), optional Wurzel-Transfor-
+    // mation für stärkere Sichtbarkeit kleinerer Werte.
     const maxFrac = art.manifest.scales.height.max_fraction ?? 0.09;
-    const hMax = this.valueMax[this.heightMetric] || 1;
+    let yearMax = 0;
     for (let e = 0; e < nE; e++) {
       const v = this.interpValues[e * 4 + this.heightMetric];
-      this.heights[e] = this.heightEnabled && Number.isFinite(v) && v > 0
-        ? (v / hMax) * maxFrac * this.worldWidth
-        : 0;
+      if (Number.isFinite(v) && v > yearMax) yearMax = v;
+    }
+    if (yearMax <= 0) yearMax = 1;
+    for (let e = 0; e < nE; e++) {
+      const v = this.interpValues[e * 4 + this.heightMetric];
+      if (!this.heightEnabled || !Number.isFinite(v) || v <= 0) {
+        this.heights[e] = 0;
+        continue;
+      }
+      const x = v / yearMax;
+      const t = this.heightTransform === "sqrt"
+        ? Math.sqrt(x)
+        : this.heightTransform === "square" ? x * x : x;
+      this.heights[e] = t * maxFrac * this.worldWidth;
     }
 
     const update: FrameUpdate = {
-      frameA: fa, frameB: fb, t,
+      vertexXY: this.vertexXY,
       entityColors: this.entityColors,
-      heights: this.mode === "extruded" ? this.heights : null,
+      // Höhen: 2.5D UND Globus (Extrusion auf der Kugel); nur Flach nicht
+      heights: this.mode !== "flat" ? this.heights : null,
+      // Smoothstep-Ease auf dem linearen Blend-Faktor
+      geoBlend: this.geoBlend * this.geoBlend * (3 - 2 * this.geoBlend),
     };
     this.views[this.mode].updateFrame(update);
     // Debug-Kanal: Stichproben der Entitätsfarben (DOM-lesbar)
@@ -285,12 +370,64 @@ export class App {
       this.markDirty();
     });
 
+    // Höhen-Transformation: Wurzel = empfindlicher (kleine Werte
+    // deutlicher), linear = proportional
+    const heightScaleSelect =
+      document.getElementById("heightScaleSelect") as HTMLSelectElement;
+    heightScaleSelect.value = this.heightTransform;
+    heightScaleSelect.addEventListener("change", () => {
+      const v = heightScaleSelect.value;
+      this.heightTransform =
+        v === "linear" ? "linear" : v === "square" ? "square" : "sqrt";
+      this.markDirty();
+    });
+
     const ghostToggle = document.getElementById("ghostToggle") as
       HTMLInputElement;
     ghostToggle.addEventListener("change", () => {
       this.ghostVisible = ghostToggle.checked;
       (this.views.flat as FlatCartogram)
         .setGhostVisible(this.ghostVisible);
+    });
+
+    const geoToggle = document.getElementById("geoToggle") as
+      HTMLInputElement;
+    geoToggle.addEventListener("change", () => {
+      this.setGeoMode(geoToggle.checked);
+    });
+
+    // Kartogramm-Fläche (Variante): gleiche Topologie, andere
+    // Zielfläche – Positionssatz ggf. nachladen und weich morphen
+    const variantSelect = document.getElementById("variantSelect") as
+      HTMLSelectElement;
+    document.getElementById("variantGroup")!.style.display =
+      this.run === "current" ? "flex" : "none";
+    for (const opt of Array.from(variantSelect.options)) {
+      const v = opt.value as VariantId;
+      const avail = this.variantsAvailable.includes(v);
+      opt.disabled = !avail;
+      opt.textContent = avail ? VARIANT_LABELS[v]
+        : `${VARIANT_LABELS[v]} (noch nicht gelöst)`;
+      if (avail && v === this.variant) opt.selected = true;
+    }
+    variantSelect.addEventListener("change", () => {
+      this.setVariant(variantSelect.value as VariantId);
+    });
+
+    // Kartogramm-Lauf: anderer Mesh → kompletter Neuaufbau via
+    // URL-Parameter (Jahr bleibt erhalten)
+    const runSelect = document.getElementById("runSelect") as
+      HTMLSelectElement;
+    runSelect.value = this.run;
+    runSelect.addEventListener("change", () => {
+      const p = new URLSearchParams();
+      p.set("run", runSelect.value);
+      if (this.variant !== "population"
+          && runSelect.value === "current") {
+        p.set("variant", this.variant);
+      }
+      p.set("year", String(Math.round(this.timeline.displayYear)));
+      location.href = `${location.pathname}?${p.toString()}`;
     });
 
     document.getElementById("resetCam")!.addEventListener("click", () => {
@@ -331,19 +468,24 @@ export class App {
         this.timeline.stepYear(1);
         this.timeline.setPlaying(false);
         this.markDirty();
+      } else if (e.code === "KeyG") {
+        this.setGeoMode(!this.geoMode);
+        (document.getElementById("geoToggle") as HTMLInputElement).checked =
+          this.geoMode;
       }
     });
 
     // Hover + Auswahl
     const canvas = this.renderer.domElement;
     canvas.addEventListener("pointermove", (e) => {
-      const entity = this.views[this.mode].pick(
+      const hit = this.views[this.mode].pick(
         e.clientX, e.clientY, canvas.clientWidth, canvas.clientHeight);
+      const entity = hit ? hit.entity : null;
       if (entity !== this.hovered) {
         this.hovered = entity;
         this.markDirty();
       }
-      this.updateTooltip(e, entity);
+      this.updateTooltip(e, hit);
     });
     canvas.addEventListener("pointerleave", () => {
       this.hovered = null;
@@ -351,12 +493,14 @@ export class App {
       this.markDirty();
     });
     canvas.addEventListener("click", (e) => {
-      const entity = this.views[this.mode].pick(
+      const hit = this.views[this.mode].pick(
         e.clientX, e.clientY, canvas.clientWidth, canvas.clientHeight);
+      const entity = hit ? hit.entity : null;
       this.selected = entity;
-      if (entity !== null) {
+      this.selectedTriangle = hit ? hit.triangle : null;
+      if (entity !== null && hit) {
         this.panel.show(entity, this.timeline.displayYear,
-          this.interpValues);
+          this.interpValues, this.countryNameFor(hit));
       } else {
         this.panel.hide();
       }
@@ -364,15 +508,31 @@ export class App {
     });
   }
 
-  private updateTooltip(e: PointerEvent, entity: number | null): void {
-    if (entity === null) {
+  /** Anzeigename eines Treffers: bei Polygon-Teilen mit Ländername
+   *  (Restliche Welt: Natural-Earth-Länder) das konkrete Land,
+   *  sonst der Entitätsname. */
+  private countryNameFor(hit: PickResult): string | undefined {
+    const art = this.art;
+    if (art.triangleRing && art.ringNames) {
+      const ring = art.triangleRing[hit.triangle];
+      if (ring !== undefined && ring < art.ringNames.length) {
+        const name = art.ringNames[ring];
+        if (name) return name;
+      }
+    }
+    return undefined;
+  }
+
+  private updateTooltip(e: PointerEvent, hit: PickResult | null): void {
+    if (hit === null) {
       this.tooltip.style.display = "none";
       return;
     }
-    const meta = this.art.entities[entity];
-    const v = this.interpValues[entity * 4 + this.metric];
+    const meta = this.art.entities[hit.entity];
+    const v = this.interpValues[hit.entity * 4 + this.metric];
+    const name = this.countryNameFor(hit) ?? meta.display_name;
     this.tooltip.innerHTML =
-      `<span class="name">${meta.display_name}</span> · ` +
+      `<span class="name">${name}</span> · ` +
       `<span class="val">${formatValue(v, this.metric)}</span>` +
       (meta.is_other_world ? " (keine Energiedaten)" : "");
     this.tooltip.style.display = "block";
@@ -388,15 +548,73 @@ export class App {
 
   private setMode(mode: ViewMode): void {
     this.mode = mode;
+    // 2.5D-Optionen (Höhe) gelten für 2.5D und Globus – auch der
+    // Globus extrudiert entlang der Kugelradien
     document.getElementById("heightGroup")!.style.display =
-      mode === "extruded" ? "flex" : "none";
+      mode === "flat" ? "none" : "flex";
     document.getElementById("flatGroup")!.style.display =
       mode === "flat" ? "flex" : "none";
+    // Geometrie-Toggle gilt jetzt überall – auch der Globus morpht
+    // zwischen Kartogramm-Kugel und Original-Kugel (Taste G)
     this.resize();
     this.markDirty();
   }
 
+  /** Umschalten Kartogramm <-> unverzerrte Original-Geografie. */
+  private setGeoMode(on: boolean): void {
+    if (this.geoMode === on) return;
+    this.geoMode = on;
+    this.geoBlendTarget = on ? 1 : 0;
+    this.markDirty();
+  }
+
+  /** Flächen-Variante wechseln (Positionssatz morphen, URL aktuell
+   *  halten). Läuft nur für run=current (legacy hat nur Bevölkerung). */
+  private async setVariant(variant: VariantId): Promise<void> {
+    if (variant === this.variant
+        || !this.variantsAvailable.includes(variant)) return;
+    let next = this.variantPositions.get(variant) ?? null;
+    if (next === null) {
+      try {
+        next = await fetchVariantPositions(variant);
+        this.variantPositions.set(variant, next);
+      } catch (err) {
+        console.error("[app] Variante nicht ladbar:", err);
+        (document.getElementById("variantSelect") as HTMLSelectElement)
+          .value = this.variant;
+        return;
+      }
+    }
+    this.morphFrom = this.art.positions;
+    this.art.positions = next;
+    this.variant = variant;
+    this.variantBlend = 0;
+    this.variantBlendTarget = 1;
+    this.markDirty();
+    this.updateAreaLabel();
+    const p = new URLSearchParams(location.search);
+    p.set("variant", variant);
+    history.replaceState(null, "", `${location.pathname}?${p.toString()}`);
+  }
+
+  /** Flächengrundlage in Titel + Legende anzeigen. */
+  private updateAreaLabel(): void {
+    const label = this.run === "legacy"
+      ? "Bevölkerungsanteil (Original-Lauf)"
+      : VARIANT_LABELS[this.variant];
+    const el = document.getElementById("areaLabel");
+    if (el) el.textContent = label;
+    const cap = document.getElementById("legendArea");
+    if (cap) cap.textContent = `Fläche = ${label}`;
+  }
+
   // ---------------------------------------------------------- Resize
+
+  /** Zeitleiste auf Jahr setzen (Startposition aus URL). */
+  seekYear(year: number): void {
+    this.timeline.seekYear(year);
+    this.markDirty();
+  }
 
   resize(): void {
     const w = window.innerWidth;

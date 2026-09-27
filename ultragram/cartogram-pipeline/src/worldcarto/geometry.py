@@ -3,8 +3,10 @@
 - vollständige Natural-Earth-Geometrie laden (lokal bevorzugt, URL-Fallback)
 - Geometrien reparieren
 - Entitäten nach Registry dissolven (historische Aggregate)
-- nicht beanspruchte Gebiete zu OTHER_WORLD zusammenfassen
-  (ohne konfigurierte Ausschlüsse wie die Antarktis)
+- nicht beanspruchte Gebiete als OTHER_WORLD aufnehmen – seit der
+  Nutzeranforderung OHNE Dissolve: die einzelnen Länder bleiben
+  als eigene Polygon-Teile erkennbar (ohne konfigurierte
+  Ausschlüsse wie die Antarktis)
 - in die flächentreue Equal-Earth-Projektion überführen
 
 Natural Earth 110m ist bereits generalisiert und teilt Grenzvertices
@@ -16,6 +18,7 @@ from __future__ import annotations
 
 import geopandas as gpd
 import shapely
+from shapely.geometry import MultiPolygon
 from shapely.ops import unary_union
 
 from .config import PipelineConfig
@@ -72,18 +75,51 @@ def build_entity_geometries(cfg: PipelineConfig,
                 (code, geom) for code, geom in by_code.items()
                 if code not in claimed and name_by_code.get(code) not in excluded
             ]
-            geoms = [g for _, g in rest]
-            print(f"[geometry] OTHER_WORLD aus {len(geoms)} nicht beanspruchten "
-                  f"Features (ohne {sorted(excluded)})")
+            # Kein Dissolve: Die einzelnen Länder bleiben als eigen-
+            # ständige Polygon-Teile erhalten – im Kartogramm sind die
+            # tatsächlich vorhandenen Länder als eigene Formen erkennbar
+            # (Benutzeranforderung). Geteilte Grenzen benachbarter
+            # Mitglieder werden beim Mesh-Bau über die Koordinaten-
+            # Dedupe zu einer gemeinsamen Vertex-Kette verschweißt,
+            # Polygone kacheln also ohne Überlappung.
+            # Zusätzlich wird je Polygon-Teil der Natural-Earth-Länder-
+            # name geführt (Spalte part_names) – Renderer-Tooltip und
+            # Detailpanel zeigen damit das konkrete Land, auch ohne
+            # eigene Datenwerte.
+            named: list[tuple[str, object]] = []
+            for code, g in rest:
+                nm = name_by_code.get(code, code)
+                if g.geom_type == "MultiPolygon":
+                    named.extend((nm, p) for p in g.geoms
+                                 if not p.is_empty)
+                elif not g.is_empty:
+                    named.append((nm, g))
+            if not named:
+                raise ValueError(f"{entity.id}: leere Geometrie")
+            # Deterministische Reihenfolge: exakt der Sortierung von
+            # topology._iter_parts folgend, damit Namen und Ringe
+            # deckungsgleich bleiben.
+            named.sort(key=lambda t: (-t[1].area,
+                                      t[1].bounds[0], t[1].bounds[1]))
+            merged = (MultiPolygon([p for _, p in named])
+                      if len(named) > 1 else named[0][1])
+            part_names = [nm for nm, _ in named]
+            print(f"[geometry] OTHER_WORLD aus {len(named)} Polygon-"
+                  f"Teilen ({len(rest)} Features, ohne "
+                  f"{sorted(excluded)}) – nicht verschmolzen, "
+                  f"Ländergrenzen und -namen bleiben erhalten")
         else:
             geoms = [by_code[c] for c in members]
-
-        if not geoms:
-            raise ValueError(f"{entity.id}: leere Geometrie")
-        merged = unary_union(geoms) if len(geoms) > 1 else geoms[0]
-        if merged.is_empty:
-            raise ValueError(f"{entity.id}: leere Geometrie nach Dissolve")
-        records.append({"entity_id": entity.id, "geometry": merged})
+            if not geoms:
+                raise ValueError(f"{entity.id}: leere Geometrie")
+            # Historische Aggregate (z.B. UdSSR) bleiben verschmolzen:
+            # eine Datenentität = eine Form.
+            merged = unary_union(geoms) if len(geoms) > 1 else geoms[0]
+            if merged.is_empty:
+                raise ValueError(f"{entity.id}: leere Geometrie nach Dissolve")
+            part_names = []
+        records.append({"entity_id": entity.id, "geometry": merged,
+                        "part_names": part_names})
 
     gdf = gpd.GeoDataFrame(records, geometry="geometry", crs=world.crs)
 

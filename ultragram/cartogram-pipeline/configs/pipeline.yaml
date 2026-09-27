@@ -11,9 +11,10 @@ paths:
   intermediate: data/intermediate
   build_cache: build-cache
   dist: dist
-  # Export-Ziel im Web-Ordner (Plan §9: web/public/cartogram/v1);
+  # Export-Ziel im Web-Ordner (Plan §9); Basis-Ordner – der Varianten-
+  # Unterordner (v1/v2/v3) wird vom Export je Zielkennzahl angehängt.
   # leer lassen, um das Kopieren zu deaktivieren.
-  web_public: ../web/public/cartogram/v1
+  web_public: ../web/public/cartogram
 
 data:
   year_min: 1820
@@ -23,6 +24,12 @@ data:
   # Toleranz dafür, dass OTHER_WORLD-Anteil == 1 - represented_share
   remainder_tolerance: 1.0e-6
   other_world_id: OTHER_WORLD
+  # Zielkennzahl der Kartogramm-Fläche (Varianten, siehe PIPELINE.md):
+  #   world_share                   -> v1  Fläche = Weltbevölkerungsanteil
+  #   energy_consumption            -> v2  Fläche = Anteil Weltenergieverbrauch
+  #   per_capita_energy_consumption -> v3  Fläche ~ Energieverbrauch pro Kopf
+  # CLI-Override je Aufruf:  solve|export --metric <kennzahl>
+  target_metric: world_share
   # Mindestzielanteil (Water-Filling): Anteile darunter sind mit dem
   # 110m-Mesh geometrisch nicht darstellbar (Panama 1820: Zielfläche
   # 128 km² < Gitterzelle). Aufgestockte Entitäten werden im

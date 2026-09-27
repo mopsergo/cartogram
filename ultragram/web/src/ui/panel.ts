@@ -28,14 +28,15 @@ export class DetailPanel {
   onClose: (() => void) | null = null;
 
   show(entityIndex: number, displayYear: number,
-       interpolated: Float32Array): void {
+       interpolated: Float32Array, nameOverride?: string): void {
     const meta = this.art.entities[entityIndex];
     const flags = this.art.flags[entityIndex];
     this.root.classList.add("show");
-    this.nameEl.textContent = meta.display_name;
-    this.metaEl.textContent = meta.macroarea_label +
+    this.nameEl.textContent = nameOverride || meta.display_name;
+    this.metaEl.textContent = (nameOverride ? meta.display_name + " · " : "")
+      + meta.macroarea_label +
       (flags & 2 ? " · historisches Aggregat" : "") +
-      (flags & 1 ? " · Auffangentität" : "");
+      (flags & 1 ? " · keine Energiedaten" : "");
 
     const comp = [VALUE.population, VALUE.world_share,
       VALUE.energy_consumption, VALUE.per_capita_energy_consumption];

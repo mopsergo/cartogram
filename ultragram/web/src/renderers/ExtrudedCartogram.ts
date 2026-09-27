@@ -8,10 +8,9 @@
  */
 import * as THREE from "three";
 import { Artifacts } from "../data/types";
-import { FrameUpdate, buildRingSegments, expandToTriangles, lerpPositions }
-  from "./shared";
+import { FrameUpdate, PickResult, blendWithOriginal, buildRingSegments,
+  expandToTriangles } from "./shared";
 
-const SIDE_DARKEN = 0.62;   // Seitenwände dunkler als die Deckfläche
 const SIDE_EPSILON = 2.5e-4; // Ring-Schrumpfung gegen koplanare Wände
 
 export class ExtrudedCartogram {
@@ -127,6 +126,19 @@ export class ExtrudedCartogram {
         vertexColors: true, side: THREE.DoubleSide }));
     this.group.add(this.sidesMesh);
 
+    // Boden: dunkle Grundfläche unter der gesamten Kartenebene – die
+    // Extrusionen stehen darauf und wirken massiv statt zu schweben
+    // (Benutzeranforderung). Größe: volle Equal-Earth-Welt (inkl.
+    // Ozean-Fließbereich), Farbe leicht über dem Hintergrund.
+    const halfW = (this.worldWidth / 2) * 1.04;
+    const halfH = 8.394e6 * 1.04; // Equal-Earth-Pol
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(halfW * 2, halfH * 2),
+      new THREE.MeshBasicMaterial({ color: 0x141c28 }));
+    floor.position.set(this.centerX, this.centerY,
+                        -this.worldWidth * 2e-4);
+    this.scene.add(floor);
+
     // Grenzlinien auf der Deckfläche
     const lineGeom = new THREE.BufferGeometry();
     lineGeom.setAttribute("position", new THREE.BufferAttribute(
@@ -140,7 +152,8 @@ export class ExtrudedCartogram {
   updateFrame(update: FrameUpdate): void {
     const art = this.art;
     const nT = art.manifest.dimensions.num_triangles;
-    lerpPositions(art, update.frameA, update.frameB, update.t, this.vertexXY);
+    this.vertexXY.set(update.vertexXY);
+    blendWithOriginal(art, this.vertexXY, update.geoBlend ?? 0);
     expandToTriangles(this.vertexXY, art.expandMap, this.expandedXY);
 
     const heights = update.heights ??
@@ -201,10 +214,12 @@ export class ExtrudedCartogram {
         len = Math.hypot(dx, dy) || 1;
         x1 += (dx / len) * eps; y1 += (dy / len) * eps;
 
-        // Seitenwand: (b0, b1, t1) + (b0, t1, t0)
-        const rC = update.entityColors[e * 3] * SIDE_DARKEN;
-        const gC = update.entityColors[e * 3 + 1] * SIDE_DARKEN;
-        const bC = update.entityColors[e * 3 + 2] * SIDE_DARKEN;
+        // Seitenwand: (b0, b1, t1) + (b0, t1, t0) – Blockfarbe =
+        // Deckflächenfarbe (keine Abdunkelung; die räumliche Wirkung
+        // liefert die Perspektive)
+        const rC = update.entityColors[e * 3];
+        const gC = update.entityColors[e * 3 + 1];
+        const bC = update.entityColors[e * 3 + 2];
         sidePos[sp] = x0; sidePos[sp + 1] = y0; sidePos[sp + 2] = 0;
         sidePos[sp + 3] = x1; sidePos[sp + 4] = y1; sidePos[sp + 5] = 0;
         sidePos[sp + 6] = x1; sidePos[sp + 7] = y1; sidePos[sp + 8] = h;
@@ -252,13 +267,14 @@ export class ExtrudedCartogram {
   }
 
   pick(clientX: number, clientY: number, width: number,
-       height: number): number | null {
+       height: number): PickResult | null {
     this.mouse.x = (clientX / width) * 2 - 1;
     this.mouse.y = -(clientY / height) * 2 + 1;
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const hits = this.raycaster.intersectObject(this.topMesh, false);
     if (hits.length === 0) return null;
-    return this.art.triangleEntity[hits[0].faceIndex!];
+    const t = hits[0].faceIndex!;
+    return { entity: this.art.triangleEntity[t], triangle: t };
   }
 }
 

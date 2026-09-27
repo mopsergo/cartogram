@@ -133,33 +133,65 @@ def load_canonical(cfg: PipelineConfig) -> pd.DataFrame:
 
 
 def targets_for_year(canonical: pd.DataFrame, registry: EntityRegistry,
-                     year: int, min_target_share: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
-    """Zielgewichte (World_share) je Entität + passive Maske für ein Jahr.
+                     year: int, min_target_share: float = 0.0,
+                     metric: str = "world_share"
+                     ) -> tuple[np.ndarray, np.ndarray]:
+    """Zielgewichte je Entität + passive Maske für ein Jahr.
+
+    metric (Kartogramm-Fläche, siehe pipeline.yaml data.target_metric):
+      - "world_share": Anteil an der Weltbevölkerung (Standard).
+      - "energy_consumption": Anteil am Gesamtweltenergieverbrauch.
+      - "per_capita_energy_consumption": Anteil am Wert Energie pro
+        Kopf (Fläche proportional zum Pro-Kopf-Verbrauch).
+
+    Für energy-Varianten gelten Entitäten ohne Messwert in der
+    gewählten Kennzahl als passiv (kein Ziel, Dichte 1 im Flow-Solver,
+    sie driften mit und behalten näherungsweise ihre Fläche) – z.B.
+    OTHER_WORLD und Israel vor 1950. Da der Solver die Zielflächen
+    auf die Summe der aktiven Entitäten normiert (carto_flow.solve),
+    bleibt die Gesamtkartenfläche erhalten.
 
     Rückgabe: (targets, passive) – Länge = Anzahl Entitäten, Reihenfolge
     wie das Register. Entitäten ohne Zeile im Jahr (Israel vor 1950)
     oder mit Anteil 0 sind passiv: kein Ziel, Dichte 1 im Flow-Solver.
 
-    min_target_share > 0: Zielanteile werden auf diesen Anteil der
-    Weltbevölkerung aufgestockt (Water-Filling; die verbleibenden
-    Entitäten werden entsprechend renormiert, die Summe bleibt 1).
+    min_target_share > 0: Zielanteile werden auf diesen Anteil
+    aufgestockt (Water-Filling; die verbleibenden Entitäten werden
+    entsprechend renormiert, die Summe bleibt 1).
     Grund: Anteile unterhalb der Auflösung des 110m-Mesh (z.B. Panama
     1820 mit 9.5e-7 = 128 km² Zielfläche, kleiner als eine Gitter-
     zelle) sind geometrisch nicht darstellbar; die Abweichung ist im
     Manifest und Qualitätsbericht dokumentiert.
     """
+    valid_metrics = ("world_share", "energy_consumption",
+                     "per_capita_energy_consumption")
+    if metric not in valid_metrics:
+        raise ValueError(
+            f"Unbekannte Zielkennzahl '{metric}' – erlaubt: {valid_metrics}")
+
     n = len(registry)
     targets = np.zeros(n, dtype=float)
     have_data = np.zeros(n, dtype=bool)
 
     g = canonical[canonical["year"] == year]
-    by_id = g.set_index("entity_id")["world_share"]
+    by_id = g.set_index("entity_id")[metric]
     for i, e in enumerate(registry):
-        if e.id in by_id.index:
-            share = float(by_id.loc[e.id])
-            if share > 0:
-                targets[i] = share
-                have_data[i] = True
+        if e.id not in by_id.index:
+            continue
+        v = float(by_id.loc[e.id])
+        if np.isfinite(v) and v > 0:
+            targets[i] = v
+            have_data[i] = True
+
+    # Kennzahl-Summe normieren (world_share ist bereits normiert)
+    total = float(targets.sum())
+    if total > 0:
+        targets /= total
+    else:
+        # Keine Daten in dieser Kennzahl für dieses Jahr (z.B. Energie
+        # vor 1820 in wenigen Ländern): alle Entitäten passiv, die
+        # Karte bleibt in diesem Jahr unverzerrt.
+        return targets, np.ones(n, dtype=bool)
 
     passive = ~have_data
 

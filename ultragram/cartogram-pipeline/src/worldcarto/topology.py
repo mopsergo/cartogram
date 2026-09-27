@@ -54,6 +54,12 @@ class Mesh:
     #: Volle Equal-Earth-Weltbounds (Ozean inklusive) – Gitterbasis
     world_bounds: tuple[float, float, float, float]
 
+    #: Name je Ring (z.B. Natural-Earth-Ländername der Polygon-Teile
+    #: von OTHER_WORLD; None = Entitätsname verwenden)
+    ring_names: list[str | None] | None = None
+    #: Exterior-Ring-Index je Dreieck (Tooltip/Panel: Dreieck -> Land)
+    triangle_ring: "np.ndarray | None" = None
+
     def polygons(self, positions: np.ndarray) -> list[MultiPolygon | Polygon | None]:
         """Shapely-Polygone je Entität aus gegebenen Vertex-Positionen."""
         return polygons_for_mesh(self, positions)
@@ -122,25 +128,36 @@ def build_mesh(gdf, entity_ids: list[str], vertex_precision_m: float = 1e-3,
         return [vid(x, y) for x, y in coords]
 
     rings: list[tuple[int, np.ndarray, bool]] = []
+    ring_names: list[str | None] = []
     entity_parts: list[list[tuple[int, list[int]]]] = []
+    # Ländernamen je Polygon-Teil (geometry.py, Spalte part_names);
+    # nur OTHER_WORLD führt echte Namen, sonst leer -> None
+    names_col = (gdf["part_names"].tolist()
+                 if hasattr(gdf, "columns") and "part_names" in gdf.columns
+                 else None)
 
     for ei in range(n):
         geom = gdf.geometry.iloc[ei]
+        ent_names = (names_col[ei] if names_col is not None
+                     and ei < len(names_col) else []) or []
         parts = []
-        for poly in _iter_parts(geom):
+        for pi, poly in enumerate(_iter_parts(geom)):
             if poly.is_empty:
                 continue
+            name = ent_names[pi] if pi < len(ent_names) else None
             ext = ring_ids(poly.exterior)
             if len(ext) < 3:
                 continue
             ext_idx = len(rings)
             rings.append((ei, np.asarray(ext, dtype=np.int64), False))
+            ring_names.append(name)
             holes = []
             for interior in poly.interiors:
                 h = ring_ids(interior)
                 if len(h) >= 3:
                     h_idx = len(rings)
                     rings.append((ei, np.asarray(h, dtype=np.int64), True))
+                    ring_names.append(name)
                     holes.append(h_idx)
             parts.append((ext_idx, holes))
         if not parts:
@@ -207,6 +224,7 @@ def build_mesh(gdf, entity_ids: list[str], vertex_precision_m: float = 1e-3,
         adjacency=adjacency,
         bounds=(float(minx), float(miny), float(maxx), float(maxy)),
         world_bounds=equal_earth_world_bounds(gdf.crs),
+        ring_names=ring_names,
     )
 
 

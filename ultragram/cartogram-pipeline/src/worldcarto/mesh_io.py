@@ -27,6 +27,7 @@ def save_mesh(mesh: Mesh, path_base: Path) -> None:
         "bounds": list(mesh.bounds),
         "world_bounds": list(mesh.world_bounds),
         "rings": ring_meta,
+        "ring_names": list(mesh.ring_names or []),
         "entity_parts": [
             [[ext, holes] for ext, holes in parts]
             for parts in mesh.entity_parts
@@ -35,12 +36,14 @@ def save_mesh(mesh: Mesh, path_base: Path) -> None:
     }
     path_base.parent.mkdir(parents=True, exist_ok=True)
     (path_base.with_suffix(".json")).write_text(json.dumps(meta))
-    np.savez_compressed(
-        path_base.with_suffix(".npz"),
+    arrays = dict(
         positions=mesh.positions, lonlat=mesh.lonlat,
         triangles=mesh.triangles, triangle_entity=mesh.triangle_entity,
         entity_ranges=mesh.entity_ranges, ring_vertices=ring_flat,
     )
+    if mesh.triangle_ring is not None:
+        arrays["triangle_ring"] = mesh.triangle_ring
+    np.savez_compressed(path_base.with_suffix(".npz"), **arrays)
 
 
 def load_mesh(path_base: Path) -> Mesh:
@@ -67,4 +70,7 @@ def load_mesh(path_base: Path) -> Mesh:
         adjacency=[set(a) for a in meta["adjacency"]],
         bounds=tuple(meta["bounds"]),
         world_bounds=tuple(meta["world_bounds"]),
+        ring_names=list(meta.get("ring_names") or []) or None,
+        triangle_ring=(data["triangle_ring"]
+                       if "triangle_ring" in data.files else None),
     )

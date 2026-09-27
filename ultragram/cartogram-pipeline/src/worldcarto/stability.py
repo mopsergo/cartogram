@@ -7,11 +7,16 @@ Kriterium je Entität:
 - Flächenverlauf glatt: keine Zunahme-Sprung-Kombination
   (Fläche schrumpft >20 % und wächst danach wieder >20 %)
 
+Ausnahme (dokumentiert, kein Fehler): der EINMALIGE Moduswechsel
+Flow -> starr bei der ERSTEN Reparatur einer Entität (siehe
+repair.py). Sprünge bereits reparierter Entitäten sind Fehler.
+
 Aufruf:
     PYTHONPATH=src python3 -m worldcarto.cli verify-stability
 """
 from __future__ import annotations
 
+import ast
 import json
 import sys
 
@@ -19,14 +24,34 @@ import numpy as np
 
 from .config import load_config
 from .mesh_io import load_mesh
+from .repair import entity_ring_vertices
+
+
+def _load_repaired(data_dir) -> dict[float, set[str]]:
+    """Reparatur-Mengen je Frame-Jahr aus quality.parquet."""
+    import pyarrow.parquet as pq
+    path = data_dir / "quality.parquet"
+    if not path.is_file():
+        return {}
+    tab = pq.read_table(path, columns=["year", "repaired"])
+    out: dict[float, set[str]] = {}
+    for y, r in zip(tab.column("year").to_pylist(),
+                    tab.column("repaired").to_pylist()):
+        if y not in out and r:
+            try:
+                out[float(y)] = set(ast.literal_eval(r))
+            except (ValueError, SyntaxError):
+                continue
+    return out
 
 
 def verify_stability(max_disp_share: float = 0.01,
-                     jump_share: float = 0.2) -> int:
-    cfg = load_config()
+                     jump_share: float = 0.2,
+                     metric: str | None = None) -> int:
+    cfg = load_config(metric)
     mesh = load_mesh(cfg.build_cache / "mesh")
 
-    data_dir = cfg.dist / "cartogram" / "v1"
+    data_dir = cfg.dist / "cartogram" / cfg.variant_dir
     manifest = json.loads((data_dir / "manifest.json").read_text())
     n_f = manifest["dimensions"]["num_frames"]
     n_v = manifest["dimensions"]["num_vertices"]
@@ -38,15 +63,41 @@ def verify_stability(max_disp_share: float = 0.01,
                            mesh.world_bounds[3] - mesh.world_bounds[1]))
     disp_limit = max_disp_share * world
 
-    problems = []
+    repaired_by_year = _load_repaired(data_dir)
 
-    # 1) Globale Vertexverschiebung zwischen Folgeframes
+    # Vertex -> Entität (für die Zuordnung von Sprüngen)
+    vertex_entity = np.full(n_v, -1, dtype=int)
+    for ei in range(mesh.num_entities):
+        vertex_entity[entity_ring_vertices(mesh, ei)] = ei
+
+    problems = []
+    transitions = []
+
+    # 1) Vertexverschiebung zwischen Folgeframes, je Entität.
+    #    Moduswechsel (Erstreparatur) sind dokumentierte Übergänge.
     for i in range(n_f - 1):
-        d = np.linalg.norm(positions[i + 1] - positions[i], axis=1).max()
-        if d > disp_limit:
+        disp = np.linalg.norm(positions[i + 1] - positions[i], axis=1)
+        if disp.max() <= disp_limit:
+            continue
+        y0, y1 = frames[i]["year"], frames[i + 1]["year"]
+        newly = (repaired_by_year.get(float(y1), set())
+                 - repaired_by_year.get(float(y0), set()))
+        jump: dict[int, float] = {}
+        for v in np.flatnonzero(disp > disp_limit):
+            ei = vertex_entity[v]
+            if ei >= 0:
+                jump[ei] = max(jump.get(ei, 0.0), float(disp[v]))
+        real = {ei for ei in jump
+                if mesh.entity_ids[ei] not in newly}
+        for ei in sorted(real):
             problems.append(
-                f"{frames[i]['year']}->{frames[i+1]['year']}: "
-                f"Verschiebung {d/1000:,.0f} km > {disp_limit/1000:,.0f} km")
+                f"{y0}->{y1}: {mesh.entity_ids[ei]} Verschiebung "
+                f"{jump[ei]/1000:,.0f} km > {disp_limit/1000:,.0f} km")
+        if not real and jump:
+            switched = sorted(mesh.entity_ids[ei] for ei in jump)
+            transitions.append(
+                f"{y0}->{y1}: Moduswechsel (Erstreparatur) "
+                f"{switched} – dokumentierter Übergang")
 
     # 2) Flächenverlauf je Entität (Zusammenbruch + Erholung = Springen)
     for ei in range(mesh.num_entities):
@@ -67,7 +118,16 @@ def verify_stability(max_disp_share: float = 0.01,
         print(f"[stability] {len(problems)} Probleme:")
         for p in problems[:20]:
             print(f"  - {p}")
+        if transitions:
+            print(f"[stability] {len(transitions)} dokumentierte "
+                  f"Moduswechsel (keine Fehler):")
+            for t in transitions[:10]:
+                print(f"  - {t}")
         return 1
+    if transitions:
+        print(f"[stability] {len(transitions)} dokumentierte Moduswechsel:")
+        for t in transitions[:10]:
+            print(f"  - {t}")
     print(f"[stability] OK: {n_f} Frames, keine Sprünge "
           f"(Verschiebung < {disp_limit/1000:,.0f} km/Jahr)")
     return 0

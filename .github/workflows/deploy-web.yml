@@ -1,0 +1,86 @@
+# Deploy der Web-App auf GitHub Pages.
+#
+# Ablauf bei jedem Push auf `main`:
+#   1. Checkout (inklusive der eingecheckten Kartogramm-Artefakte
+#      ultragram/web/public/cartogram/v0..v3 – die Pipeline läuft
+#      bewusst NICHT im CI, siehe PIPELINE.md)
+#   2. Prüfen, dass die Artefakte vorhanden sind (klare Fehlermeldung,
+#      falls vor dem Push vergessen wurde zu exportieren)
+#   3. npm ci + npm run build (Vite übernimmt public/ ins Bundle)
+#   4. Upload + Deploy über die offizielle Pages-Action
+#
+# Einmalige Einrichtung im Repo (Settings → Pages):
+#   Build and deployment → Source: **GitHub Actions**
+#
+# Vite baut mit base: "./" (relative Pfade) – funktioniert deshalb
+# auch unter github.io/<repo>/ ohne Konfiguration.
+
+name: Deploy web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ultragram/web/**"
+      - "ultragram/cartogram-pipeline/dist/**"
+      - ".github/workflows/deploy-web.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Kartogramm-Artefakte prüfen
+        run: |
+          test -f ultragram/web/public/cartogram/v1/positions.f32 || {
+            echo "::error::Kartogramm-Artefakte fehlen (v1/positions.f32)."
+            echo "::error::Zuerst lokal ausführen und committen:"
+            echo "::error::  cd ultragram/cartogram-pipeline"
+            echo "::error::  PYTHONPATH=src python3 -m worldcarto.cli export"
+            exit 1
+          }
+          echo "Artefakte vorhanden:"
+          du -sh ultragram/web/public/cartogram/* | sed 's/^/  /'
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ultragram/web/package-lock.json
+
+      - name: Abhängigkeiten
+        run: npm ci
+        working-directory: ultragram/web
+
+      - name: Produktions-Build
+        run: npm run build
+        working-directory: ultragram/web
+
+      - name: Bundle hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ultragram/web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4

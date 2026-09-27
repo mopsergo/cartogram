@@ -19,9 +19,15 @@ from .topology import Mesh
 
 
 def triangulate_mesh(mesh: Mesh) -> Mesh:
-    """Setzt mesh.triangles / triangle_entity / entity_ranges (in place)."""
+    """Setzt mesh.triangles / triangle_entity / entity_ranges (in place).
+
+    Zusätzlich mesh.triangle_ring: Exterior-Ring-Index je Dreieck –
+    ermöglicht die Zuordnung Dreieck -> Polygon-Teil (Ländername,
+    siehe geometry.py / export.py ring_names).
+    """
     all_tris: list[tuple[int, int, int]] = []
     tri_entity: list[int] = []
+    tri_ring: list[int] = []
     ranges = np.zeros((mesh.num_entities, 2), dtype=np.int64)
 
     for ei in range(mesh.num_entities):
@@ -55,10 +61,12 @@ def triangulate_mesh(mesh: Mesh) -> Mesh:
                     b, c = c, b
                 all_tris.append((a, b, c))
                 tri_entity.append(ei)
+                tri_ring.append(ext_idx)
         ranges[ei] = (start, len(all_tris) - start)
 
     mesh.triangles = np.asarray(all_tris, dtype=np.int64)
     mesh.triangle_entity = np.asarray(tri_entity, dtype=np.int64)
+    mesh.triangle_ring = np.asarray(tri_ring, dtype=np.int64)
     mesh.entity_ranges = ranges
     return mesh
 

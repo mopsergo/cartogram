@@ -12,7 +12,10 @@ export const PLASMA_R: [number, number, number][] = [
   [134, 6, 166], [99, 0, 167], [62, 4, 156], [13, 8, 135],
 ];
 
-export const NO_DATA_COLOR: [number, number, number] = [0.42, 0.46, 0.52];
+/** Keine Daten (z. B. Restliche Welt ohne Energiedatensatz):
+ *  bewusst leiser, dunkler Grauton – sichtbar, aber zurück-
+ *  tretend hinter den farbigen Datenländern. */
+export const NO_DATA_COLOR: [number, number, number] = [0.28, 0.32, 0.38];
 
 export function rampColor(t: number, out: [number, number, number]): void {
   const x = Math.min(Math.max(t, 0), 1) * (PLASMA_R.length - 1);

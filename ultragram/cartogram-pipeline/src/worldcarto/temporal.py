@@ -1,7 +1,8 @@
 """Jahres-Keyframes (Plan §5.6) mit Build-Cache.
 
 Für jedes Jahr 1820 bis 2020:
-1. Zielgewicht World_share laden
+1. Zielgewicht laden (data.target_metric: Standard World_share,
+   alternativ Energie-Gesamtverbrauch oder Energie pro Kopf)
 2. OTHER_WORLD prüfen (bereits im Ingest, Plan §2)
 3. Direct Solve vom kanonischen Ausgangszustand
 4. Optional Warm-Start vom Vorjahr (pipeline.yaml: temporal.warm_start)
@@ -33,11 +34,13 @@ def _solver_hash(cfg: PipelineConfig, mesh_hash: str) -> str:
     import hashlib
     h = hashlib.sha256()
     h.update(mesh_hash.encode())
+    h.update(cfg.target_metric.encode())
     h.update(json.dumps(cfg.solver_chain, sort_keys=True).encode())
     h.update(json.dumps(cfg.flow, sort_keys=True).encode())
     h.update(json.dumps(cfg.legacy_tiles, sort_keys=True).encode())
     h.update(str(cfg.warm_start).encode())
     h.update(str(cfg.max_area_error_p90).encode())
+    h.update(str(cfg.min_target_share).encode())
     return h.hexdigest()[:16]
 
 
@@ -57,13 +60,20 @@ def solve_year(mesh: Mesh, targets: np.ndarray, passive: np.ndarray,
                cfg: PipelineConfig, solver,
                prev_positions: np.ndarray | None,
                year: float,
-               force_repair: set[str] | None = None
+               force_repair: set[str] | None = None,
+               repair_state: dict | None = None,
+               skip_repair: set[str] | None = None
                ) -> tuple[np.ndarray, dict, dict]:
     """Kandidaten rechnen, validieren, besten wählen.
 
     force_repair: Hysterese – Entitäts-IDs, die im Vorjahr repariert
     wurden und repariert bleiben (siehe repair.py: pro Entität
     höchstens EIN Moduswechsel Flow->starr, kein jährliches Flackern).
+    repair_state: Vorjahres-Zustand {"f", "target"} je Entität für
+    die gleitende f-Fortführung (keine Sekantensuche -> keine
+    f-Sprünge; siehe repair.py).
+    skip_repair: Entitäten ohne brauchbares Placement – der Flow
+    bleibt; bei wieder gültigem Flow wird neu entschieden.
 
     Rückgabe: (positions, stats, reports) – reports: name -> KeyframeReport.
     """
@@ -102,21 +112,27 @@ def solve_year(mesh: Mesh, targets: np.ndarray, passive: np.ndarray,
     # --- Reparatur: ungültige Polygone durch starr skalierte
     # Originalformen ersetzen (siehe repair.py), danach neu bewerten.
     from .repair import repair_invalid_polygons
-    positions, repaired, repair_info = repair_invalid_polygons(
+    flow_positions = positions  # Normalisierung der Ziele (siehe unten)
+    positions, repaired, repair_info, skipped = repair_invalid_polygons(
         mesh, positions, targets, passive,
-        force_repair=force_repair or set())
+        force_repair=force_repair or set(),
+        prev_state=repair_state,
+        skip_repair=skip_repair or set())
     if repaired:
         stats["repaired_entities"] = repaired
         stats["repair_info"] = repair_info
         report = validate_keyframe(mesh, positions, targets, passive, cfg,
                                    prev_positions=prev_positions,
                                    max_area_error_p90=threshold,
-                                   max_inverted_fraction=fold_threshold)
+                                   max_inverted_fraction=fold_threshold,
+                                   scale_positions=flow_positions)
         # Qualitätsdaten nach der Reparatur führen (nicht die
         # Flow-Vorlösung)
         stats["errors"] = report.area_errors
         stats["p90_error"] = report.p90_error
         stats["max_error"] = report.max_error
+    if skipped:
+        stats["skipped_repair"] = skipped
     if report.warnings:
         stats["quality_warnings"] = report.warnings
 
@@ -180,13 +196,15 @@ def build_keyframes(cfg: PipelineConfig, mesh: Mesh, solver,
     prev_targets: np.ndarray | None = None
     prev_passive: np.ndarray | None = None
     prev_year: float | None = None
-    repaired_ids: set[str] = set()  # Hysterese (siehe repair.py)
+    repair_state: dict = {}  # Hysterese inkl. f-Zustand (siehe repair.py)
+    skip_state: set[str] = set()  # ohne brauchbares Placement (repair.py)
 
     t0 = time.time()
     for pos_year in years:
         targets, passive = targets_for_year(
             canonical, registry, pos_year,
-            min_target_share=cfg.min_target_share)
+            min_target_share=cfg.min_target_share,
+            metric=cfg.target_metric)
         floored = [
             mesh.entity_ids[i] for i in range(mesh.num_entities)
             if not passive[i] and targets[i] > 0
@@ -201,15 +219,18 @@ def build_keyframes(cfg: PipelineConfig, mesh: Mesh, solver,
             stats = json.loads(str(data["stats_json"]))
             stats["errors"] = np.asarray(data["errors"])
             stats["from_cache"] = True
-            repaired_ids = set(stats.get("repaired_entities", []))
+            repair_state = dict(stats.get("repair_info", {}))
+            skip_state = set(stats.get("skipped_repair", []))
         else:
             positions, stats, _ = solve_year(
                 mesh, targets, passive, cfg, solver,
                 prev_positions if cfg.warm_start else None, pos_year,
-                force_repair=repaired_ids)
+                repair_state=repair_state,
+                skip_repair=skip_state)
             stats["from_cache"] = False
             stats["floored_entities"] = floored
-            repaired_ids = set(stats.get("repaired_entities", []))
+            repair_state = dict(stats.get("repair_info", {}))
+            skip_state = set(stats.get("skipped_repair", []))
             fname = f"frame_{index_path.stem}_{pos_year}.npz"
             np.savez_compressed(
                 cache_dir / fname, positions=positions,
@@ -242,7 +263,8 @@ def build_keyframes(cfg: PipelineConfig, mesh: Mesh, solver,
                 mid_passive = passive & prev_passive
                 mid_pos, mid_stats, _ = solve_year(
                     mesh, mid_targets, mid_passive, cfg, solver, None, mid,
-                    force_repair=repaired_ids)
+                    repair_state=repair_state,
+                    skip_repair=skip_state)
                 frames.append({"year": mid, "positions": mid_pos,
                                "stats": mid_stats, "intermediate": True,
                                "targets": mid_targets,

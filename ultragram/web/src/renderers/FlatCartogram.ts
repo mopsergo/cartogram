@@ -5,8 +5,8 @@
  */
 import * as THREE from "three";
 import { Artifacts } from "../data/types";
-import { FrameUpdate, buildRingSegments, expandToTriangles, lerpPositions }
-  from "./shared";
+import { FrameUpdate, PickResult, blendWithOriginal, buildRingSegments,
+  expandToTriangles } from "./shared";
 
 export class FlatCartogram {
   readonly scene = new THREE.Scene();
@@ -17,6 +17,7 @@ export class FlatCartogram {
   private topMesh!: THREE.Mesh;
   private boundaryLines!: THREE.LineSegments;
   private ghostLines!: THREE.LineSegments;
+  private ghostWanted = true;
   private segments: ReturnType<typeof buildRingSegments>;
   private vertexXY: Float32Array;
   private expandedXY: Float32Array;
@@ -109,12 +110,19 @@ export class FlatCartogram {
   }
 
   setGhostVisible(visible: boolean): void {
+    this.ghostWanted = visible;
     this.ghostLines.visible = visible;
   }
 
   updateFrame(update: FrameUpdate): void {
     const art = this.art;
-    lerpPositions(art, update.frameA, update.frameB, update.t, this.vertexXY);
+    // Kanonische Positionen von der App übernehmen und mit der
+    // Original-Geografie überblenden (Renderer-lokale Kopie)
+    this.vertexXY.set(update.vertexXY);
+    const geoBlend = update.geoBlend ?? 0;
+    blendWithOriginal(art, this.vertexXY, geoBlend);
+    // Ghost = Original-Geografie: in der Original-Ansicht identisch -> aus
+    this.ghostLines.visible = this.ghostWanted && geoBlend < 0.999;
     expandToTriangles(this.vertexXY, art.expandMap, this.expandedXY);
 
     const posAttr = this.topMesh.geometry.attributes
@@ -182,13 +190,14 @@ export class FlatCartogram {
   }
 
   pick(clientX: number, clientY: number, width: number,
-       height: number): number | null {
+       height: number): PickResult | null {
     this.mouse.x = (clientX / width) * 2 - 1;
     this.mouse.y = -(clientY / height) * 2 + 1;
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const hits = this.raycaster.intersectObject(this.topMesh, false);
     if (hits.length === 0) return null;
-    return this.art.triangleEntity[hits[0].faceIndex!];
+    const t = hits[0].faceIndex!;
+    return { entity: this.art.triangleEntity[t], triangle: t };
   }
 
   attachControls(container: HTMLElement): void {

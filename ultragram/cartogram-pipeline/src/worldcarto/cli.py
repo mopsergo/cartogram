@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np
 
 from . import __version__
-from .config import config_hash, load_config
+from .config import VARIANT_DIRS, config_hash, load_config
 from .entities import load_registry
 from .ingest import load_canonical, run_ingest, targets_for_year
 from .mesh_io import load_mesh, save_mesh
@@ -95,14 +95,15 @@ def cmd_mesh(args) -> int:
 
 
 def cmd_solve(args) -> int:
-    cfg = load_config()
+    cfg = load_config(getattr(args, "metric", None))
     registry = load_registry()
     canonical = load_canonical(cfg)
     mesh = _build_or_load_mesh(cfg, registry)
     solver, errors = resolve_chain(cfg.solver_chain, config=cfg.flow)
     for e in errors:
         print(f"[solve] {e}")
-    print(f"[solve] Solver: {solver.name} {solver.version}")
+    print(f"[solve] Solver: {solver.name} {solver.version} · "
+          f"Zielkennzahl: {cfg.target_metric} (Variante {cfg.variant_dir})")
     mesh_hash = (_mesh_path(cfg).with_suffix(".stamp").read_text()
                  if _mesh_path(cfg).with_suffix(".stamp").is_file()
                  else "mesh")
@@ -159,7 +160,7 @@ def _load_frames(cfg, mesh):
 
 def cmd_export(args) -> int:
     import numpy as np  # noqa: F401
-    cfg = load_config()
+    cfg = load_config(getattr(args, "metric", None))
     registry = load_registry()
     canonical = load_canonical(cfg)
     mesh = _build_or_load_mesh(cfg, registry)
@@ -175,7 +176,7 @@ def cmd_export(args) -> int:
 
 def cmd_debug_frames(args) -> int:
     import numpy as np
-    cfg = load_config()
+    cfg = load_config(getattr(args, "metric", None))
     registry = load_registry()
     canonical = load_canonical(cfg)
     mesh = _build_or_load_mesh(cfg, registry)
@@ -204,10 +205,10 @@ def cmd_debug_frames(args) -> int:
 
 def cmd_quality(args) -> int:
     import pandas as pd
-    cfg = load_config()
-    path = cfg.dist / "cartogram" / "v1" / "quality.parquet"
+    cfg = load_config(getattr(args, "metric", None))
+    path = cfg.dist / "cartogram" / cfg.variant_dir / "quality.parquet"
     if not path.is_file():
-        print("[quality] quality.parquet fehlt – zuerst 'export'",
+        print(f"[quality] {path} fehlt – zuerst 'solve' + 'export'",
               file=sys.stderr)
         return 1
     q = pd.read_parquet(path)
@@ -251,18 +252,33 @@ def main(argv=None) -> int:
 
     p_solve = sub.add_parser("solve", help="Jahres-Keyframes lösen")
     p_solve.add_argument("--years", type=int, nargs="*", default=None)
+    p_solve.add_argument("--metric", type=str, default=None,
+                         choices=list(VARIANT_DIRS),
+                         help="Zielkennzahl der Fläche (Override der Config)")
 
-    sub.add_parser("export", help="Browserartefakte exportieren")
+    p_export = sub.add_parser("export", help="Browserartefakte exportieren")
+    p_export.add_argument("--metric", type=str, default=None,
+                           choices=list(VARIANT_DIRS),
+                           help="Zielkennzahl der Fläche (Override der Config)")
 
     p_dbg = sub.add_parser("debug-frames", help="Debug-PNGs rendern")
     p_dbg.add_argument("--years", type=int, nargs="*", default=None)
     p_dbg.add_argument("--out", default="debug_frames")
+    p_dbg.add_argument("--metric", type=str, default=None,
+                       choices=list(VARIANT_DIRS))
 
-    sub.add_parser("quality", help="Qualitätsbericht anzeigen")
-    sub.add_parser("verify-stability",
-                   help="Exportierte Keyframes auf Sprünge prüfen")
+    p_quality = sub.add_parser("quality", help="Qualitätsbericht anzeigen")
+    p_quality.add_argument("--metric", type=str, default=None,
+                           choices=list(VARIANT_DIRS))
 
-    sub.add_parser("build", help="ingest -> mesh -> solve -> export")
+    p_stab = sub.add_parser("verify-stability",
+                            help="Exportierte Keyframes auf Sprünge prüfen")
+    p_stab.add_argument("--metric", type=str, default=None,
+                        choices=list(VARIANT_DIRS))
+
+    p_build = sub.add_parser("build", help="ingest -> mesh -> solve -> export")
+    p_build.add_argument("--metric", type=str, default=None,
+                         choices=list(VARIANT_DIRS))
 
     args = parser.parse_args(argv)
     handlers = {
@@ -270,14 +286,15 @@ def main(argv=None) -> int:
         "solve": cmd_solve, "export": cmd_export,
         "debug-frames": cmd_debug_frames, "quality": cmd_quality,
         "build": cmd_build,
-        "verify-stability": lambda args: cmd_verify_stability(),
+        "verify-stability": lambda args: cmd_verify_stability(
+            getattr(args, "metric", None)),
     }
     return handlers[args.command](args)
 
 
-def cmd_verify_stability() -> int:
+def cmd_verify_stability(metric: str | None = None) -> int:
     from .stability import verify_stability
-    return verify_stability()
+    return verify_stability(metric=metric)
 
 
 if __name__ == "__main__":

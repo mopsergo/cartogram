@@ -1,6 +1,6 @@
 """Exportvertrag für TypeScript (Plan §6).
 
-    dist/cartogram/v1/
+    dist/cartogram/<variante>/          (v1/v2/v3, siehe config.VARIANT_DIRS)
     ├── manifest.json
     ├── entities.json
     ├── topology.bin        (Statische Topologie als Bundle, s. u.)
@@ -34,11 +34,10 @@ import numpy as np
 import pandas as pd
 
 from . import __version__
-from .config import PipelineConfig, file_sha256
+from .config import VARIANT_LABELS, PipelineConfig, file_sha256
 from .entities import EntityRegistry
 from .topology import Mesh
 
-ARTIFACT_VERSION = "v1"
 FORMAT = "ultragram.cartogram.v1"
 
 
@@ -139,8 +138,17 @@ def build_topology_bundle(mesh: Mesh) -> dict:
 def export(cfg: PipelineConfig, registry: EntityRegistry, mesh: Mesh,
            frames: list[dict], canonical: pd.DataFrame,
            out_dir: Path | None = None) -> Path:
-    """Alle Artefakte nach <dist>/cartogram/v1 schreiben + kopieren."""
-    out = (out_dir or cfg.dist / "cartogram" / ARTIFACT_VERSION)
+    """Alle Artefakte nach <dist>/cartogram/<variante> schreiben + kopieren.
+
+    Der Varianten-Ordner folgt aus der Zielkennzahl (config.VARIANT_DIRS:
+    world_share -> v1, energy_consumption -> v2,
+    per_capita_energy_consumption -> v3). Die Topologie-Dateien
+    (indices, rings, entities, values, ...) sind über alle Varianten
+    identisch; positions.f32 und quality.parquet sind variante-
+    spezifisch (gleiche Auflösung, anderer Flächenmaßstab).
+    """
+    variant = cfg.variant_dir
+    out = (out_dir or cfg.dist / "cartogram" / variant)
     out.mkdir(parents=True, exist_ok=True)
     if frames:
         shutil.rmtree(out, ignore_errors=True)
@@ -181,6 +189,14 @@ def export(cfg: PipelineConfig, registry: EntityRegistry, mesh: Mesh,
                                    dtype="<u4"))
         ring_parts.append(np.asarray(ids, dtype="<u4"))
     _write_u32(out / "boundary_rings.u32", np.concatenate(ring_parts))
+
+    # --- Ländernamen der Polygon-Teile (Tooltip/Panel: Dreieck -> Land)
+    if mesh.triangle_ring is not None and mesh.ring_names is not None:
+        _write_u32(out / "triangle_ring.u32", mesh.triangle_ring)
+        (out / "ring_names.json").write_text(
+            json.dumps({"names": list(mesh.ring_names)},
+                       ensure_ascii=False),
+            encoding="utf-8")
 
     # --- flags.u8 ---------------------------------------------------------
     flags = np.zeros(n_e, dtype=np.uint8)
@@ -253,14 +269,20 @@ def export(cfg: PipelineConfig, registry: EntityRegistry, mesh: Mesh,
 
     print(f"[export] {n_f} Frames, {n_e} Entitäten, {n_v} Vertices, "
           f"{len(mesh.triangles)} Dreiecke -> {out}")
+    print(f"[export] Zielkennzahl Fläche: {cfg.target_metric} "
+          f"(Variante {variant})")
 
-    # --- Kopie für den Web-Dev-Server (web/public/cartogram/v1) -----------
+    # --- Kopie für den Web-Dev-Server (web/public/cartogram/<variante>).
+    # web_public ist der Basis-Ordner; enthält der Pfad (alte
+    # Konfiguration) bereits die Variante, wird sie nicht angehängt.
     if cfg.web_public is not None:
-        cfg.web_public.mkdir(parents=True, exist_ok=True)
+        web_out = (cfg.web_public if cfg.web_public.name == variant
+                   else cfg.web_public / variant)
+        web_out.mkdir(parents=True, exist_ok=True)
         for f in out.iterdir():
             if f.is_file():
-                shutil.copy2(f, cfg.web_public / f.name)
-        print(f"[export] Artefakte nach {cfg.web_public} kopiert")
+                shutil.copy2(f, web_out / f.name)
+        print(f"[export] Artefakte nach {web_out} kopiert")
     return out
 
 
@@ -292,7 +314,10 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
 
     return {
         "format": FORMAT,
-        "artifact_version": ARTIFACT_VERSION,
+        "artifact_version": cfg.variant_dir,
+        "target_metric": cfg.target_metric,
+        "target_metric_label": VARIANT_LABELS.get(cfg.target_metric,
+                                                  cfg.target_metric),
         "data_version": __version__,
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "years": {
@@ -334,6 +359,18 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
                 "file": "boundary_rings.u32", "dtype": "<u4",
                 "layout": ("[numRings] dann je Ring [owner_entity, "
                            "num_vertices, is_hole, v0..v{n-1}]")},
+            "triangle_ring": {
+                "file": "triangle_ring.u32", "dtype": "<u4",
+                "shape": [len(mesh.triangles)],
+                "note": ("Exterior-Ring-Index je Dreieck – mit "
+                         "ring_names.json zeigt Tooltip/Panel das "
+                         "konkrete Land (Natural-Earth-Länder der "
+                         "Restliche-Welt-Entität)")},
+            "ring_names": {
+                "file": "ring_names.json",
+                "note": ("Ländername je Ring (null = Entitätsname "
+                         "verwenden); ältere Läufe ohne diese Datei "
+                         "fallen darauf zurück")},
             "flags": {"file": "flags.u8", "dtype": "<u1", "shape": [n_e],
                       "bits": {"0": "is_other_world",
                                "1": "historical_aggregate"}},
@@ -360,8 +397,13 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
             "positions": "Meter (Equal Earth)",
         },
         "scales": {
-            "area": {"metric": "world_share",
-                     "note": "Fläche ausschließlich solverbasiert"},
+            "area": {"metric": cfg.target_metric,
+                     "label": VARIANT_LABELS.get(cfg.target_metric,
+                                                 cfg.target_metric),
+                     "note": ("Fläche = Anteil an der gewählten Zielkennzahl "
+                              "(data.target_metric); Entitäten ohne Wert "
+                              "dieser Kennzahl sind passiv und behalten "
+                              "näherungsweise ihre Fläche")},
             "color": {
                 "metric": color_cfg.get("metric"),
                 "transform": color_cfg.get("transform"),
@@ -373,8 +415,12 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
                 "metric": height_cfg.get("metric"),
                 "transform": height_cfg.get("transform"),
                 "max_fraction": height_cfg.get("max_fraction"),
-                "formula": "height = max(value, 0) / global_max * "
-                           "max_fraction * world_width (linear)",
+                "formula": ("height = transform(max(value, 0) / "
+                            "year_max) * max_fraction * world_width; "
+                            "year_max = Maximum der Höhenkennzahl im "
+                            "aktuellen Jahr; transform im Renderer "
+                            "umschaltbar: sqrt (Standard, empfindlich) "
+                            "oder linear"),
             },
         },
         "solver": {

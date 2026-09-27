@@ -39,6 +39,8 @@
     #controls {
       top: 14px; right: 14px; width: 250px; display: flex;
       flex-direction: column; gap: 10px;
+      max-height: calc(100vh - 28px);
+      overflow-y: auto; overscroll-behavior: contain;
     }
     .group { display: flex; flex-direction: column; gap: 5px; }
     .group > label {
@@ -128,7 +130,7 @@
   <div id="app"></div>
   <div id="title" class="hud">
     <h1>Bevölkerung &amp; Energie 1820–2020</h1>
-    <p>Cartogramm: Fläche = Anteil an der Weltbevölkerung ·
+    <p>Cartogramm: Fläche = <span id="areaLabel">Bevölkerungsanteil</span> ·
        Farbe = Energieverbrauch pro Kopf ·
        Höhe = Energieverbrauch pro Kopf (umstellbar)</p>
   </div>
@@ -140,6 +142,27 @@
         <button data-mode="extruded" class="active">2.5D</button>
         <button data-mode="globe">Globus</button>
       </div>
+    </div>
+    <div class="group" id="geoGroup">
+      <label>Geometrie</label>
+      <label class="toggle"><input type="checkbox" id="geoToggle" />
+        Original-Geografie (unverzerrt) · Taste G</label>
+    </div>
+    <div class="group" id="runGroup">
+      <label>Kartogramm-Lauf</label>
+      <select id="runSelect" title="Exportierte Version des Solvers">
+        <option value="current">Aktuell (mit Reparaturen)</option>
+        <option value="legacy">Original (Commit, 16 h)</option>
+      </select>
+    </div>
+    <div class="group" id="variantGroup">
+      <label>Kartogramm-Fläche</label>
+      <select id="variantSelect"
+        title="Zielfläche, auf die jedes Land skaliert wird">
+        <option value="population">Bevölkerungsanteil</option>
+        <option value="energy">Gesamtenergie</option>
+        <option value="percapita">Energie pro Kopf</option>
+      </select>
     </div>
     <div class="group">
       <label>Farbkennzahl</label>
@@ -160,6 +183,12 @@
         <option value="0">Bevölkerung</option>
         <option value="1">Anteil Weltbevölkerung</option>
       </select>
+      <select id="heightScaleSelect"
+        title="Höhentransformation – Skala gegen das Jahres-Maximum">
+        <option value="sqrt" selected>Wurzel (kleine Werte betont)</option>
+        <option value="linear">Linear (proportional)</option>
+        <option value="square">Quadrat (Spitzen differenzieren)</option>
+      </select>
     </div>
     <div class="group" id="flatGroup" style="display:none">
       <label>Flach-Optionen</label>
@@ -170,6 +199,7 @@
       <canvas id="legendBar"></canvas>
       <div class="range"><span id="legendMin"></span><span id="legendMax"></span></div>
       <div class="caption" id="legendCaption"></div>
+      <div class="caption" id="legendArea" style="color: var(--accent-warm)"></div>
     </div>
     <div class="group"><button id="resetCam" style="width:100%; padding:6px; background:#1c2431; color:var(--text); border:1px solid var(--border); border-radius:7px; cursor:pointer;">Kamera zurücksetzen</button></div>
   </div>

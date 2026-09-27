@@ -1,0 +1,972 @@
+{
+ "entities": [
+  {
+   "index": 0,
+   "id": "AUT",
+   "display_name": "Österreich",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "AUT"
+   ],
+   "note": ""
+  },
+  {
+   "index": 1,
+   "id": "BEL",
+   "display_name": "Belgien",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BEL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 2,
+   "id": "CHE",
+   "display_name": "Schweiz",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CHE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 3,
+   "id": "DEU",
+   "display_name": "Deutschland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "DEU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 4,
+   "id": "DNK",
+   "display_name": "Dänemark",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "DNK"
+   ],
+   "note": ""
+  },
+  {
+   "index": 5,
+   "id": "ESP",
+   "display_name": "Spanien",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ESP"
+   ],
+   "note": ""
+  },
+  {
+   "index": 6,
+   "id": "FIN",
+   "display_name": "Finnland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "FIN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 7,
+   "id": "FRA",
+   "display_name": "Frankreich",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "FRA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 8,
+   "id": "GBR",
+   "display_name": "Vereinigtes Königreich",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "GBR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 9,
+   "id": "GRC",
+   "display_name": "Griechenland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "GRC"
+   ],
+   "note": ""
+  },
+  {
+   "index": 10,
+   "id": "IRL",
+   "display_name": "Irland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "IRL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 11,
+   "id": "ITA",
+   "display_name": "Italien",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ITA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 12,
+   "id": "NLD",
+   "display_name": "Niederlande",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NLD"
+   ],
+   "note": ""
+  },
+  {
+   "index": 13,
+   "id": "NOR",
+   "display_name": "Norwegen",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NOR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 14,
+   "id": "PRT",
+   "display_name": "Portugal",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "PRT"
+   ],
+   "note": ""
+  },
+  {
+   "index": 15,
+   "id": "SWE",
+   "display_name": "Schweden",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SWE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 16,
+   "id": "BGR",
+   "display_name": "Bulgarien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BGR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 17,
+   "id": "CSK",
+   "display_name": "Tschechoslowakei",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": true,
+   "geometry_members": [
+    "CZE",
+    "SVK"
+   ],
+   "note": ""
+  },
+  {
+   "index": 18,
+   "id": "HUN",
+   "display_name": "Ungarn",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "HUN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 19,
+   "id": "POL",
+   "display_name": "Polen",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "POL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 20,
+   "id": "ROU",
+   "display_name": "Rumänien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ROU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 21,
+   "id": "SUN",
+   "display_name": "UdSSR (ehemalige)",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": true,
+   "geometry_members": [
+    "RUS",
+    "UKR",
+    "BLR",
+    "EST",
+    "LVA",
+    "LTU",
+    "MDA",
+    "GEO",
+    "ARM",
+    "AZE",
+    "KAZ",
+    "UZB",
+    "TKM",
+    "TJK",
+    "KGZ"
+   ],
+   "note": ""
+  },
+  {
+   "index": 22,
+   "id": "YUG",
+   "display_name": "Jugoslawien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": true,
+   "geometry_members": [
+    "SRB",
+    "HRV",
+    "BIH",
+    "MNE",
+    "MKD",
+    "SVN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 23,
+   "id": "CAN",
+   "display_name": "Kanada",
+   "macroarea": "NAm",
+   "macroarea_label": "Nordamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CAN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 24,
+   "id": "USA",
+   "display_name": "USA",
+   "macroarea": "NAm",
+   "macroarea_label": "Nordamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "USA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 25,
+   "id": "ARG",
+   "display_name": "Argentinien",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ARG"
+   ],
+   "note": ""
+  },
+  {
+   "index": 26,
+   "id": "BOL",
+   "display_name": "Bolivien",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BOL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 27,
+   "id": "BRA",
+   "display_name": "Brasilien",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BRA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 28,
+   "id": "CHL",
+   "display_name": "Chile",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CHL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 29,
+   "id": "COL",
+   "display_name": "Kolumbien",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "COL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 30,
+   "id": "CRI",
+   "display_name": "Costa Rica",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CRI"
+   ],
+   "note": ""
+  },
+  {
+   "index": 31,
+   "id": "CUB",
+   "display_name": "Kuba",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CUB"
+   ],
+   "note": ""
+  },
+  {
+   "index": 32,
+   "id": "DOM",
+   "display_name": "Dominikanische Republik",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "DOM"
+   ],
+   "note": ""
+  },
+  {
+   "index": 33,
+   "id": "ECU",
+   "display_name": "Ecuador",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ECU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 34,
+   "id": "GTM",
+   "display_name": "Guatemala",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "GTM"
+   ],
+   "note": ""
+  },
+  {
+   "index": 35,
+   "id": "HTI",
+   "display_name": "Haiti",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "HTI"
+   ],
+   "note": ""
+  },
+  {
+   "index": 36,
+   "id": "HND",
+   "display_name": "Honduras",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "HND"
+   ],
+   "note": ""
+  },
+  {
+   "index": 37,
+   "id": "MEX",
+   "display_name": "Mexiko",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MEX"
+   ],
+   "note": ""
+  },
+  {
+   "index": 38,
+   "id": "NIC",
+   "display_name": "Nicaragua",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NIC"
+   ],
+   "note": ""
+  },
+  {
+   "index": 39,
+   "id": "PAN",
+   "display_name": "Panama",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "PAN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 40,
+   "id": "PRY",
+   "display_name": "Paraguay",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "PRY"
+   ],
+   "note": ""
+  },
+  {
+   "index": 41,
+   "id": "PER",
+   "display_name": "Peru",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "PER"
+   ],
+   "note": ""
+  },
+  {
+   "index": 42,
+   "id": "SLV",
+   "display_name": "El Salvador",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SLV"
+   ],
+   "note": ""
+  },
+  {
+   "index": 43,
+   "id": "URY",
+   "display_name": "Uruguay",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "URY"
+   ],
+   "note": ""
+  },
+  {
+   "index": 44,
+   "id": "VEN",
+   "display_name": "Venezuela",
+   "macroarea": "LA",
+   "macroarea_label": "Lateinamerika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "VEN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 45,
+   "id": "AUS",
+   "display_name": "Australien",
+   "macroarea": "O",
+   "macroarea_label": "Ozeanien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "AUS"
+   ],
+   "note": ""
+  },
+  {
+   "index": 46,
+   "id": "NZL",
+   "display_name": "Neuseeland",
+   "macroarea": "O",
+   "macroarea_label": "Ozeanien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NZL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 47,
+   "id": "CHN",
+   "display_name": "China",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CHN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 48,
+   "id": "IDN",
+   "display_name": "Indonesien",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "IDN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 49,
+   "id": "IND",
+   "display_name": "Indien",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "IND"
+   ],
+   "note": ""
+  },
+  {
+   "index": 50,
+   "id": "JPN",
+   "display_name": "Japan",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "JPN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 51,
+   "id": "MYS",
+   "display_name": "Malaysia",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MYS"
+   ],
+   "note": ""
+  },
+  {
+   "index": 52,
+   "id": "PHL",
+   "display_name": "Philippinen",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "PHL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 53,
+   "id": "THA",
+   "display_name": "Thailand",
+   "macroarea": "As",
+   "macroarea_label": "Asien",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "THA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 54,
+   "id": "IRN",
+   "display_name": "Iran",
+   "macroarea": "ME",
+   "macroarea_label": "Naher Osten",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "IRN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 55,
+   "id": "IRQ",
+   "display_name": "Irak",
+   "macroarea": "ME",
+   "macroarea_label": "Naher Osten",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "IRQ"
+   ],
+   "note": ""
+  },
+  {
+   "index": 56,
+   "id": "ISR",
+   "display_name": "Israel",
+   "macroarea": "ME",
+   "macroarea_label": "Naher Osten",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ISR"
+   ],
+   "note": "Datensatz beginnt 1950. Vor 1950 keine Zielgewichte: die Entität wird im Solver passiv behandelt (Dichte 1, driftet mit) und im Renderer ohne Werte dargestellt."
+  },
+  {
+   "index": 57,
+   "id": "SAU",
+   "display_name": "Saudi-Arabien",
+   "macroarea": "ME",
+   "macroarea_label": "Naher Osten",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SAU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 58,
+   "id": "SYR",
+   "display_name": "Syrien",
+   "macroarea": "ME",
+   "macroarea_label": "Naher Osten",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SYR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 59,
+   "id": "TUR",
+   "display_name": "Türkei",
+   "macroarea": "ME",
+   "macroarea_label": "Naher Osten",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "TUR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 60,
+   "id": "DZA",
+   "display_name": "Algerien",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "DZA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 61,
+   "id": "COD",
+   "display_name": "DR Kongo",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "COD"
+   ],
+   "note": ""
+  },
+  {
+   "index": 62,
+   "id": "EGY",
+   "display_name": "Ägypten",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "EGY"
+   ],
+   "note": ""
+  },
+  {
+   "index": 63,
+   "id": "ERI_ETH",
+   "display_name": "Eritrea & Äthiopien",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": true,
+   "geometry_members": [
+    "ERI",
+    "ETH"
+   ],
+   "note": ""
+  },
+  {
+   "index": 64,
+   "id": "LBY",
+   "display_name": "Libyen",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "LBY"
+   ],
+   "note": ""
+  },
+  {
+   "index": 65,
+   "id": "MAR",
+   "display_name": "Marokko",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MAR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 66,
+   "id": "MWI",
+   "display_name": "Malawi",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MWI"
+   ],
+   "note": ""
+  },
+  {
+   "index": 67,
+   "id": "NGA",
+   "display_name": "Nigeria",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NGA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 68,
+   "id": "TUN",
+   "display_name": "Tunesien",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "TUN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 69,
+   "id": "ZAF",
+   "display_name": "Südafrika",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ZAF"
+   ],
+   "note": ""
+  },
+  {
+   "index": 70,
+   "id": "ZMB",
+   "display_name": "Sambia",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ZMB"
+   ],
+   "note": ""
+  },
+  {
+   "index": 71,
+   "id": "ZWE",
+   "display_name": "Simbabwe",
+   "macroarea": "Af",
+   "macroarea_label": "Afrika",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ZWE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 72,
+   "id": "OTHER_WORLD",
+   "display_name": "Restliche Welt",
+   "macroarea": "",
+   "macroarea_label": "Rest der Welt",
+   "is_other_world": true,
+   "historical_aggregate": false,
+   "geometry_members": [],
+   "note": ""
+  }
+ ]
+}

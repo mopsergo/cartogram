@@ -15,6 +15,22 @@ BASE_DIR = Path(__file__).resolve().parents[2]  # cartogram-pipeline/
 
 CONFIG_FILES = ("entities.yaml", "pipeline.yaml", "solver.yaml", "visualization.yaml")
 
+#: Zielkennzahl -> Export-Varianten-Ordner (dist/cartogram/<dir> bzw.
+#: web/public/cartogram/<dir>). Der Renderer lädt v1 vollständig und
+#: die positions.f32 der weiteren Varianten zusätzlich (gleiche Topologie).
+VARIANT_DIRS = {
+    "world_share": "v1",
+    "energy_consumption": "v2",
+    "per_capita_energy_consumption": "v3",
+}
+
+#: Anzeigelabels der Varianten (Renderer + Dokumentation)
+VARIANT_LABELS = {
+    "world_share": "Bevölkerungsanteil",
+    "energy_consumption": "Gesamtenergie",
+    "per_capita_energy_consumption": "Energie pro Kopf",
+}
+
 
 def _load_yaml(path: Path) -> dict[str, Any]:
     with open(path, encoding="utf-8") as fh:
@@ -78,6 +94,11 @@ class PipelineConfig:
     flow: dict = field(default_factory=dict)
     legacy_tiles: dict = field(default_factory=dict)
     visualization: dict = field(default_factory=dict)
+
+    #: Zielkennzahl der Kartogramm-Fläche (data.target_metric in
+    #: pipeline.yaml). Bestimmt, worauf die Fläche jeder Entität
+    #: normiert wird – und damit den Export-Varianten-Ordner.
+    target_metric: str = "world_share"
     max_inverted_area_fraction: float = 0.08
     min_target_share: float = 0.0
     max_area_error_p90_early: float = 0.12
@@ -93,6 +114,16 @@ class PipelineConfig:
             return self.max_area_error_p90_early
         return self.max_area_error_p90
 
+    @property
+    def variant_dir(self) -> str:
+        """Export-Ordner der Zielkennzahl (dist/cartogram/<variant>)."""
+        try:
+            return VARIANT_DIRS[self.target_metric]
+        except KeyError:
+            raise ValueError(
+                f"Unbekannte Zielkennzahl '{self.target_metric}' – "
+                f"erlaubt: {sorted(VARIANT_DIRS)}") from None
+
     def inverted_fraction_threshold(self, year: float) -> float:
         """Jahres-abhängiger Schwellwert für die gefaltete Fläche."""
         if year < self.early_years_until:
@@ -105,7 +136,7 @@ class PipelineConfig:
         return list(range(self.year_min, self.year_max + 1))
 
 
-def load_config() -> PipelineConfig:
+def load_config(target_metric: str | None = None) -> PipelineConfig:
     entities = _load_yaml(BASE_DIR / "configs" / "entities.yaml")
     pipeline = _load_yaml(BASE_DIR / "configs" / "pipeline.yaml")
     solver = _load_yaml(BASE_DIR / "configs" / "solver.yaml")
@@ -132,6 +163,7 @@ def load_config() -> PipelineConfig:
         remainder_tolerance=float(data["remainder_tolerance"]),
         other_world_id=data["other_world_id"],
         min_target_share=float(data.get("min_target_share", 0.0)),
+        target_metric=target_metric or data.get("target_metric", "world_share"),
         crs=geo["crs"],
         exclude_features=list(geo["exclude_features"]),
         simplify_tolerance_m=float(geo["simplify_tolerance_m"]),

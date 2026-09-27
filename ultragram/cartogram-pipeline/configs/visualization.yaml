@@ -30,6 +30,10 @@ height:
   metric: per_capita_energy_consumption
   # LINEAR (analog zu den Farbskalen): height = value / global_max ×
   # max_fraction × Weltbreite – im Manifest dokumentiert.
+  # Renderer (aktuell, Benutzereinstellung "empfindliche Skala"):
+  # normiert gegen das MAXIMUM DES JAHRES (frühe Jahre waren gegen
+  # das globale Maximum fast flach) mit umschaltbarer Transfor-
+  # mation: sqrt (Standard, empfindlich) oder linear.
   transform: linear
   # Maximale Höhe relativ zur halben Weltbreite (2.5D-Modus)
   max_fraction: 0.09

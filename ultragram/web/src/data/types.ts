@@ -21,6 +21,8 @@ export interface EntityMeta {
 export interface Manifest {
   format: string;
   artifact_version: string;
+  /** Zielkennzahl der Kartogramm-Fläche (data.target_metric) */
+  target_metric?: string;
   data_version: string;
   years: { data_range: [number, number]; frames: FrameInfo[] };
   dimensions: {
@@ -33,6 +35,7 @@ export interface Manifest {
   crs: { name: string; epsg: number; units: string };
   units: Record<string, string>;
   scales: {
+    area?: { metric: string; label?: string; note?: string };
     color: {
       metric: string;
       transform: string;
@@ -82,6 +85,10 @@ export interface Artifacts {
   triangleEntity: Uint16Array;
   /** Expansion Karte 3T -> kanonische Vertex-IDs (Non-Indexed-Mesh) */
   expandMap: Uint32Array;
+  /** Exterior-Ring-Index je Dreieck (optional, neuere Exporte) */
+  triangleRing?: Uint32Array;
+  /** Ländername je Ring (optional, null = Entitätsname) */
+  ringNames?: (string | null)[];
 }
 
 export const FLAG_OTHER_WORLD = 1 << 0;

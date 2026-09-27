@@ -64,8 +64,16 @@ def validate_keyframe(mesh: Mesh, positions: np.ndarray, targets: np.ndarray,
                       passive: np.ndarray, cfg: PipelineConfig,
                       prev_positions: np.ndarray | None = None,
                       max_area_error_p90: float | None = None,
-                      max_inverted_fraction: float | None = None) -> KeyframeReport:
+                      max_inverted_fraction: float | None = None,
+                      scale_positions: np.ndarray | None = None) -> KeyframeReport:
     """Prüft einen Kandidaten-Keyframe gegen alle Qualitätskriterien.
+
+    scale_positions: Positionen, deren Gesamtfläche die Ziel-Normal-
+   isierung bestimmt. Default: `positions` selbst. Nach der Reparatur
+    (repair.py) sind das die FLOW-Positionen – die Reparatur ändert
+    Teilflächen, und die Fehler aller Entitäten dürfen nicht gegen
+    eine durch die Reparatur verschobene Gesamtfläche gemessen
+    werden (Kaskade: ein Entitäts-Fehler blähte sonst alle auf).
 
     Harte Kriterien (problems, machen den Keyframe ungültig):
     - Vertex-Anzahl/Reihenfolge
@@ -94,7 +102,9 @@ def validate_keyframe(mesh: Mesh, positions: np.ndarray, targets: np.ndarray,
     # --- Flächenfehler
     targeted = ~passive & (targets > 0)
     areas = mesh.areas(positions)
-    scale = areas[targeted].sum() / max(targets[targeted].sum(), 1e-12)
+    scale_ref = mesh.areas(scale_positions if scale_positions is not None
+                           else positions)
+    scale = scale_ref[targeted].sum() / max(targets[targeted].sum(), 1e-12)
     target_areas = targets * scale
     errors = np.zeros(len(targets))
     errors[targeted] = (np.abs(areas - target_areas)[targeted]

@@ -1,4 +1,9 @@
-/** Einstiegspunkt: Artefakte laden, App starten, Fehler anzeigen. */
+/** Einstiegspunkt: Artefakte laden, App starten, Fehler anzeigen.
+ *
+ * URL-Parameter: ?run=current|legacy&variant=population|energy|percapita
+ * &year=1820..2020 – Lauf/Variante bestimmen den geladenen Export,
+ * year setzt die Startposition der Zeitleiste.
+ */
 import { loadArtifacts } from "./data/artifacts";
 import { App } from "./app";
 
@@ -13,11 +18,16 @@ async function main(): Promise<void> {
   document.getElementById("app")!.appendChild(status);
 
   try {
-    const art = await loadArtifacts();
+    const loaded = await loadArtifacts();
     console.log("[app] Artefakte geladen, starte App …");
     status.remove();
-    (window as unknown as { __app: App }).__app =
-      new App(art, document.getElementById("app")!);
+    const app = new App(loaded, document.getElementById("app")!);
+    (window as unknown as { __app: App }).__app = app;
+    // Startjahr aus URL (z.B. nach Laufwechsel beibehalten)
+    const year = Number(new URLSearchParams(location.search).get("year"));
+    if (Number.isFinite(year) && year >= 1820 && year <= 2020) {
+      app.seekYear(year);
+    }
     console.log("[app] App bereit");
   } catch (err) {
     status.style.color = "#ff8fa3";
