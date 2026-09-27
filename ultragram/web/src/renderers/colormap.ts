@@ -95,6 +95,8 @@ export function formatValue(value: number, component: number): string {
 }
 
 export function formatYear(year: number): string {
-  if (Number.isInteger(year)) return String(year);
-  return year.toFixed(1);
+  // Anzeige immer ganzzahlig – Zwischenjahre der Animation runden
+  // sich auf das nächste Jahr (Benutzerwunsch), die Timeline selbst
+  // interpoliert weiterhin weich.
+  return String(Math.round(year));
 }

@@ -90,14 +90,14 @@ Dev-Server einfach neu laden, der nimmt die Artefakte direkt aus
 ## Bedienung
 
 - **Play/Pause** (Leertaste), Zeitslider 1820–2020, ←/→ Einzelschritte
-- **Welt-Verlaufsdiagramme** (links unten, zwei übereinander):
-  Weltbevölkerung, Gesamtenergie und Energie pro Kopf – einmal
-  **relativ zum Maximum** (linear) und einmal **absolut
-  (logarithmisch)**. Der weiße Strich markiert das aktuelle Jahr,
+- **Welt-Verlaufsdiagramm** (links unten): Weltbevölkerung,
+  Gesamtenergie und Energie pro Kopf als drei Kurven, linear gegen
+  das jeweilige Maximum. Der weiße Strich markiert das aktuelle Jahr,
   die Legende zeigt die absoluten Werte (Mrd, Mtoe, kWh – Pro Kopf
   aus Weltenergie/Weltbevölkerung, 1 Mtoe = 1,163·10¹⁰ kWh, gegen
-  den Datensatz validiert). **Klick/ziehen in beide Diagramme
-  scrubbt das Jahr** wie der Zeitslider.
+  den Datensatz validiert). **Klick/ziehen ins Diagramm scrubbt das
+  Jahr** wie der Zeitslider. Die Jahresanzeige rundet auf ganze
+  Jahre – die Timeline interpoliert dazwischen weiterhin weich.
 - **Ansicht**: Flach · 2.5D (Höhe = Energie pro Kopf, umschaltbar auf
   Gesamtenergie/Bevölkerung/Weltanteil, abschaltbar) · **Kartogramm-
   Globus** (dieselbe Verformung wie Flach/2.5D, per exakter inverser

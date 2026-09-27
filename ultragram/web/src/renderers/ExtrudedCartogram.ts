@@ -12,6 +12,17 @@ import { FrameUpdate, PickResult, blendWithOriginal, buildRingSegments,
   expandToTriangles } from "./shared";
 
 const SIDE_EPSILON = 2.5e-4; // Ring-Schrumpfung gegen koplanare Wände
+/** Grenzlinien-Hebung über die Deckfläche: koplanare Linien z-fighten
+ *  mit den Deckflächen (Tiegenauigkeit der Kamera ~600 m auf der
+ *  Karte) und flackern beim Rotieren grau/schwarz (Benutzerbericht:
+ *  Restliche-Welt-Flächen). Weltbreite × 5e-4 ≈ 12 Tiegenauig-
+ *  keiten – entscheidend getrennt, mit 0.05 % der Weltbreite
+ *  visuell nicht wahrnehmbar. */
+const LINE_TOP_EPS = 5e-4;
+/** Ghost-Ebene: über dem Boden (kein depthWrite), unter allem
+ *  anderen – mit klarem Abstand zu beiden. Wert positiv; die
+ *  Zeichnung nutzt -Weltbreite × GHOST_Z. */
+const GHOST_Z = 8e-4;
 
 export class ExtrudedCartogram {
   readonly scene = new THREE.Scene();
@@ -135,11 +146,17 @@ export class ExtrudedCartogram {
     // Ozean-Fließbereich), Farbe leicht über dem Hintergrund.
     const halfW = (this.worldWidth / 2) * 1.04;
     const halfH = 8.394e6 * 1.04; // Equal-Earth-Pol
+    // Boden ohne depthWrite und zuerst gezeichnet: Er liegt unter
+    // allem und kann nichts verdecken – so kann er mit keiner
+    // Fläche z-fighten (die Deckflächen der Höhe-0-Regionen liegen
+    // nur ~3000 m über ihm, das ist nahe der Tiegenauigkeit).
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(halfW * 2, halfH * 2),
-      new THREE.MeshBasicMaterial({ color: 0x141c28 }));
+      new THREE.MeshBasicMaterial({
+        color: 0x141c28, depthWrite: false }));
     floor.position.set(this.centerX, this.centerY,
                         -this.worldWidth * 2e-4);
+    floor.renderOrder = -1;
     this.scene.add(floor);
 
     // Ghost: Original-Ländergrenzen auf dem dunklen Boden in hellem
@@ -148,7 +165,7 @@ export class ExtrudedCartogram {
     // Flach-Modus). knapp über der Bodenfläche, unter den Blöcken.
     const ghostPos = new Float32Array(this.segments.length * 6);
     let gw = 0;
-    const gz = -this.worldWidth * 1.5e-4;
+    const gz = -this.worldWidth * GHOST_Z;
     for (const seg of this.segments) {
       ghostPos[gw++] = art.positionsOriginal[seg.v0 * 2];
       ghostPos[gw++] = art.positionsOriginal[seg.v0 * 2 + 1];
@@ -270,8 +287,10 @@ export class ExtrudedCartogram {
         }
         sp += 18;
 
-        linePos[lp] = x0; linePos[lp + 1] = y0; linePos[lp + 2] = h;
-        linePos[lp + 3] = x1; linePos[lp + 4] = y1; linePos[lp + 5] = h;
+        linePos[lp] = x0; linePos[lp + 1] = y0;
+        linePos[lp + 2] = h + this.worldWidth * LINE_TOP_EPS;
+        linePos[lp + 3] = x1; linePos[lp + 4] = y1;
+        linePos[lp + 5] = h + this.worldWidth * LINE_TOP_EPS;
         lp += 6;
       }
     });

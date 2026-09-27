@@ -93,11 +93,8 @@ export class App {
   private wcPerCap!: HTMLElement;
   /** Zuletzt geschriebenes Diagramm-Jahr (DOM-Schonung) */
   private wcLastYear = NaN;
-  /** Kurven-Elemente je Diagramm (relativ / absolut) */
+  /** Kurven-Elemente des Diagramms */
   private wcPolysRel: SVGPolylineElement[] = [];
-  private wcPolysAbs: SVGPolylineElement[] = [];
-  /** Jahres-Marker im Absolut-Diagramm */
-  private wcMarkerAbs!: SVGLineElement;
 
   private playBtn: HTMLButtonElement;
   private yearSlider: HTMLInputElement;
@@ -432,58 +429,45 @@ export class App {
     const y0 = frames[0], y1 = frames[frames.length - 1];
     const NS = "http://www.w3.org/2000/svg";
 
-    // Zwei Diagramme: relativ (linear, Maximum) + absolut (log)
-    const svgRel = svg;
-    const svgAbs = document.getElementById("wcSvgAbs") as SVGSVGElement
-      | null;
-    this.wcDrawSeries(svgRel, "rel");
-    if (svgAbs) this.wcDrawSeries(svgAbs, "abs");
+    // Ein Diagramm: relativ zum Maximum (linear). Die absoluten
+    // Werte stehen in der Legende – ein separates Log-Diagramm
+    // brachte keinen Mehrwert (Benutzerentscheid).
+    this.wcDrawSeries(svg);
 
-    // Jahres-Marker in beiden Diagrammen (vertikal, über allem)
-    const makeMarker = (svgEl: SVGSVGElement): SVGLineElement => {
-      const marker = document.createElementNS(NS, "line");
-      marker.setAttribute("x1", "0"); marker.setAttribute("x2", "0");
-      marker.setAttribute("y1", "0"); marker.setAttribute("y2", String(H));
-      marker.setAttribute("stroke", "#e6edf3");
-      marker.setAttribute("stroke-width", "1");
-      marker.setAttribute("opacity", "0.85");
-      svgEl.appendChild(marker);
-      return marker;
+    // Jahres-Marker (vertikal, über allem)
+    const marker = document.createElementNS(NS, "line");
+    marker.setAttribute("x1", "0"); marker.setAttribute("x2", "0");
+    marker.setAttribute("y1", "0"); marker.setAttribute("y2", String(H));
+    marker.setAttribute("stroke", "#e6edf3");
+    marker.setAttribute("stroke-width", "1");
+    marker.setAttribute("opacity", "0.85");
+    svg.appendChild(marker);
+    this.wcMarker = marker;
+
+    // Klick/ziehen im Diagramm = Jahr scrubben
+    const seekFromEvent = (ev: PointerEvent) => {
+      const r = svg.getBoundingClientRect();
+      const t = Math.min(1,
+        Math.max(0, (ev.clientX - r.left) / r.width));
+      this.seekYear(y0 + t * (y1 - y0));
     };
-    this.wcMarker = makeMarker(svgRel);
-    if (svgAbs) this.wcMarkerAbs = makeMarker(svgAbs);
-
-    // Klick/ziehen in beiden Diagrammen = Jahr scrubben
-    const wireSeek = (svgEl: SVGSVGElement): void => {
-      const seekFromEvent = (ev: PointerEvent) => {
-        const r = svgEl.getBoundingClientRect();
-        const t = Math.min(1,
-          Math.max(0, (ev.clientX - r.left) / r.width));
-        this.seekYear(y0 + t * (y1 - y0));
+    svg.addEventListener("pointerdown", (ev) => {
+      seekFromEvent(ev);
+      const mv = (e: PointerEvent) => seekFromEvent(e);
+      const up = () => {
+        window.removeEventListener("pointermove", mv);
+        window.removeEventListener("pointerup", up);
       };
-      svgEl.addEventListener("pointerdown", (ev) => {
-        seekFromEvent(ev);
-        const mv = (e: PointerEvent) => seekFromEvent(e);
-        const up = () => {
-          window.removeEventListener("pointermove", mv);
-          window.removeEventListener("pointerup", up);
-        };
-        window.addEventListener("pointermove", mv);
-        window.addEventListener("pointerup", up);
-      });
-    };
-    wireSeek(svgRel);
-    if (svgAbs) wireSeek(svgAbs);
+      window.addEventListener("pointermove", mv);
+      window.addEventListener("pointerup", up);
+    });
   }
 
-  /** Kurven (neu) zeichnen. Modus „rel": linear gegen das Maximum;
-   *  Modus „abs": logarithmisch – zeigt Wachstumsphasen ehrlich und
-   *  spreizt Werte über Größenordnungen (Absolute Werte stehen in
-   *  der Legende). */
-  private wcDrawSeries(svg: SVGSVGElement, mode: "rel" | "abs"): void {
-    const polys = mode === "abs" ? this.wcPolysAbs : this.wcPolysRel;
-    for (const p of polys) p.remove();
-    polys.length = 0;
+  /** Kurven (neu) zeichnen: linear gegen das jeweilige Maximum.
+   *  Die absoluten Werte nennt die Legende. */
+  private wcDrawSeries(svg: SVGSVGElement): void {
+    for (const p of this.wcPolysRel) p.remove();
+    this.wcPolysRel = [];
 
     const W = 250, H = 92, PAD = 3;
     const nF = this.wcYears.length;
@@ -491,7 +475,6 @@ export class App {
     const frames = this.wcYears;
     const y0 = frames[0], y1 = frames[nF - 1];
     const xOf = (year: number): number => (year - y0) / (y1 - y0) * W;
-    const abs = mode === "abs";
     const NS = "http://www.w3.org/2000/svg";
     const colors = ["var(--accent)", "var(--accent-warm)", "#9ece6a"];
 
@@ -504,14 +487,9 @@ export class App {
         if (v < lo) lo = v;
       }
       if (!Number.isFinite(lo) || hi <= lo) return;
-      const relLo = abs ? lo : 0;
-      const denom = abs
-        ? Math.log10(hi / lo)
-        : hi - relLo;
+      const denom = hi;
       if (denom <= 0) return;
-      const mapT = (v: number): number => abs
-        ? Math.log10(v / lo) / denom
-        : (v - relLo) / denom;
+      const mapT = (v: number): number => v / denom;
       const pts: string[] = [];
       for (let f = 0; f < nF; f++) {
         const v = series[f];
@@ -528,7 +506,7 @@ export class App {
       poly.setAttribute("stroke-width", "1.6");
       poly.setAttribute("stroke-linejoin", "round");
       svg.appendChild(poly);
-      polys.push(poly);
+      this.wcPolysRel.push(poly);
     });
   }
 
@@ -545,10 +523,6 @@ export class App {
     const mx = String(t * 250);
     this.wcMarker.setAttribute("x1", mx);
     this.wcMarker.setAttribute("x2", mx);
-    if (this.wcMarkerAbs) {
-      this.wcMarkerAbs.setAttribute("x1", mx);
-      this.wcMarkerAbs.setAttribute("x2", mx);
-    }
 
     // Reihenwerte am aktuellen Jahr interpolieren
     const at = (series: Float32Array): number => {
