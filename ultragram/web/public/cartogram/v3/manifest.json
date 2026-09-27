@@ -4,7 +4,7 @@
  "target_metric": "per_capita_energy_consumption",
  "target_metric_label": "Energie pro Kopf",
  "data_version": "1.0.0",
- "generated_utc": "2026-09-27T20:45:52.645404+00:00",
+ "generated_utc": "2026-09-27T21:07:28.309955+00:00",
  "years": {
   "data_range": [
    1820,
@@ -2654,7 +2654,7 @@
   },
   "ring_names.json": {
    "bytes": 2163,
-   "sha256": "4080d3bc9ca40c8b89a8746341eaf78bece29ec3d0c95e39b0fb39c56ec7ab6d"
+   "sha256": "fb62fcde8bce39da135cc7009dc22b3588a31dc1a0cc2cf3d4efd8970c3d7c84"
   },
   "surface_vertex_to_canonical.u32": {
    "bytes": 26320,

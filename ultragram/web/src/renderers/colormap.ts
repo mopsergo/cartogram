@@ -28,39 +28,48 @@ export function rampColor(t: number, out: [number, number, number]): void {
   out[2] = (a[2] + (b[2] - a[2]) * f) / 255;
 }
 
-/** Skala für eine Kennzahl: Wert -> [0,1] (log oder linear). */
+/** Transformation der Farbskala (vgl. Höhenskala). */
+export type ColorTransform = "linear" | "sqrt" | "log";
+
+/** Skala für eine Kennzahl: Wert -> [0,1] (linear, Wurzel oder log).
+ *  Wurzel betont kleine Werte (empfindlich), log spreizt über
+ *  Größenordnungen, linear zeigt Verhältnisse proportional. */
 export class ValueScale {
   min: number;
   max: number;
-  log: boolean;
+  transform: ColorTransform;
 
-  constructor(min: number, max: number, log: boolean) {
+  constructor(min: number, max: number,
+             transform: ColorTransform = "linear") {
     this.min = min;
     this.max = max;
-    this.log = log;
+    this.transform = transform;
   }
 
   normalize(value: number): number {
     if (!Number.isFinite(value)) return Number.NaN;
-    if (this.log) {
+    if (this.transform === "log") {
       const lo = Math.log10(Math.max(this.min, 1e-9));
       const hi = Math.log10(Math.max(this.max, this.min * 1.0001, 1e-9));
       if (hi <= lo) return 0;
       const v = Math.log10(Math.max(value, 1e-9));
-      return (v - lo) / (hi - lo);
+      return Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
     }
     if (this.max <= this.min) return 0;
-    return (value - this.min) / (this.max - this.min);
+    let t = (value - this.min) / (this.max - this.min);
+    if (this.transform === "sqrt") t = Math.sqrt(Math.max(0, t));
+    return Math.min(1, Math.max(0, t));
   }
 
   /** Skalenposition -> Anzeigewert (für Legenden-Callbacks). */
   denormalize(t: number): number {
-    if (this.log) {
+    if (this.transform === "log") {
       const lo = Math.log10(Math.max(this.min, 1e-9));
       const hi = Math.log10(Math.max(this.max, this.min * 1.0001, 1e-9));
       return 10 ** (lo + t * (hi - lo));
     }
-    return this.min + t * (this.max - this.min);
+    const u = this.transform === "sqrt" ? t * t : t;
+    return this.min + u * (this.max - this.min);
   }
 }
 

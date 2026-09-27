@@ -107,6 +107,11 @@ class PipelineConfig:
     # Reserviert (wird aktuell nicht als hartes Kriterium verwendet;
     # Degeneration wird über die Faltflächen-Quote erfasst)
     min_triangle_area_frac: float = 1.0e-9
+    #: Naht-Meridian: Längengrade werden so rotiert, dass die Naht
+    #: (±180° nach der Rotation) bei seam_lon liegt. Muss in der
+    #: Referenzgeometrie nur Ozean treffen (Antarktis ausgenommen);
+    #: 180.0 = keine Rotation (klassischer Antimeridian-Schnitt).
+    seam_lon: float = 180.0
 
     def area_error_threshold(self, year: float) -> float:
         """Jahres-abhängiger p90-Flächenfehler-Schwellwert."""
@@ -168,6 +173,7 @@ def load_config(target_metric: str | None = None) -> PipelineConfig:
         exclude_features=list(geo["exclude_features"]),
         simplify_tolerance_m=float(geo["simplify_tolerance_m"]),
         vertex_precision_m=float(geo["vertex_precision_m"]),
+        seam_lon=float(geo.get("seam_lon", 180.0)),
         test_years=[int(y) for y in temporal["test_years"]],
         warm_start=bool(temporal["warm_start"]),
         transition_samples=[float(t) for t in temporal["transition_samples"]],

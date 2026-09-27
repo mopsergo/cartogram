@@ -43,11 +43,25 @@ interface WallSeg {
   ids: Uint32Array;
 }
 
-/** Ab hier werden Dreiecke subdividiert */
-const MAX_LON_SPAN_DEG = 60;
-/** Kugel-Kreuzprodukt-Norm darunter = degeneriert (Loch-Gefahr) */
-const DEGEN_NRM = 1e-9;
-const MAX_SPLIT_DEPTH = 4;
+/** Maximale Subdivisionstiefe (worst case 100°-Bögen, s. QA) */
+const MAX_SPLIT_DEPTH = 5;
+/** Maximale Sehnenlänge² auf der Einheitskugel (~5,9° Bogen).
+ *  Längere Sehnen tauchten mit ihrem Zentrum unter die Ozean-Kugel
+ *  (0,996·R) und ließen Ozean/Hintergrund „mitten im Land“ durch-
+ *  scheinen; die Sagitta bei 5,9° beträgt 0,13% – sicher über der
+ *  0,4%-Lücke zur Ozeankugel. */
+const MAX_CHORD2 = 0.104 * 0.104;
+/** Puffergröße der dynamischen Deckflächen (Worst case v2/1901:
+ *  ~120k Render-Dreiecke, offline vermessen) */
+const MAX_RENDER_TRIS = 160000;
+/** Liniengrenzen: maximale Segmenttiefe (2^6 = 64 Teilstücke) */
+const MAX_LINE_DEPTH = 6;
+/** Puffergröße der Grenzlinien-Punkte (Paare; Worst case ~240k) */
+const MAX_LINE_PTS = 300000;
+/** Grenzlinien schweben diesen Anteil über der Deckfläche (gegen
+ *  Z-Fighting mit den Dreiecks-Sehnen, deren Sagitta bis ~0.0013
+ *  unter der Kugel liegt) */
+const LINE_EPS = 0.003;
 
 export class ReferenceGlobe {
   readonly scene = new THREE.Scene();
@@ -60,16 +74,17 @@ export class ReferenceGlobe {
 
   // --- Render-Topologie (subdividierte Dreiecke) ---------------------
   /** Punkt-Quellen: [vid] oder [parentIdA, parentIdB] (Mittelpunkt) */
-  private pointA: Int32Array;
-  private pointB: Int32Array;
-  private numPoints: number;
-  /** Render-Dreiecke: 3 Punkt-IDs je Dreieck */
-  private renderTris: Uint32Array;
-  /** Render-Dreieck -> Original-Dreieck (Pick, Entität, Ringname) */
-  private renderTriOrig: Uint32Array;
-  private numRenderTris: number;
-  /** Original-Lonlat je Punkt (für geoBlend + Mittelpunkte) */
-  private pointOrigLonlat: Float32Array;
+  // --- Laufzeit-Topologie (adaptive Deckflächen-Subdivision) -------
+  /** Einheitskugel-Position je kanonischem Vertex (pro Frame) */
+  private vertXyz: Float32Array;
+  /** (geblendete) lonlat je kanonischem Vertex (pro Frame) */
+  private vertLonlat: Float32Array;
+  /** Dynamische Render-Dreiecke -> Original-Dreieck (Pick/Entität) */
+  private dynTriOrig: Uint32Array;
+  /** Höchster je geschriebener Dreieckstand (Tail-Reset) */
+  private dynHigh = 0;
+  /** Ländergrenzen: dünne schwarze Linien auf der Kugel */
+  private linesMesh!: THREE.LineSegments;
 
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
@@ -80,10 +95,6 @@ export class ReferenceGlobe {
   private target = new THREE.Vector3(0, 0, 0);
   private maxPolar = 2.9;
 
-  /** Aktuelle xy je Punkt (kanonisch + Mittelpunkte) */
-  private pointXY: Float32Array;
-  /** Aktuelle (geblendete) lonlat je Punkt */
-  private pointLonlat: Float32Array;
   /** Höhenanteile je Entität, auf den Kugelradius skaliert */
   private entityH: Float32Array;
   private worldWidth: number;
@@ -124,30 +135,27 @@ export class ReferenceGlobe {
       new THREE.MeshBasicMaterial({ color: 0x16222f }));
     this.scene.add(ocean);
 
-    // --- Render-Topologie aufbauen (einmalig, statisch)
-    const topo = this.buildRenderTopology();
-    this.pointA = topo.pointA;
-    this.pointB = topo.pointB;
-    this.numPoints = topo.numPoints;
-    this.renderTris = topo.renderTris;
-    this.renderTriOrig = topo.renderTriOrig;
-    this.numRenderTris = topo.numRenderTris;
-    this.pointOrigLonlat = topo.pointOrigLonlat;
-    this.pointXY = new Float32Array(topo.numPoints * 2);
-    this.pointLonlat = new Float32Array(topo.numPoints * 2);
+    // --- Render-Topologie: adaptiv pro Frame (siehe updateFrame) ---
+    const nV2 = nV;
+    this.vertLonlat = new Float32Array(nV2 * 2);
+    this.vertXyz = new Float32Array(nV2 * 3);
+    this.dynTriOrig = new Uint32Array(MAX_RENDER_TRIS);
     this.entityH = new Float32Array(nE);
 
     // Debug-/QA-Kanal (DOM-lesbar aus jeder JS-Welt)
     const ds = document.documentElement.dataset;
-    ds.globeRenderTris = String(topo.numRenderTris);
-    ds.globeDegenLeft = String(topo.degenerateLeft);
+    ds.globeRenderTris = "0";
+    ds.globeDegenLeft = "0";
 
-    // Länder-Deckflächen: subdividierte Topologie auf die Kugel.
+    // Länder-Deckflächen: dynamischer Puffer, Größe via drawRange
     const geom = new THREE.BufferGeometry();
     geom.setAttribute("position", new THREE.BufferAttribute(
-      new Float32Array(this.numRenderTris * 3 * 3), 3));
+      new Float32Array(MAX_RENDER_TRIS * 9), 3));
     geom.setAttribute("color", new THREE.BufferAttribute(
-      new Float32Array(this.numRenderTris * 3 * 3), 3));
+      new Float32Array(MAX_RENDER_TRIS * 9), 3));
+    // Feste bounding sphere (Kugel herrscht immer im Blick) – kein
+    // teures computeBoundingSphere über den Großpuffer pro Frame
+    geom.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 2);
     this.topMesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({
       vertexColors: true, side: THREE.DoubleSide }));
     this.scene.add(this.topMesh);
@@ -169,179 +177,20 @@ export class ReferenceGlobe {
         color: 0x2c3a4e, transparent: true, opacity: 0.5 }));
     this.scene.add(graticule);
 
+    // Ländergrenzen: dünne schwarze Linien, dynamisch pro Frame
+    // (geodätisch unterteilt, siehe updateFrame)
+    const lineGeom = new THREE.BufferGeometry();
+    lineGeom.setAttribute("position", new THREE.BufferAttribute(
+      new Float32Array(MAX_LINE_PTS * 3), 3));
+    lineGeom.boundingSphere = new THREE.Sphere(
+      new THREE.Vector3(0, 0, 0), 2);
+    lineGeom.setDrawRange(0, 0);
+    this.linesMesh = new THREE.LineSegments(lineGeom,
+      new THREE.LineBasicMaterial({ color: 0x000000 }));
+    this.scene.add(this.linesMesh);
+
     this.attachControls(domElement);
     this.applyCamera();
-  }
-
-  // ------------------------------------------------ Render-Topologie
-
-  private buildRenderTopology() {
-    const art = this.art;
-    const nV = art.manifest.dimensions.num_vertices;
-    const nT = art.manifest.dimensions.num_triangles;
-
-    // Punkte 0..nV-1 = kanonische Vertices; danach Mittelpunkte.
-    const pointA: number[] = [];
-    const pointB: number[] = [];
-    const origLon: number[] = [];
-    const origLat: number[] = [];
-    for (let v = 0; v < nV; v++) {
-      pointA.push(v); pointB.push(-1);
-      origLon.push(art.lonlat[v * 2]);
-      origLat.push(art.lonlat[v * 2 + 1]);
-    }
-    const midPoint = (p: number, q: number): number => {
-      // Original-lonlat des Mittelpunkts: exakte Rückprojektion des
-      // Original-Positions-Mittelpunkts (statisch, einmalig)
-      const inv: [number, number] = [0, 0];
-      let ax: number, ay: number, bx: number, by: number;
-      if (p >= nV) {  // rekursiv: Mittelpunkte von Mittelpunkten
-        ax = 0; ay = 0; // wird unten über pointXY nicht gebraucht –
-        // Original-Ebene: Eltern-Originale mitteln (rekursiv speichern
-        // wir die Original-x/y je Punkt mit):
-        ax = this.origXY(pointA, pointB, p, 0);
-        ay = this.origXY(pointA, pointB, p, 1);
-      } else {
-        ax = art.positionsOriginal[p * 2];
-        ay = art.positionsOriginal[p * 2 + 1];
-      }
-      if (q >= nV) {
-        bx = this.origXY(pointA, pointB, q, 0);
-        by = this.origXY(pointA, pointB, q, 1);
-      } else {
-        bx = art.positionsOriginal[q * 2];
-        by = art.positionsOriginal[q * 2 + 1];
-      }
-      const id = pointA.length;
-      pointA.push(p); pointB.push(q);
-      equalEarthInverse(0.5 * (ax + bx), 0.5 * (ay + by), inv);
-      origLon.push(inv[0]); origLat.push(inv[1]);
-      return id;
-    };
-
-    const renderTris: number[] = [];
-    const triOrig: number[] = [];
-
-    const toXyz = (lon: number, lat: number,
-                   out: [number, number, number]) => {
-      const lo = lon * Math.PI / 180, la = lat * Math.PI / 180;
-      const c = Math.cos(la);
-      out[0] = c * Math.cos(lo);
-      out[1] = Math.sin(la);
-      out[2] = -c * Math.sin(lo);
-    };
-
-    // Kugelgüte eines Dreiecks über drei Punkt-IDs (Original-lonlat)
-    const isBad = (pa: number, pb: number, pc: number): boolean => {
-      // Kollabierte Dreiecke (identische Vertices nach dem Welding)
-      // haben nirgendwo Fläche – sie werden unverändert gezeichnet
-      // (unsichtbar) und NICHT subdividiert (das würde sie aufblähen).
-      const ax0 = this.origXY(pointA, pointB, pa, 0);
-      const ay0 = this.origXY(pointA, pointB, pa, 1);
-      const bx0 = this.origXY(pointA, pointB, pb, 0);
-      const by0 = this.origXY(pointA, pointB, pb, 1);
-      const cx0 = this.origXY(pointA, pointB, pc, 0);
-      const cy0 = this.origXY(pointA, pointB, pc, 1);
-      const planeArea = Math.abs(
-        (bx0 - ax0) * (cy0 - ay0) - (cx0 - ax0) * (by0 - ay0)) / 2;
-      if (planeArea < 1e4) return false;   // < ~100 m × 100 m: Sliver
-      const l0 = [origLon[pa], origLat[pa]];
-      const l1 = [origLon[pb], origLat[pb]];
-      const l2 = [origLon[pc], origLat[pc]];
-      const dl = Math.max(Math.abs(l0[0] - l1[0]),
-        Math.abs(l1[0] - l2[0]), Math.abs(l2[0] - l0[0]));
-      if (dl > MAX_LON_SPAN_DEG) return true;
-      // Kugel-Kreuzprodukt: degeneriert -> Loch
-      const xyz: [number, number, number][] = [[0, 0, 0], [0, 0, 0],
-                                                [0, 0, 0]];
-      toXyz(l0[0], l0[1], xyz[0]);
-      toXyz(l1[0], l1[1], xyz[1]);
-      toXyz(l2[0], l2[1], xyz[2]);
-      const ax = xyz[1][0] - xyz[0][0], ay = xyz[1][1] - xyz[0][1],
-            az = xyz[1][2] - xyz[0][2];
-      const bx = xyz[2][0] - xyz[0][0], by = xyz[2][1] - xyz[0][1],
-            bz = xyz[2][2] - xyz[0][2];
-      const nrm = Math.sqrt(
-        (ay * bz - az * by) ** 2 + (az * bx - ax * bz) ** 2
-        + (ax * by - ay * bx) ** 2);
-      return nrm < DEGEN_NRM;
-    };
-
-    const emit = (pa: number, pb: number, pc: number, orig: number) => {
-      renderTris.push(pa, pb, pc);
-      triOrig.push(orig);
-    };
-
-    const subdivide = (pa: number, pb: number, pc: number, orig: number,
-                       depth: number) => {
-      if (depth >= MAX_SPLIT_DEPTH || !isBad(pa, pb, pc)) {
-        emit(pa, pb, pc, orig);
-        return;
-      }
-      const mab = midPoint(pa, pb);
-      const mbc = midPoint(pb, pc);
-      const mca = midPoint(pc, pa);
-      subdivide(pa, mab, mca, orig, depth + 1);
-      subdivide(mab, pb, mbc, orig, depth + 1);
-      subdivide(mca, mbc, pc, orig, depth + 1);
-      subdivide(mab, mbc, mca, orig, depth + 1);
-    };
-
-    for (let t = 0; t < nT; t++) {
-      subdivide(art.expandMap[t * 3], art.expandMap[t * 3 + 1],
-                art.expandMap[t * 3 + 2], t, 0);
-    }
-
-    // Rest-Degenerate nach der Subdivision mit echter Plattenfläche
-    // (kollabierte Sliver sind beabsichtigt und harmlos; QA-Kanal)
-    let degenerateLeft = 0;
-    const qxyz: [number, number, number][] = [[0, 0, 0], [0, 0, 0],
-                                              [0, 0, 0]];
-    for (let t = 0; t < renderTris.length / 3; t++) {
-      const ps = [renderTris[t * 3], renderTris[t * 3 + 1],
-                  renderTris[t * 3 + 2]];
-      const ax0 = this.origXY(pointA, pointB, ps[0], 0);
-      const ay0 = this.origXY(pointA, pointB, ps[0], 1);
-      const bx0 = this.origXY(pointA, pointB, ps[1], 0);
-      const by0 = this.origXY(pointA, pointB, ps[1], 1);
-      const cx0 = this.origXY(pointA, pointB, ps[2], 0);
-      const cy0 = this.origXY(pointA, pointB, ps[2], 1);
-      const planeArea = Math.abs(
-        (bx0 - ax0) * (cy0 - ay0) - (cx0 - ax0) * (by0 - ay0)) / 2;
-      if (planeArea < 1e4) continue;
-      for (let k = 0; k < 3; k++) {
-        toXyz(origLon[ps[k]], origLat[ps[k]], qxyz[k]);
-      }
-      const ax = qxyz[1][0] - qxyz[0][0], ay = qxyz[1][1] - qxyz[0][1],
-            az = qxyz[1][2] - qxyz[0][2];
-      const bx = qxyz[2][0] - qxyz[0][0], by = qxyz[2][1] - qxyz[0][1],
-            bz = qxyz[2][2] - qxyz[0][2];
-      const nrm = Math.sqrt(
-        (ay * bz - az * by) ** 2 + (az * bx - ax * bz) ** 2
-        + (ax * by - ay * bx) ** 2);
-      if (nrm < DEGEN_NRM) degenerateLeft++;
-    }
-
-    return {
-      pointA: new Int32Array(pointA),
-      pointB: new Int32Array(pointB),
-      numPoints: pointA.length,
-      renderTris: new Uint32Array(renderTris),
-      renderTriOrig: new Uint32Array(triOrig),
-      numRenderTris: renderTris.length / 3,
-      pointOrigLonlat: new Float32Array(
-        origLon.flatMap((lo, i) => [lo, origLat[i]])),
-      degenerateLeft,
-    };
-  }
-
-  /** Original-Position (x/y-Komponente comp) eines Punkts rekursiv. */
-  private origXY(A: number[], B: number[], p: number, comp: number): number {
-    if (B[p] < 0) {
-      return this.art.positionsOriginal[A[p] * 2 + comp];
-    }
-    return 0.5 * (this.origXY(A, B, A[p], comp)
-                + this.origXY(A, B, B[p], comp));
   }
 
   // ----------------------------------------------------------- Frame
@@ -362,41 +211,35 @@ export class ReferenceGlobe {
     const nE = art.manifest.dimensions.num_entities;
     const geoBlend = update.geoBlend ?? 0;
     const xyFrame = update.vertexXY;
-    const nP = this.numPoints;
-    const A = this.pointA, B = this.pointB;
-    const pxy = this.pointXY;
-    const pll = this.pointLonlat;
+    const nV = art.manifest.dimensions.num_vertices;
+    const nT = art.manifest.dimensions.num_triangles;
+    const pll = this.vertLonlat;
+    const vx = this.vertXyz;
     const inv: [number, number] = [0, 0];
 
-    // 1) Aktuelle xy je Punkt (Mittelpunkte rekursiv, in ID-Reihenfolge
-    //    sind Eltern immer vor Kindern definiert)
-    const nV = art.manifest.dimensions.num_vertices;
-    for (let p = 0; p < nV; p++) {
-      pxy[p * 2] = xyFrame[p * 2];
-      pxy[p * 2 + 1] = xyFrame[p * 2 + 1];
-    }
-    for (let p = nV; p < nP; p++) {
-      const a = A[p] * 2, b = B[p] * 2;
-      pxy[p * 2] = 0.5 * (pxy[a] + pxy[b]);
-      pxy[p * 2 + 1] = 0.5 * (pxy[a + 1] + pxy[b + 1]);
-    }
-
-    // 2) Lonlat je Punkt: inverse EE (Kartogramm), Blend mit Original
+    // 1) Lonlat je kanonischem Vertex: inverse EE (Kartogramm),
+    //    Blend mit Original-Geografie (Taste G)
     if (geoBlend >= 0.999) {
-      pll.set(this.pointOrigLonlat);
+      pll.set(art.lonlat);
     } else {
-      for (let p = 0; p < nP; p++) {
-        equalEarthInverse(pxy[p * 2], pxy[p * 2 + 1], inv);
-        if (geoBlend <= 0.001) {
-          pll[p * 2] = inv[0];
-          pll[p * 2 + 1] = inv[1];
+      const q = geoBlend;
+      for (let v = 0; v < nV; v++) {
+        equalEarthInverse(xyFrame[v * 2], xyFrame[v * 2 + 1], inv);
+        if (q <= 0.001) {
+          pll[v * 2] = inv[0];
+          pll[v * 2 + 1] = inv[1];
         } else {
-          const q = geoBlend;
-          pll[p * 2] = inv[0] * (1 - q) + this.pointOrigLonlat[p * 2] * q;
-          pll[p * 2 + 1] = inv[1] * (1 - q)
-            + this.pointOrigLonlat[p * 2 + 1] * q;
+          pll[v * 2] = inv[0] * (1 - q) + art.lonlat[v * 2] * q;
+          pll[v * 2 + 1] = inv[1] * (1 - q)
+            + art.lonlat[v * 2 + 1] * q;
         }
       }
+    }
+
+    // 2) Einheitskugel-Position je kanonischem Vertex
+    for (let v = 0; v < nV; v++) {
+      ReferenceGlobe.toSphereOut(pll[v * 2], pll[v * 2 + 1],
+        vx, v * 3, 1);
     }
 
     // 3) Höhen: Plane-Meter -> Anteil des Kugelradius
@@ -409,34 +252,103 @@ export class ReferenceGlobe {
       if (hr > 0) anyHeight = true;
     }
 
-    // 4) Deckflächen: Render-Dreiecke auf die Kugel
+    // 4) Deckflächen: adaptive Laufzeit-Subdivision auf der Kugel.
+    //    Extrem gestreckte Dreiecke (Kartogramm!) spannen Bögen von
+    //    10–100°; ihre flachen Sehnen tauchten unter die Ozean-Kugel
+    //    (0,996·R) und ließen Ozean/Hintergrund „mitten im Land“
+    //    durchscheinen. Deshalb wird JE FRAME nach aktueller Bogen-
+    //    länge unterteilt – Mittelpunkte direkt auf der Kugel
+    //    (normalisierte Summe, keine Rückprojektion nötig).
     const pos = (this.topMesh.geometry.attributes
       .position as THREE.BufferAttribute).array as Float32Array;
     const colorAttr = this.topMesh.geometry.attributes
       .color as THREE.BufferAttribute;
     const colors = colorAttr.array as Float32Array;
-    const rt = this.renderTris;
-    for (let t = 0; t < this.numRenderTris; t++) {
-      const orig = this.renderTriOrig[t];
-      const e = art.triangleEntity[orig];
-      const r = update.entityColors[e * 3];
-      const g = update.entityColors[e * 3 + 1];
-      const b = update.entityColors[e * 3 + 2];
-      const rad = GLOBE_RADIUS + this.entityH[e];
-      for (let k = 0; k < 3; k++) {
-        const p = rt[t * 3 + k];
-        const s = t * 3 + k;
-        ReferenceGlobe.toSphereOut(pll[p * 2], pll[p * 2 + 1],
-          pos, s * 3, rad);
-        colors[s * 3] = r;
-        colors[s * 3 + 1] = g;
-        colors[s * 3 + 2] = b;
+    const triOrig = this.dynTriOrig;
+    let count = 0;
+    let overflow = 0;
+    const emit = (x1: number, y1: number, z1: number,
+                   x2: number, y2: number, z2: number,
+                   x3: number, y3: number, z3: number,
+                   rad: number, cr: number, cg: number, cb: number,
+                   orig: number): void => {
+      if (count >= MAX_RENDER_TRIS) { overflow++; return; }
+      let o = count * 9;
+      pos[o] = x1 * rad; pos[o + 1] = y1 * rad; pos[o + 2] = z1 * rad;
+      pos[o + 3] = x2 * rad; pos[o + 4] = y2 * rad; pos[o + 5] = z2 * rad;
+      pos[o + 6] = x3 * rad; pos[o + 7] = y3 * rad; pos[o + 8] = z3 * rad;
+      colors[o] = cr; colors[o + 1] = cg; colors[o + 2] = cb;
+      colors[o + 3] = cr; colors[o + 4] = cg; colors[o + 5] = cb;
+      colors[o + 6] = cr; colors[o + 7] = cg; colors[o + 8] = cb;
+      triOrig[count] = orig;
+      count++;
+    };
+    const subdivide = (x1: number, y1: number, z1: number,
+                       x2: number, y2: number, z2: number,
+                       x3: number, y3: number, z3: number,
+                       depth: number, orig: number, rad: number,
+                       cr: number, cg: number, cb: number): void => {
+      const ax = x2 - x1, ay = y2 - y1, az = z2 - z1;
+      const bx = x3 - x2, by = y3 - y2, bz = z3 - z2;
+      const cx = x1 - x3, cy = y1 - y3, cz = z1 - z3;
+      const l12 = ax * ax + ay * ay + az * az;
+      const l23 = bx * bx + by * by + bz * bz;
+      const l31 = cx * cx + cy * cy + cz * cz;
+      if (depth >= MAX_SPLIT_DEPTH
+          || (l12 <= MAX_CHORD2 && l23 <= MAX_CHORD2
+            && l31 <= MAX_CHORD2)) {
+        emit(x1, y1, z1, x2, y2, z2, x3, y3, z3,
+          rad, cr, cg, cb, orig);
+        return;
       }
+      // Mittelpunkte auf der Kugel (normalisierte Summen)
+      let mx = x1 + x2, my = y1 + y2, mz = z1 + z2;
+      let n = 1 / Math.sqrt(mx * mx + my * my + mz * mz);
+      mx *= n; my *= n; mz *= n;
+      let nx = x2 + x3, ny = y2 + y3, nz = z2 + z3;
+      n = 1 / Math.sqrt(nx * nx + ny * ny + nz * nz);
+      nx *= n; ny *= n; nz *= n;
+      let px = x3 + x1, py = y3 + y1, pz = z3 + z1;
+      n = 1 / Math.sqrt(px * px + py * py + pz * pz);
+      px *= n; py *= n; pz *= n;
+      subdivide(x1, y1, z1, mx, my, mz, px, py, pz,
+        depth + 1, orig, rad, cr, cg, cb);
+      subdivide(mx, my, mz, x2, y2, z2, nx, ny, nz,
+        depth + 1, orig, rad, cr, cg, cb);
+      subdivide(px, py, pz, nx, ny, nz, x3, y3, z3,
+        depth + 1, orig, rad, cr, cg, cb);
+      subdivide(mx, my, mz, nx, ny, nz, px, py, pz,
+        depth + 1, orig, rad, cr, cg, cb);
+    };
+    for (let t = 0; t < nT; t++) {
+      const e = art.triangleEntity[t];
+      const rad = GLOBE_RADIUS + this.entityH[e];
+      const cr = update.entityColors[e * 3];
+      const cg = update.entityColors[e * 3 + 1];
+      const cb = update.entityColors[e * 3 + 2];
+      const a = art.expandMap[t * 3] * 3;
+      const b = art.expandMap[t * 3 + 1] * 3;
+      const c = art.expandMap[t * 3 + 2] * 3;
+      subdivide(vx[a], vx[a + 1], vx[a + 2],
+        vx[b], vx[b + 1], vx[b + 2],
+        vx[c], vx[c + 1], vx[c + 2],
+        0, t, rad, cr, cg, cb);
     }
-    (this.topMesh.geometry.attributes
-      .position as THREE.BufferAttribute).needsUpdate = true;
+    // Ungenutzter Tail degenerieren (Pick-Sicherheit) + drawRange
+    const high = this.dynHigh;
+    if (count < high) {
+      for (let i = count * 9; i < high * 9; i++) pos[i] = 0;
+    }
+    this.dynHigh = Math.max(high, count);
+    this.topMesh.geometry.setDrawRange(0, count * 3);
+    const posAttr = this.topMesh.geometry.attributes
+      .position as THREE.BufferAttribute;
+    posAttr.clearUpdateRanges();
+    posAttr.addUpdateRange(0, Math.max(count, 1) * 9);
+    posAttr.needsUpdate = true;
+    colorAttr.clearUpdateRanges();
+    colorAttr.addUpdateRange(0, Math.max(count, 1) * 9);
     colorAttr.needsUpdate = true;
-    this.topMesh.geometry.computeBoundingSphere();
 
     // 5) Seitenwände auf den Ringsegmenten (Küsten + Grenzen)
     const sidePos = (this.sidesMesh.geometry.attributes
@@ -497,6 +409,64 @@ export class ReferenceGlobe {
     (this.sidesMesh.geometry.attributes
       .color as THREE.BufferAttribute).needsUpdate = true;
     this.sidesMesh.geometry.computeBoundingSphere();
+
+    // 6) Ländergrenzen: dünne schwarze Linien auf der Kugeloberfläche.
+    //    Ringsegmente (Küsten + Binnengrenzen) geodätisch unterteilt –
+    //    lange Grenzen als gerade Sehnen tauchten sonst wie früher
+    //    die Deckflächen unter die Ozean-Kugel und würden mittendrin
+    //    unsichtbar. Mittelpunkte direkt auf der Kugel (normalisierte
+    //    Summe), Radius = Deckfläche + LINE_EPS gegen Z-Fighting.
+    const lpos = (this.linesMesh.geometry.attributes
+      .position as THREE.BufferAttribute).array as Float32Array;
+    let lc = 0;
+    let lOverflow = 0;
+    const emitPair = (x1: number, y1: number, z1: number,
+                      x2: number, y2: number, z2: number,
+                      r: number): void => {
+      if (lc + 2 > MAX_LINE_PTS) { lOverflow++; return; }
+      const o = lc * 3;
+      lpos[o] = x1 * r; lpos[o + 1] = y1 * r; lpos[o + 2] = z1 * r;
+      lpos[o + 3] = x2 * r; lpos[o + 4] = y2 * r; lpos[o + 5] = z2 * r;
+      lc += 2;
+    };
+    const subdivideLine = (x1: number, y1: number, z1: number,
+                           x2: number, y2: number, z2: number,
+                           r: number, depth: number): void => {
+      const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+      if (depth >= MAX_LINE_DEPTH
+          || dx * dx + dy * dy + dz * dz <= MAX_CHORD2) {
+        emitPair(x1, y1, z1, x2, y2, z2, r);
+        return;
+      }
+      let mx = x1 + x2, my = y1 + y2, mz = z1 + z2;
+      const n = 1 / Math.sqrt(mx * mx + my * my + mz * mz);
+      mx *= n; my *= n; mz *= n;
+      subdivideLine(x1, y1, z1, mx, my, mz, r, depth + 1);
+      subdivideLine(mx, my, mz, x2, y2, z2, r, depth + 1);
+    };
+    for (const seg of this.wallSegs) {
+      const r = GLOBE_RADIUS + this.entityH[seg.entity] + LINE_EPS;
+      const a = seg.v0 * 3, b = seg.v1 * 3;
+      subdivideLine(vx[a], vx[a + 1], vx[a + 2],
+        vx[b], vx[b + 1], vx[b + 2], r, 0);
+    }
+    this.linesMesh.geometry.setDrawRange(0, lc);
+    const lineAttr = this.linesMesh.geometry.attributes
+      .position as THREE.BufferAttribute;
+    lineAttr.clearUpdateRanges();
+    lineAttr.addUpdateRange(0, Math.max(lc, 1) * 3);
+    lineAttr.needsUpdate = true;
+
+    // QA-Kanal nur bei Änderung schreiben (kein DOM-Churn pro Frame)
+    const ds = document.documentElement.dataset;
+    const cnt = String(count);
+    if (ds.globeRenderTris !== cnt) ds.globeRenderTris = cnt;
+    const ofl = String(overflow);
+    if (ds.globeDegenLeft !== ofl) ds.globeDegenLeft = ofl;
+    const lpts = String(lc);
+    if (ds.globeLinePts !== lpts) ds.globeLinePts = lpts;
+    const lofl = String(lOverflow);
+    if (ds.globeLineOverflow !== lofl) ds.globeLineOverflow = lofl;
   }
 
   applyCamera(): void {
@@ -528,7 +498,7 @@ export class ReferenceGlobe {
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const hits = this.raycaster.intersectObject(this.topMesh, false);
     if (hits.length === 0) return null;
-    const orig = this.renderTriOrig[hits[0].faceIndex!];
+    const orig = this.dynTriOrig[hits[0].faceIndex!];
     return {
       entity: this.art.triangleEntity[orig],
       triangle: orig,

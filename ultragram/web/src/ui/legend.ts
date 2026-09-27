@@ -46,8 +46,13 @@ export class Legend {
       2: "Gesamtenergieverbrauch (Mtoe)",
       3: "Energieverbrauch pro Kopf (kWh)",
     };
+    const tNames: Record<string, string> = {
+      linear: "linear",
+      sqrt: "Wurzel-Skala (empfindlich)",
+      log: "logarithmisch",
+    };
     this.captionEl.textContent =
-      `${names[component] ?? "Wert"} · ${transform === "log"
-        ? "logarithmisch" : "linear"} · Grau = keine Daten`;
+      `${names[component] ?? "Wert"} · ${tNames[transform] ?? transform}`
+      + " · Grau = keine Daten";
   }
 }

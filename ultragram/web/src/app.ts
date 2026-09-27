@@ -38,6 +38,8 @@ export class App {
   private views: Record<ViewMode, View>;
   private mode: ViewMode = "extruded";
   private metric: number = VALUE.per_capita_energy_consumption;
+  /** Transformation der Farbskala (alle Kennzahlen gemeinsam) */
+  private colorTransform: "linear" | "sqrt" | "log" = "sqrt";
   private heightEnabled = true;
   private ghostVisible = true;
   private geoMode = false;
@@ -78,6 +80,25 @@ export class App {
   private panel: DetailPanel;
   private tooltip: HTMLElement;
 
+  // ---- Welt-Verlaufsdiagramm (links unten) ------------------------
+  /** [Bevölkerung, Gesamtenergie, Pro Kopf] je Keyframe-Jahr */
+  private wcSeries: Float32Array[] = [];
+  /** Jahr je Keyframe (x-Achse) */
+  private wcYears!: Float32Array;
+  /** Jahres-Marker im Diagramm */
+  private wcMarker!: SVGLineElement;
+  /** Legenden-Elemente für die aktuellen Absolutwerte */
+  private wcPop!: HTMLElement;
+  private wcEnergy!: HTMLElement;
+  private wcPerCap!: HTMLElement;
+  /** Zuletzt geschriebenes Diagramm-Jahr (DOM-Schonung) */
+  private wcLastYear = NaN;
+  /** Kurven-Elemente je Diagramm (relativ / absolut) */
+  private wcPolysRel: SVGPolylineElement[] = [];
+  private wcPolysAbs: SVGPolylineElement[] = [];
+  /** Jahres-Marker im Absolut-Diagramm */
+  private wcMarkerAbs!: SVGLineElement;
+
   private playBtn: HTMLButtonElement;
   private yearSlider: HTMLInputElement;
   private yearDisplay: HTMLElement;
@@ -116,22 +137,45 @@ export class App {
       globe: new ReferenceGlobe(this.art, this.renderer.domElement),
     };
     (this.views.flat as FlatCartogram).attachControls(this.renderer.domElement);
+    // Ghost-Referenz initial auf beide flächenbasierten Ansichten
+    (this.views.flat as FlatCartogram)
+      .setGhostVisible(this.ghostVisible);
+    (this.views.extruded as ExtrudedCartogram)
+      .setGhostVisible(this.ghostVisible);
 
-    // Skalen: globale Minima/Maxima aus dem Manifest (Plan §8).
-    // LINEAR (bewusst nicht logarithmisch): die krassen Unterschiede
-    // zwischen Ländern und über die Zeit bleiben sichtbar.
+    // Farbskalen: Maxima aus dem Manifest, Untergrenze = kleines
+    // tatsächlich vorkommendes Datenminimum (nicht 0 – sonst ver-
+    // schwendet die Rampe einen Bereich, den kein Wert je erreicht,
+    // und die Hälfte der Länder klebt auf den untersten Farbstufen).
+    // Standard-Transformation Wurzel: beim Pro-Kopf-Median (~5,7k
+    // kWh von max ~104k) läge die lineare Skala bei ~5 % Rampe;
+    // Wurzel spreizt den unteren Bereich, Linear/Log umschaltbar.
     const ranges = this.art.manifest.scales.color.value_ranges;
+    const vals = this.art.values;
+    const dataMin = (comp: number, fallback: number): number => {
+      let m = Infinity;
+      for (let i = comp; i < vals.length; i += 4) {
+        const v = vals[i];
+        if (Number.isFinite(v) && v > 0 && v < m) m = v;
+      }
+      return Number.isFinite(m) ? m : fallback;
+    };
     this.scales = {
       [VALUE.per_capita_energy_consumption]: new ValueScale(
-        ranges.per_capita_energy_consumption.min ?? 0,
-        ranges.per_capita_energy_consumption.max ?? 1, false),
+        dataMin(VALUE.per_capita_energy_consumption,
+          ranges.per_capita_energy_consumption.min ?? 0),
+        ranges.per_capita_energy_consumption.max ?? 1,
+        this.colorTransform),
       [VALUE.energy_consumption]: new ValueScale(
-        ranges.energy_consumption.min ?? 0,
-        ranges.energy_consumption.max ?? 1, false),
+        dataMin(VALUE.energy_consumption,
+          ranges.energy_consumption.min ?? 0),
+        ranges.energy_consumption.max ?? 1, this.colorTransform),
       [VALUE.population]: new ValueScale(
-        ranges.population.min ?? 0, ranges.population.max ?? 1, false),
+        dataMin(VALUE.population, ranges.population.min ?? 0),
+        ranges.population.max ?? 1, this.colorTransform),
       [VALUE.world_share]: new ValueScale(
-        ranges.world_share.min ?? 0, ranges.world_share.max ?? 1, false),
+        dataMin(VALUE.world_share, ranges.world_share.min ?? 0),
+        ranges.world_share.max ?? 1, this.colorTransform),
     };
     this.heightMetric = VALUE.per_capita_energy_consumption;
 
@@ -152,7 +196,10 @@ export class App {
     this.yearSlider = document.getElementById("yearSlider") as HTMLInputElement;
     this.yearDisplay = document.getElementById("yearDisplay")!;
 
+    this.buildWorldChart();
+
     this.wireControls();
+    this.setMode(this.mode);   // Optionsgruppen an den Startmodus anpassen
     this.updateLegend();
     this.updateAreaLabel();
     this.resize();
@@ -330,11 +377,216 @@ export class App {
     if (!this.yearSliderDragged) {
       this.yearSlider.value = String(Math.round(year));
     }
+    this.updateWorldChart(year);
     const playing = this.timeline.state.playing;
     this.playBtn.textContent = playing ? "⏸" : "▶";
   }
 
   private yearSliderDragged = false;
+
+  // ------------------------------------- Welt-Verlaufsdiagramm
+
+  /** Diagramm einmalig aufbauen: Weltsummen je Keyframe-Jahr aus
+   *  values.f32 (Komponenten s. VALUE), drei normierte Kurven, Jahres-
+   *  Marker + Legende. Klick ins Diagramm setzt das Jahr. */
+  private buildWorldChart(): void {
+    const svg = document.getElementById("wcSvg") as SVGSVGElement | null;
+    this.wcPop = document.getElementById("wcPop")!;
+    this.wcEnergy = document.getElementById("wcEnergy")!;
+    this.wcPerCap = document.getElementById("wcPerCap")!;
+    if (!svg) return;
+
+    const art = this.art;
+    const nF = art.manifest.dimensions.num_frames;
+    const nE = art.manifest.dimensions.num_entities;
+    const frameInfos = art.manifest.years.frames;
+    const frames = frameInfos.map((fi) => fi.year);
+    const H = 92;   // viewBox-Höhe (Breite 250 siehe wcDrawSeries)
+
+    // Weltsummen je Frame (NaN = keine Daten -> 0/überspringen)
+    const pop = new Float32Array(nF);
+    const energy = new Float32Array(nF);
+    for (let f = 0; f < nF; f++) {
+      let p = 0, en = 0;
+      for (let e = 0; e < nE; e++) {
+        const pv = art.values[(f * nE + e) * 4 + VALUE.population];
+        const ev = art.values[(f * nE + e) * 4
+          + VALUE.energy_consumption];
+        if (Number.isFinite(pv)) p += pv;
+        if (Number.isFinite(ev)) en += ev;
+      }
+      pop[f] = p;
+      energy[f] = en;
+    }
+    const perCap = new Float32Array(nF);
+    for (let f = 0; f < nF; f++) {
+      // Mtoe -> kWh: 1 Mtoe = 10^6 toe, 1 toe = 11 630 kWh
+      // (=> 1 Mtoe = 1,163e10 kWh). Gegen die gespeicherte Pro-Kopf-
+      // Komponente validiert (USA 2020: exakt 93 427 kWh).
+      perCap[f] = pop[f] > 0
+        ? energy[f] * 11630 * 1e6 / pop[f] : NaN;
+    }
+    this.wcSeries = [pop, energy, perCap];
+    this.wcYears = new Float32Array(frames);
+
+    const y0 = frames[0], y1 = frames[frames.length - 1];
+    const NS = "http://www.w3.org/2000/svg";
+
+    // Zwei Diagramme: relativ (linear, Maximum) + absolut (log)
+    const svgRel = svg;
+    const svgAbs = document.getElementById("wcSvgAbs") as SVGSVGElement
+      | null;
+    this.wcDrawSeries(svgRel, "rel");
+    if (svgAbs) this.wcDrawSeries(svgAbs, "abs");
+
+    // Jahres-Marker in beiden Diagrammen (vertikal, über allem)
+    const makeMarker = (svgEl: SVGSVGElement): SVGLineElement => {
+      const marker = document.createElementNS(NS, "line");
+      marker.setAttribute("x1", "0"); marker.setAttribute("x2", "0");
+      marker.setAttribute("y1", "0"); marker.setAttribute("y2", String(H));
+      marker.setAttribute("stroke", "#e6edf3");
+      marker.setAttribute("stroke-width", "1");
+      marker.setAttribute("opacity", "0.85");
+      svgEl.appendChild(marker);
+      return marker;
+    };
+    this.wcMarker = makeMarker(svgRel);
+    if (svgAbs) this.wcMarkerAbs = makeMarker(svgAbs);
+
+    // Klick/ziehen in beiden Diagrammen = Jahr scrubben
+    const wireSeek = (svgEl: SVGSVGElement): void => {
+      const seekFromEvent = (ev: PointerEvent) => {
+        const r = svgEl.getBoundingClientRect();
+        const t = Math.min(1,
+          Math.max(0, (ev.clientX - r.left) / r.width));
+        this.seekYear(y0 + t * (y1 - y0));
+      };
+      svgEl.addEventListener("pointerdown", (ev) => {
+        seekFromEvent(ev);
+        const mv = (e: PointerEvent) => seekFromEvent(e);
+        const up = () => {
+          window.removeEventListener("pointermove", mv);
+          window.removeEventListener("pointerup", up);
+        };
+        window.addEventListener("pointermove", mv);
+        window.addEventListener("pointerup", up);
+      });
+    };
+    wireSeek(svgRel);
+    if (svgAbs) wireSeek(svgAbs);
+  }
+
+  /** Kurven (neu) zeichnen. Modus „rel": linear gegen das Maximum;
+   *  Modus „abs": logarithmisch – zeigt Wachstumsphasen ehrlich und
+   *  spreizt Werte über Größenordnungen (Absolute Werte stehen in
+   *  der Legende). */
+  private wcDrawSeries(svg: SVGSVGElement, mode: "rel" | "abs"): void {
+    const polys = mode === "abs" ? this.wcPolysAbs : this.wcPolysRel;
+    for (const p of polys) p.remove();
+    polys.length = 0;
+
+    const W = 250, H = 92, PAD = 3;
+    const nF = this.wcYears.length;
+    if (nF === 0) return;
+    const frames = this.wcYears;
+    const y0 = frames[0], y1 = frames[nF - 1];
+    const xOf = (year: number): number => (year - y0) / (y1 - y0) * W;
+    const abs = mode === "abs";
+    const NS = "http://www.w3.org/2000/svg";
+    const colors = ["var(--accent)", "var(--accent-warm)", "#9ece6a"];
+
+    this.wcSeries.forEach((series, si) => {
+      let lo = Infinity, hi = -Infinity;
+      for (let f = 0; f < nF; f++) {
+        const v = series[f];
+        if (!Number.isFinite(v) || v <= 0) continue;
+        if (v > hi) hi = v;
+        if (v < lo) lo = v;
+      }
+      if (!Number.isFinite(lo) || hi <= lo) return;
+      const relLo = abs ? lo : 0;
+      const denom = abs
+        ? Math.log10(hi / lo)
+        : hi - relLo;
+      if (denom <= 0) return;
+      const mapT = (v: number): number => abs
+        ? Math.log10(v / lo) / denom
+        : (v - relLo) / denom;
+      const pts: string[] = [];
+      for (let f = 0; f < nF; f++) {
+        const v = series[f];
+        if (!Number.isFinite(v) || v <= 0) continue;
+        const t = mapT(v);
+        const y = H - PAD - t * (H - 2 * PAD);
+        pts.push(`${xOf(frames[f]).toFixed(1)},${y.toFixed(1)}`);
+      }
+      if (pts.length < 2) return;
+      const poly = document.createElementNS(NS, "polyline");
+      poly.setAttribute("points", pts.join(" "));
+      poly.setAttribute("fill", "none");
+      poly.setAttribute("stroke", colors[si]);
+      poly.setAttribute("stroke-width", "1.6");
+      poly.setAttribute("stroke-linejoin", "round");
+      svg.appendChild(poly);
+      polys.push(poly);
+    });
+  }
+
+  /** Marker + Legende auf das aktuelle Jahr stellen (gedrosselt). */
+  private updateWorldChart(year: number): void {
+    if (this.wcSeries.length === 0) return;
+    if (Number.isFinite(this.wcLastYear)
+        && Math.abs(year - this.wcLastYear) < 0.2) return;
+    this.wcLastYear = year;
+
+    const nF = this.wcYears.length;
+    const y0 = this.wcYears[0], y1 = this.wcYears[nF - 1];
+    const t = Math.min(1, Math.max(0, (year - y0) / (y1 - y0)));
+    const mx = String(t * 250);
+    this.wcMarker.setAttribute("x1", mx);
+    this.wcMarker.setAttribute("x2", mx);
+    if (this.wcMarkerAbs) {
+      this.wcMarkerAbs.setAttribute("x1", mx);
+      this.wcMarkerAbs.setAttribute("x2", mx);
+    }
+
+    // Reihenwerte am aktuellen Jahr interpolieren
+    const at = (series: Float32Array): number => {
+      const fy = t * (nF - 1);
+      const i0 = Math.min(nF - 1, Math.max(0, Math.floor(fy)));
+      const i1 = Math.min(nF - 1, i0 + 1);
+      const q = fy - i0;
+      const a = series[i0], b = series[i1];
+      if (!Number.isFinite(a)) return b;
+      if (!Number.isFinite(b)) return a;
+      return a * (1 - q) + b * q;
+    };
+    const pop = at(this.wcSeries[0]);
+    const energy = at(this.wcSeries[1]);
+    const perCap = at(this.wcSeries[2]);
+    this.wcPop.textContent = App.fmtBig(pop);
+    this.wcEnergy.textContent = Number.isFinite(energy)
+      ? App.fmtBig(energy) + " Mtoe" : "–";
+    this.wcPerCap.textContent = Number.isFinite(perCap)
+      ? Math.round(perCap).toLocaleString("de-DE") + " kWh" : "–";
+  }
+
+  /** Große Zahlen kompakt (deutsch): 8,1 Mrd · 1,2 M · 84.500 */
+  private static fmtBig(v: number): string {
+    if (!Number.isFinite(v)) return "–";
+    if (v >= 1e9) {
+      return (v / 1e9).toLocaleString("de-DE",
+        { maximumFractionDigits: 2 }) + " Mrd";
+    }
+    if (v >= 1e6) {
+      return (v / 1e6).toLocaleString("de-DE",
+        { maximumFractionDigits: 1 }) + " M";
+    }
+    if (v >= 1e4) {
+      return Math.round(v).toLocaleString("de-DE");
+    }
+    return v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
+  }
 
   private wireControls(): void {
     const viewBtns = document.getElementById("viewBtns")!;
@@ -351,6 +603,19 @@ export class App {
       HTMLSelectElement;
     metricSelect.addEventListener("change", () => {
       this.metric = Number(metricSelect.value);
+      this.updateLegend();
+      this.markDirty();
+    });
+
+    const colorScaleSelect = document.getElementById("colorScaleSelect") as
+      HTMLSelectElement;
+    colorScaleSelect.value = this.colorTransform;
+    colorScaleSelect.addEventListener("change", () => {
+      const t = colorScaleSelect.value as "linear" | "sqrt" | "log";
+      this.colorTransform = t;
+      for (const k of Object.keys(this.scales)) {
+        this.scales[Number(k)].transform = t;
+      }
       this.updateLegend();
       this.markDirty();
     });
@@ -387,6 +652,8 @@ export class App {
     ghostToggle.addEventListener("change", () => {
       this.ghostVisible = ghostToggle.checked;
       (this.views.flat as FlatCartogram)
+        .setGhostVisible(this.ghostVisible);
+      (this.views.extruded as ExtrudedCartogram)
         .setGhostVisible(this.ghostVisible);
     });
 
@@ -543,7 +810,8 @@ export class App {
   }
 
   private updateLegend(): void {
-    this.legend.update(this.scales[this.metric], this.metric, "linear");
+    this.legend.update(this.scales[this.metric], this.metric,
+      this.colorTransform);
   }
 
   private setMode(mode: ViewMode): void {
@@ -553,7 +821,7 @@ export class App {
     document.getElementById("heightGroup")!.style.display =
       mode === "flat" ? "none" : "flex";
     document.getElementById("flatGroup")!.style.display =
-      mode === "flat" ? "flex" : "none";
+      mode === "globe" ? "none" : "flex";
     // Geometrie-Toggle gilt jetzt überall – auch der Globus morpht
     // zwischen Kartogramm-Kugel und Original-Kugel (Taste G)
     this.resize();

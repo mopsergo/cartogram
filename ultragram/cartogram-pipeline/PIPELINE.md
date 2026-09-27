@@ -71,24 +71,50 @@ Energiedaten, nur Bevölkerung). Die Entitäts-Zuordnung läuft über
 
 1. **Natural Earth 110m laden** (lokal bevorzugt, URL-Fallback),
    Geometrien mit `buffer(0)` reparieren.
-2. **Entitäten dissolven**: eine Entität = eine (Multi-)Polygon-
+2. **Naht-Rotation** (`geometry.seam_lon`, Standard −168.5°): Natural
+   Earth schneidet die Welt am Antimeridian ±180° – mitten durch
+   Tschukotka. Der Globus-Renderer bildet die Kartogramm-Ebene per
+   inverser Equal-Earth-Projektion auf die Kugel ab; dort lief die
+   künstliche Schnittkante als gerade, der Küste nicht folgende
+   Linie durch den UdSSR-Block (Benutzerbericht). Alle Längengrade
+   werden rotiert (`lon' = wrap(lon − seam_lon − 180°)`), sodass
+   die Naht bei −168.5° liegt (0.00° Landschnitt im 110m-Datensatz;
+   nächstes Land: St.-Lawrence-Insel 0.2°). Russlands Festland- und
+   Tschukotka-Teile landen dadurch auf derselben Seite und
+   verschmelzen im Dissolve zu einer durchgehenden Küste; die
+   Flachkarte bleibt praktisch unverändert (Mitte 11.5°E). Ein
+   Hard-Guard prüft, dass kein (nicht ausgeschlossenes) Feature
+   den Naht-Meridian berührt.
+3. **Entitäten dissolven**: eine Entität = eine (Multi-)Polygon-
    Geometrie. Historische Aggregate (UdSSR, Jugoslawien, …) bleiben
    **verschmolzen** – eine Datenentität, eine Form.
-3. **OTHER_WORLD = alle unbeanspruchten Länder** (ohne Antarktis,
+4. **OTHER_WORLD = alle unbeanspruchten Länder** (ohne Antarktis,
    konfiguriert in `exclude_features`) – **bewusst NICHT verschmolzen**:
    jedes Land bleibt eigener Polygon-Teil, damit die tatsächlich
    vorhandenen Länder im Kartogramm erkennbar bleiben. Geteilte
    Grenzen verschweißt der Mesh-Bau über die Koordinaten-Dedupe
    (`vertex_precision_m`) zu einer gemeinsamen Vertex-Kette.
-4. **Projektion nach Equal Earth (EPSG:8857)** – flächentreu, damit
+5. **Projektion nach Equal Earth (EPSG:8857)** – flächentreu, damit
    „Fläche = Anteil" geometrisch exakt bleibt.
-5. **Vertices global deduplizieren** (feste IDs; Nachbarn teilen
+6. **Snap-Degenerations-Reparatur** (nach der Projektion): Natural
+   Earth enthält an wenigen Stellen „küssende" Grenzvertices (z. B.
+   Sudans Westspitze: ein Ring-Vertex liegt ~30 µm neben einer
+   nicht-nachbarten Kante). Ob der auf das 0.001-m-Dedupe-Gitter
+   gerundete Ring danach valide bleibt oder sich um Zentimeter
+   schneidet, entscheidet die sub-mm-Position – die Naht-Rotation
+   verschiebt genau diese. Betroffene Teile werden mit
+   `make_valid` → größter Teil → `set_precision` (gleiches Raster)
+   konsolidiert; verworfen wird ausschließlich die haarfeine
+   Degeneration (< 10.000 m² und < 1e-8 des Teils, sonst Fehler).
+7. **Vertices global deduplizieren** (feste IDs; Nachbarn teilen
    Grenzvertices → Grenzen bleiben beim Verformen gekoppelt),
    **Ringe** (Exterior + Holes) je Polygon-Teil, **Dreiecke** per
    Ear-Clipping (`mapbox-earcut`) nur auf Ringvertices – die
    Topologie ist damit für **alle** Jahre identisch.
-6. Cache: `build-cache/mesh.npz`, Gültigkeit über einen Hash aus
-   **allen Konfigurationsdateien + der Natural-Earth-Datei** (.stamp).
+8. Cache: `build-cache/mesh.npz`, Gültigkeit über einen Hash aus
+   **allen Konfigurationsdateien + der Natural-Earth-Datei + dem
+   Geometrie-Code** (`geometry.py`) – Code-Änderungen invalidieren
+   den Mesh-Cache damit ebenso wie Config-Änderungen (.stamp).
 
 ### 2.4 `solve` – Jahres-Keyframes (der eigentliche Solver)
 

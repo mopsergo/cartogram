@@ -39,6 +39,23 @@ data:
 geometry:
   # Bevorzugte Projektion (Plan §5.3): Equal Earth, flächentreu.
   crs: EPSG:8857
+  # Längengrad-Rotation (Naht-Meridian): Natural Earth schneidet die
+  # Welt am Antimeridian ±180° – mitten durch Tschukotka (Russland
+  # liegt als zwei getrennte Polygone links und rechts der Karte).
+  # Auf dem Kartogramm-Globus (inverse Equal-Earth auf die Kugel)
+  # würde diese künstliche Schnittkante als gerade, der Küste nicht
+  # folgende Linie durchs Land laufen (Benutzerbericht UdSSR). Wir
+  # schneiden stattdessen bei seam_lon und rotieren alle Längengrade:
+  #   lon' = wrap(lon - seam_lon - 180°)
+  # -168.5 liegt mitten im offenen Wasser der Beringsee: 0.00° Land-
+  # schnitt im 110m-Datensatz (nächsteres Land: St.-Lawrence-Insel
+  # 0.2°, Cape Prince of Wales 0.4°, Tschukotka 1.4°). Russlands
+  # Festland- und Tschukotka-Teile landen auf derselben Seite und
+  # verschmelzen im Dissolve zu einer durchgehenden Küste; die
+  # Flachkarte bleibt praktisch unverändert (Mitte 11.5°E). Die
+  # Pipeline prüft beim Mesh-Bau hart, dass kein (nicht ausge-
+  # schlossenes) Feature den Meridian berührt.
+  seam_lon: -168.5
   # Antarktis und subantarktische Gebiete sind nicht Teil der Welt-
   # bevölkerungsbilanz und würden die OTHER_WORLD-Geometrie dominieren.
   exclude_features:

@@ -43,6 +43,13 @@ def _build_or_load_mesh(cfg, registry, force: bool = False):
     h.update(config_hash(cfg).encode())
     from .config import file_sha256
     h.update(file_sha256(cfg.natural_earth).encode())
+    # Auch der Geometrie-CODE gehört zum Mesh-Stamp: Änderungen an
+    # build_entity_geometries/rotate_longitudes (z.B. die Snap-
+    # Reparatur) verändern das Mesh, ohne dass sich Config oder
+    # Referenzdatei ändern – ohne diesen Hash würde der Cache still
+    # ein veraltetes Mesh liefern.
+    from . import geometry as _geometry
+    h.update(file_sha256(_geometry.__file__).encode())
     tag = h.hexdigest()[:16]
     stamp = base.with_suffix(".stamp")
     if (not force and stamp.is_file() and stamp.read_text() == tag

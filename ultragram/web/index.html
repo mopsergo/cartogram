@@ -93,6 +93,30 @@
     .speedwrap span { font-size: 11px; color: var(--muted); }
     .speedwrap select { width: 74px; }
 
+    #worldchart {
+      left: 14px; bottom: 76px; width: 252px; padding: 9px 11px 8px;
+      user-select: none;
+    }
+    #worldchart .wc-title {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); font-weight: 600; margin-bottom: 5px;
+    }
+    #worldchart .wc-title.wc-second { margin-top: 7px; }
+    #worldchart svg {
+      display: block; width: 100%; height: 80px; cursor: crosshair;
+    }
+    #worldchart .wc-legend {
+      display: flex; flex-direction: column; gap: 2px; margin-top: 6px;
+      font-size: 11.5px;
+    }
+    #worldchart .wc-legend .row { display: flex; align-items: center; gap: 6px; }
+    #worldchart .wc-legend i {
+      width: 14px; height: 3px; border-radius: 2px; display: inline-block;
+      flex: 0 0 auto;
+    }
+    #worldchart .wc-legend .nm { color: var(--muted); flex: 1; }
+    #worldchart .wc-legend .v { font-variant-numeric: tabular-nums; }
+
     #detail {
       top: 130px; right: 14px; width: 250px; display: none;
     }
@@ -172,6 +196,12 @@
         <option value="0">Bevölkerung</option>
         <option value="1">Anteil Weltbevölkerung</option>
       </select>
+      <select id="colorScaleSelect"
+        title="Transformation der Farbskala – die Skala beginnt am Datenminimum; Wurzel spreizt kleine Werte, Linear zeigt Verhältnisse proportional, Log spreizt über Größenordnungen">
+        <option value="sqrt" selected>Wurzel (kleine Werte betont)</option>
+        <option value="linear">Linear (proportional)</option>
+        <option value="log">Logarithmus</option>
+      </select>
     </div>
     <div class="group" id="heightGroup">
       <label>2.5D-Optionen</label>
@@ -191,9 +221,9 @@
       </select>
     </div>
     <div class="group" id="flatGroup" style="display:none">
-      <label>Flach-Optionen</label>
+      <label>Referenz-Ebene</label>
       <label class="toggle"><input type="checkbox" id="ghostToggle" checked />
-        Unverzerrte Referenz einblenden</label>
+        Original-Ländergrenzen im Hintergrund</label>
     </div>
     <div id="legend" class="hud" style="position:static; padding: 0;">
       <canvas id="legendBar"></canvas>
@@ -223,6 +253,24 @@
         <option value="10">10 J/s</option>
         <option value="20">20 J/s</option>
       </select>
+    </div>
+  </div>
+  <div id="worldchart" class="hud"
+    title="Klick setzt das Jahr">
+    <div class="wc-title"><span>Welt gesamt · relativ zum Maximum</span></div>
+    <svg id="wcSvg" viewBox="0 0 250 92" preserveAspectRatio="none"></svg>
+    <div class="wc-title wc-second"><span>absolut (logarithmisch)</span></div>
+    <svg id="wcSvgAbs" viewBox="0 0 250 92" preserveAspectRatio="none"></svg>
+    <div class="wc-legend">
+      <div class="row"><i style="background: var(--accent)"></i>
+        <span class="nm">Bevölkerung</span>
+        <span class="v" id="wcPop">–</span></div>
+      <div class="row"><i style="background: var(--accent-warm)"></i>
+        <span class="nm">Gesamtenergie</span>
+        <span class="v" id="wcEnergy">–</span></div>
+      <div class="row"><i style="background: #9ece6a"></i>
+        <span class="nm">Energie pro Kopf</span>
+        <span class="v" id="wcPerCap">–</span></div>
     </div>
   </div>
   <div id="tooltip"></div>

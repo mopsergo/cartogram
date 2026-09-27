@@ -22,6 +22,9 @@ export class ExtrudedCartogram {
   private topMesh!: THREE.Mesh;
   private sidesMesh!: THREE.Mesh;
   private boundaryLines!: THREE.LineSegments;
+  /** Original-Ländergrenzen auf dem Boden (Referenz, hellgrau) */
+  private ghostLines!: THREE.LineSegments;
+  private ghostWanted = true;
   private segments: ReturnType<typeof buildRingSegments>;
   private vertexXY: Float32Array;
   private expandedXY: Float32Array;
@@ -139,6 +142,29 @@ export class ExtrudedCartogram {
                         -this.worldWidth * 2e-4);
     this.scene.add(floor);
 
+    // Ghost: Original-Ländergrenzen auf dem dunklen Boden in hellem
+    // Grau – zeigt hinter/zwischen den Extrusionsblöcken, wo die
+    // Länder unverzerrt liegen (Benutzeranforderung, wie im
+    // Flach-Modus). knapp über der Bodenfläche, unter den Blöcken.
+    const ghostPos = new Float32Array(this.segments.length * 6);
+    let gw = 0;
+    const gz = -this.worldWidth * 1.5e-4;
+    for (const seg of this.segments) {
+      ghostPos[gw++] = art.positionsOriginal[seg.v0 * 2];
+      ghostPos[gw++] = art.positionsOriginal[seg.v0 * 2 + 1];
+      ghostPos[gw++] = gz;
+      ghostPos[gw++] = art.positionsOriginal[seg.v1 * 2];
+      ghostPos[gw++] = art.positionsOriginal[seg.v1 * 2 + 1];
+      ghostPos[gw++] = gz;
+    }
+    const ghostGeom = new THREE.BufferGeometry();
+    ghostGeom.setAttribute("position",
+      new THREE.BufferAttribute(ghostPos, 3));
+    this.ghostLines = new THREE.LineSegments(ghostGeom,
+      new THREE.LineBasicMaterial({
+        color: 0x8b98a9, transparent: true, opacity: 0.42 }));
+    this.scene.add(this.ghostLines);
+
     // Grenzlinien auf der Deckfläche
     const lineGeom = new THREE.BufferGeometry();
     lineGeom.setAttribute("position", new THREE.BufferAttribute(
@@ -149,9 +175,20 @@ export class ExtrudedCartogram {
     this.group.add(this.boundaryLines);
   }
 
+  /** Original-Grenzen im Hintergrund ein-/ausblenden. In der
+   *  Original-Ansicht (Taste G) blendet sich die Ebene automatisch
+   *  aus – die Grenzen wären deckungsgleich mit den Blöcken. */
+  setGhostVisible(visible: boolean): void {
+    this.ghostWanted = visible;
+    this.ghostLines.visible = visible;
+  }
+
   updateFrame(update: FrameUpdate): void {
     const art = this.art;
     const nT = art.manifest.dimensions.num_triangles;
+    // Ghost in der Original-Ansicht ausblenden (Grenzen deckungsgleich)
+    this.ghostLines.visible = this.ghostWanted
+      && (update.geoBlend ?? 0) < 0.999;
     this.vertexXY.set(update.vertexXY);
     blendWithOriginal(art, this.vertexXY, update.geoBlend ?? 0);
     expandToTriangles(this.vertexXY, art.expandMap, this.expandedXY);

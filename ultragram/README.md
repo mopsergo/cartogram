@@ -90,13 +90,37 @@ Dev-Server einfach neu laden, der nimmt die Artefakte direkt aus
 ## Bedienung
 
 - **Play/Pause** (Leertaste), Zeitslider 1820–2020, ←/→ Einzelschritte
+- **Welt-Verlaufsdiagramme** (links unten, zwei übereinander):
+  Weltbevölkerung, Gesamtenergie und Energie pro Kopf – einmal
+  **relativ zum Maximum** (linear) und einmal **absolut
+  (logarithmisch)**. Der weiße Strich markiert das aktuelle Jahr,
+  die Legende zeigt die absoluten Werte (Mrd, Mtoe, kWh – Pro Kopf
+  aus Weltenergie/Weltbevölkerung, 1 Mtoe = 1,163·10¹⁰ kWh, gegen
+  den Datensatz validiert). **Klick/ziehen in beide Diagramme
+  scrubbt das Jahr** wie der Zeitslider.
 - **Ansicht**: Flach · 2.5D (Höhe = Energie pro Kopf, umschaltbar auf
   Gesamtenergie/Bevölkerung/Weltanteil, abschaltbar) · **Kartogramm-
   Globus** (dieselbe Verformung wie Flach/2.5D, per exakter inverser
   Equal-Earth-Projektion auf die Kugel zurückgeführt – flächentreu,
   die Kartogramm-Flächenverhältnisse bleiben erhalten). Auch der
   Globus extrudiert: Höhen entlang des Kugelradius mit Seitenwänden,
-  dieselben 2.5D-Optionen (Höhe + Höhenkennzahl) gelten dort.
+  dieselben 2.5D-Optionen (Höhe + Höhenkennzahl) gelten dort; Länder-
+  grenzen laufen als dünne schwarze, geodätisch unterteilte Linien
+  über die Kugeloberfläche. Die Welt ist **nahtfrei über den Meridianen**:
+  Die Daten werden nicht (wie üblich) am Antimeridian ±180° geschnitten
+  (durch Tschukotka!), sondern bei −168,5° mitten in der Beringsee –
+  Länder wie die UdSSR/Russland erscheinen auf dem Globus als eine
+  durchgehende Landmasse mit echter Küste, ohne künstliche
+  Schnittkanten.
+- **Farbskala** (gilt für alle drei Ansichten): beginnt am
+  **Datenminimum** statt bei 0 – die Skala verschwendet keinen
+  Bereich auf Werte, die nie vorkommen. Standard-Transformation
+  **Wurzel**: beim Pro-Kopf-Median (~5,7 Tsd. kWh von max ~104 Tsd.)
+  läge die lineare Skala bei ~5 % der Rampe und 68 % aller Werte
+  in den untersten 10 % (ununterscheidbar dunkel); mit Wurzel sind
+  es 0,3 %. Umschaltbar auf **linear** (proportional) oder
+  **logarithmisch**. Die Legende nennt Minimum, Maximum und die
+  aktive Transformation.
 - **Höhenskala (2.5D + Globus)**: empfindlich – normiert gegen das
   **Maximum des jeweiligen Jahres** (frühe Jahre waren gegen das
   globale Maximum fast flach), drei Transformationen umschaltbar:
@@ -108,8 +132,12 @@ Dev-Server einfach neu laden, der nimmt die Artefakte direkt aus
 - **Geometrie** (Taste **G**, jetzt überall inkl. Globus): Kartogramm
   ⇄ unverzerrte Original-Ansicht, weicher 600-ms-Übergang. Farben und
   Höhen folgen weiterhin der Jahres-Timeline – die Original-Karte wird
-  so zum Choroplethen-/Prismenvergleich. Die flache Referenz-Ebene
-  blendet sich in der Original-Ansicht automatisch aus.
+  so zum Choroplethen-/Prismenvergleich. Die Referenz-Ebene
+  **„Original-Ländergrenzen im Hintergrund"** (abschaltbar) zeigt in
+  Flach **und 2.5D** die unverzerrten Grenzen als Geister-Referenz –
+  in 2.5D als hellgraue Linien auf dem dunklen Boden hinter den
+  Extrusionsblöcken; in der Original-Ansicht blendet sie sich
+  automatisch aus.
 - **Kartogramm-Lauf**: „Aktuell (mit Reparaturen)" ⇄ „Original (Git-
   Commit)" – der Originalzustand bleibt als eigener Export
   (`web/public/cartogram/v0`) erhalten und ist jederzeit umschaltbar
