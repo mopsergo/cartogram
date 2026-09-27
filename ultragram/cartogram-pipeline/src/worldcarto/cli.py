@@ -117,27 +117,70 @@ def _load_frames(cfg, mesh):
     """Gespeicherte Frame-Caches laden (build-cache/frames).
 
     Fällt auf einen bestehenden Index zurück, falls der erwartete
-    (hash-versionierte) Index fehlt – z.B. wenn sich Kosmetik in den
-    Konfigurationen geändert hat, die Frames selbst aber gültig sind
-    (Targets-Hash verprobt jede Frame-Datei). Der gefundene Index wird
-    unter dem erwarteten Namen neu abgelegt.
+    (hash-versionierte) Index fehlt – ABER nur, wenn dessen Frames
+    nachweislich zur Zielkennzahl passen: die im Frame gespeicherten
+    Targets eines Jahres werden gegen die frisch berechneten Targets
+    dieser Kennzahl verglichen. (Dateinamen-Hashes allein reichen
+    nicht: ein falsch adoptierter Index würde sonst stumm die
+    falsche Variante exportieren – genau so entstanden die
+    identischen v2/v3-Artefakte.) Der passende Index wird unter dem
+    erwarteten Namen abgelegt; ohne Treffer gibt es keine Frames.
     """
     mesh_hash = (_mesh_path(cfg).with_suffix(".stamp").read_text()
                  if _mesh_path(cfg).with_suffix(".stamp").is_file()
                  else "mesh")
     from .temporal import frames_index_path
     index_path = frames_index_path(cfg, mesh_hash)
+
+    def metric_ok(path):
+        """True = passt, False = bewiesen falsche Kennzahl, None =
+        nicht prüfbar (Infrastruktur-Fehler). Nur bei bewiesenem
+        Mismatch darf der Index verworfen werden."""
+        try:
+            data = json.loads(path.read_text())
+            first = min(data.values(), key=lambda e: e["year"])
+            frame = np.load(path.parent / first["file"])
+            cached = np.asarray(frame["targets"], dtype=np.float64)
+            from .entities import load_registry
+            from .ingest import load_canonical, targets_for_year
+            registry = load_registry()
+            canonical = load_canonical(cfg)
+            expected, _ = targets_for_year(
+                canonical, registry, first["year"],
+                min_target_share=cfg.min_target_share,
+                metric=cfg.target_metric)
+            expected = np.asarray(expected, dtype=np.float64)
+            if expected.shape != cached.shape:
+                return False
+            return bool(np.allclose(expected, cached, equal_nan=True))
+        except Exception as exc:
+            print(f"[frames] Prüfung von {path.name} nicht möglich: {exc}")
+            return None
+
+    check = metric_ok(index_path) if index_path.is_file() else None
+    if index_path.is_file() and check is False:
+        print(f"[frames] Index {index_path.name} referenziert Frames "
+              f"für eine andere Zielkennzahl als {cfg.target_metric} "
+              "– wird ignoriert")
+        index_path.unlink()
+    elif index_path.is_file() and check is None:
+        print(f"[frames] Index {index_path.name} konnte nicht "
+              "verifiziert werden – verwende ihn ungeprüft")
     if not index_path.is_file():
         candidates = sorted(index_path.parent.glob("index_*.json"))
         for cand in candidates:
             data = json.loads(cand.read_text())
             missing = [e["file"] for e in data.values()
                        if not (index_path.parent / e["file"]).is_file()]
-            if not missing and data:
-                print(f"[frames] Erwarteter Index fehlt; übernehme "
-                      f"{cand.name} ({len(data)} Frames)")
-                index_path.write_text(cand.read_text())
-                break
+            if missing or not data:
+                continue
+            if metric_ok(cand) is not True:
+                continue
+            print(f"[frames] Erwarteter Index fehlt; übernehme "
+                  f"{cand.name} ({len(data)} Frames, Zielkennzahl "
+                  f"{cfg.target_metric} per Targets verifiziert)")
+            index_path.write_text(cand.read_text())
+            break
     if not index_path.is_file():
         return None, mesh_hash
     index = json.loads(index_path.read_text())

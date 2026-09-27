@@ -130,6 +130,18 @@ Für jedes Jahr 1820–2020 (optional `--years`):
    **Zielkennzahl**-Konfiguration. Bereits gelöste Jahre werden
    übersprungen (inkrementell).
 
+   **Metric-Verifikation beim Laden** (`export`, `debug-frames`,
+   `quality`, `verify-stability`): fehlt der erwartete Index – z. B.
+   nach Konfigurationskosmetik –, wird ein vorhandener Kandidat nur
+   dann adoptiert, wenn die im Frame gespeicherten **Targets** gegen
+   die frisch berechneten Targets der aktiven Zielkennzahl passen.
+   Ein bereits vorhandener erwarteter Index wird ebenso
+   stichprobenartig verifiziert. Das verhindert, dass eine Variante
+   stumm mit den Frames einer anderen Kennzahl exportiert wird –
+   genau solche falsch adoptierten Indizes hatten dafür gesorgt,
+   dass v2 und v3 byteidentisch mit v1 waren und der
+   Varianten-Wechsel in der Web-App sichtbar nichts tat.
+
 **Laufzeit**: frühe Jahre sind teuer (extreme Kontraktionen, viele
 Solver-Iterationen), späte schnell; insgesamt ~20–40 min für 201
 Jahre auf einem modernen Mac.
