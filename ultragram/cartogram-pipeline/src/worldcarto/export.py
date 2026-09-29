@@ -318,6 +318,10 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
         "target_metric": cfg.target_metric,
         "target_metric_label": VARIANT_LABELS.get(cfg.target_metric,
                                                   cfg.target_metric),
+        # Naht-Rotation (geometry.seam_lon): Der Globus-Renderer
+        # addiert diesen Offset zurück und zeigt die wahre Erde.
+        # seam_lon=180 (Identität) ergibt 0 – abwärtskompatibel.
+        "lon_offset_deg": round((cfg.seam_lon + 180.0) % 360.0, 6),
         "data_version": __version__,
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "years": {

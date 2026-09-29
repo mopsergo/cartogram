@@ -3,8 +3,9 @@
  "artifact_version": "v2",
  "target_metric": "energy_consumption",
  "target_metric_label": "Gesamtenergie",
+ "lon_offset_deg": 11.5,
  "data_version": "1.0.0",
- "generated_utc": "2026-09-27T21:07:02.479261+00:00",
+ "generated_utc": "2026-09-28T12:30:38.333521+00:00",
  "years": {
   "data_range": [
    1820,
@@ -1021,9 +1022,9 @@
  "dimensions": {
   "num_frames": 201,
   "num_entities": 73,
-  "num_vertices": 6580,
-  "num_triangles": 8545,
-  "num_rings": 256
+  "num_vertices": 6575,
+  "num_triangles": 8544,
+  "num_rings": 254
  },
  "arrays": {
   "positions": {
@@ -1031,7 +1032,7 @@
    "dtype": "<f4",
    "shape": [
     201,
-    6580,
+    6575,
     2
    ]
   },
@@ -1064,7 +1065,7 @@
    "file": "indices.u32",
    "dtype": "<u4",
    "shape": [
-    8545,
+    8544,
     3
    ]
   },
@@ -1072,7 +1073,7 @@
    "file": "surface_vertex_to_canonical.u32",
    "dtype": "<u4",
    "shape": [
-    6580
+    6575
    ],
    "note": "Identität – Dreiecke nutzen direkt kanonische IDs"
   },
@@ -1097,7 +1098,7 @@
    "file": "triangle_ring.u32",
    "dtype": "<u4",
    "shape": [
-    8545
+    8544
    ],
    "note": "Exterior-Ring-Index je Dreieck – mit ring_names.json zeigt Tooltip/Panel das konkrete Land (Natural-Earth-Länder der Restliche-Welt-Entität)"
   },
@@ -1120,7 +1121,7 @@
    "file": "positions_original.f32",
    "dtype": "<f4",
    "shape": [
-    6580,
+    6575,
     2
    ],
    "note": "unverzerrte Equal-Earth-Basis (Ghost-Ebene)"
@@ -1129,7 +1130,7 @@
    "file": "vertices_lonlat.f32",
    "dtype": "<f4",
    "shape": [
-    6580,
+    6575,
     2
    ],
    "note": "unverzerrte Längen-/Breitengrade (Reference Globe)"
@@ -1201,1407 +1202,1407 @@
     "year": 1820,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.13368480106988107
+    "p90_area_error": 0.1305464275329442
    },
    {
     "index": 1,
     "year": 1821,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.13368607424063741
+    "p90_area_error": 0.13971618797596785
    },
    {
     "index": 2,
     "year": 1822,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.13456931983320178
+    "p90_area_error": 0.15346499986984735
    },
    {
     "index": 3,
     "year": 1823,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.1458990847518749
+    "p90_area_error": 0.14260038528383
    },
    {
     "index": 4,
     "year": 1824,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.15274892697279513
+    "p90_area_error": 0.124982828252167
    },
    {
     "index": 5,
     "year": 1825,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.1425303742868478
+    "p90_area_error": 0.14968859397716464
    },
    {
     "index": 6,
     "year": 1826,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.14063814696436586
+    "p90_area_error": 0.1491931737963302
    },
    {
     "index": 7,
     "year": 1827,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.11829624354055912
+    "p90_area_error": 0.13527018223203702
    },
    {
     "index": 8,
     "year": 1828,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.1428867869744765
+    "p90_area_error": 0.1393972611075538
    },
    {
     "index": 9,
     "year": 1829,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.1264164472407641
+    "p90_area_error": 0.12071275045641862
    },
    {
     "index": 10,
     "year": 1830,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.12715389860177095
+    "p90_area_error": 0.1329634147953379
    },
    {
     "index": 11,
     "year": 1831,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.12761865463343602
+    "p90_area_error": 0.13683403789840548
    },
    {
     "index": 12,
     "year": 1832,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.10455256343666987
+    "p90_area_error": 0.11354559111889564
    },
    {
     "index": 13,
     "year": 1833,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.1272602884656465
+    "p90_area_error": 0.1190560317143034
    },
    {
     "index": 14,
     "year": 1834,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09350842986481164
+    "p90_area_error": 0.10236710649322978
    },
    {
     "index": 15,
     "year": 1835,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.11710963288386259
+    "p90_area_error": 0.11713096203885226
    },
    {
     "index": 16,
     "year": 1836,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09612924444419568
+    "p90_area_error": 0.11420973422202714
    },
    {
     "index": 17,
     "year": 1837,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.10600502692179559
+    "p90_area_error": 0.09674759310433566
    },
    {
     "index": 18,
     "year": 1838,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.1219526680477726
+    "p90_area_error": 0.10343746390961917
    },
    {
     "index": 19,
     "year": 1839,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09863805812954683
+    "p90_area_error": 0.09930184101733248
    },
    {
     "index": 20,
     "year": 1840,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.10258114694926597
+    "p90_area_error": 0.097824872937825
    },
    {
     "index": 21,
     "year": 1841,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09088102939537616
+    "p90_area_error": 0.09858664658081778
    },
    {
     "index": 22,
     "year": 1842,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09465753988643777
+    "p90_area_error": 0.09592510681195768
    },
    {
     "index": 23,
     "year": 1843,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09361091281765838
+    "p90_area_error": 0.0958461863802355
    },
    {
     "index": 24,
     "year": 1844,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0960875551621375
+    "p90_area_error": 0.0963830495438855
    },
    {
     "index": 25,
     "year": 1845,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0923112061472237
+    "p90_area_error": 0.09432554306991746
    },
    {
     "index": 26,
     "year": 1846,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09185076064621894
+    "p90_area_error": 0.09090442675581861
    },
    {
     "index": 27,
     "year": 1847,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09147154610122485
+    "p90_area_error": 0.08867737481017403
    },
    {
     "index": 28,
     "year": 1848,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08786471374194957
+    "p90_area_error": 0.07665088581385425
    },
    {
     "index": 29,
     "year": 1849,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.091360583760451
+    "p90_area_error": 0.08780993713424781
    },
    {
     "index": 30,
     "year": 1850,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08355263875613463
+    "p90_area_error": 0.08829032050126003
    },
    {
     "index": 31,
     "year": 1851,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08004778151542362
+    "p90_area_error": 0.07959912022763405
    },
    {
     "index": 32,
     "year": 1852,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.09004337756052183
+    "p90_area_error": 0.07880267298290221
    },
    {
     "index": 33,
     "year": 1853,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08016981516669221
+    "p90_area_error": 0.08012541437174515
    },
    {
     "index": 34,
     "year": 1854,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0773231226691102
+    "p90_area_error": 0.08564017494436912
    },
    {
     "index": 35,
     "year": 1855,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0726062590105484
+    "p90_area_error": 0.07828315661263979
    },
    {
     "index": 36,
     "year": 1856,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08232189700681093
+    "p90_area_error": 0.0787388984865719
    },
    {
     "index": 37,
     "year": 1857,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08469126776471236
+    "p90_area_error": 0.07924999233802545
    },
    {
     "index": 38,
     "year": 1858,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0864362339687137
+    "p90_area_error": 0.0791444790760915
    },
    {
     "index": 39,
     "year": 1859,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08255984470621609
+    "p90_area_error": 0.07955020868885172
    },
    {
     "index": 40,
     "year": 1860,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07721170006728133
+    "p90_area_error": 0.07443055179308153
    },
    {
     "index": 41,
     "year": 1861,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07767946560340053
+    "p90_area_error": 0.07991991981724818
    },
    {
     "index": 42,
     "year": 1862,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0773935465624245
+    "p90_area_error": 0.080196693915418
    },
    {
     "index": 43,
     "year": 1863,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0748211556895449
+    "p90_area_error": 0.07736002699785091
    },
    {
     "index": 44,
     "year": 1864,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07523330961274222
+    "p90_area_error": 0.07490336295131791
    },
    {
     "index": 45,
     "year": 1865,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06881507157327157
+    "p90_area_error": 0.0718807797811282
    },
    {
     "index": 46,
     "year": 1866,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07848176932323048
+    "p90_area_error": 0.06375584259330815
    },
    {
     "index": 47,
     "year": 1867,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0653513608696447
+    "p90_area_error": 0.07355075219219256
    },
    {
     "index": 48,
     "year": 1868,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0737053587837538
+    "p90_area_error": 0.07076370896185297
    },
    {
     "index": 49,
     "year": 1869,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06411377384348502
+    "p90_area_error": 0.06957265065930429
    },
    {
     "index": 50,
     "year": 1870,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06509167981951534
+    "p90_area_error": 0.0747794275964332
    },
    {
     "index": 51,
     "year": 1871,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07122177008028725
+    "p90_area_error": 0.06587730093457449
    },
    {
     "index": 52,
     "year": 1872,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.059333148117116034
+    "p90_area_error": 0.07801474726733713
    },
    {
     "index": 53,
     "year": 1873,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07887594689424998
+    "p90_area_error": 0.06956371174187553
    },
    {
     "index": 54,
     "year": 1874,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06403330371790479
+    "p90_area_error": 0.06096308947129968
    },
    {
     "index": 55,
     "year": 1875,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06111203512198913
+    "p90_area_error": 0.07542131801736876
    },
    {
     "index": 56,
     "year": 1876,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07293384169022138
+    "p90_area_error": 0.06217322457685622
    },
    {
     "index": 57,
     "year": 1877,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.061387963565062556
+    "p90_area_error": 0.052762642245867956
    },
    {
     "index": 58,
     "year": 1878,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05960904989065544
+    "p90_area_error": 0.0580882658029535
    },
    {
     "index": 59,
     "year": 1879,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06813266904688917
+    "p90_area_error": 0.06318481648215316
    },
    {
     "index": 60,
     "year": 1880,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06481692928115974
+    "p90_area_error": 0.06133437445057418
    },
    {
     "index": 61,
     "year": 1881,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.062085180536914156
+    "p90_area_error": 0.05873140757824831
    },
    {
     "index": 62,
     "year": 1882,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06036233068069484
+    "p90_area_error": 0.05525099503539457
    },
    {
     "index": 63,
     "year": 1883,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.055102947135218495
+    "p90_area_error": 0.06374010169040345
    },
    {
     "index": 64,
     "year": 1884,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0617161339281929
+    "p90_area_error": 0.06885178530656458
    },
    {
     "index": 65,
     "year": 1885,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06894410050898611
+    "p90_area_error": 0.07696027581562025
    },
    {
     "index": 66,
     "year": 1886,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07221140813552018
+    "p90_area_error": 0.07473430706305864
    },
    {
     "index": 67,
     "year": 1887,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07812044066722157
+    "p90_area_error": 0.07398133865119184
    },
    {
     "index": 68,
     "year": 1888,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07293480377760463
+    "p90_area_error": 0.07375595284571085
    },
    {
     "index": 69,
     "year": 1889,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0776719884469164
+    "p90_area_error": 0.07333084992065324
    },
    {
     "index": 70,
     "year": 1890,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07471916854018018
+    "p90_area_error": 0.07291136126667677
    },
    {
     "index": 71,
     "year": 1891,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0834124271230459
+    "p90_area_error": 0.0714901356889648
    },
    {
     "index": 72,
     "year": 1892,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07966079938648504
+    "p90_area_error": 0.0703878423164502
    },
    {
     "index": 73,
     "year": 1893,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07616837077327338
+    "p90_area_error": 0.07089933234699505
    },
    {
     "index": 74,
     "year": 1894,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08132131331582748
+    "p90_area_error": 0.08237796718315331
    },
    {
     "index": 75,
     "year": 1895,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07859871311461246
+    "p90_area_error": 0.08072998251034393
    },
    {
     "index": 76,
     "year": 1896,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07497991217992236
+    "p90_area_error": 0.07413124379970007
    },
    {
     "index": 77,
     "year": 1897,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0890008142787686
+    "p90_area_error": 0.06914821885961052
    },
    {
     "index": 78,
     "year": 1898,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07378425531874404
+    "p90_area_error": 0.07772929075718489
    },
    {
     "index": 79,
     "year": 1899,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07564459531926976
+    "p90_area_error": 0.07017955509979518
    },
    {
     "index": 80,
     "year": 1900,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08611485767975971
+    "p90_area_error": 0.10222033292475509
    },
    {
     "index": 81,
     "year": 1901,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.32174378835557005
+    "p90_area_error": 0.10606212462173618
    },
    {
     "index": 82,
     "year": 1902,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08480513598738199
+    "p90_area_error": 0.09654125113527001
    },
    {
     "index": 83,
     "year": 1903,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.08864999736307361
+    "p90_area_error": 0.12388482877704811
    },
    {
     "index": 84,
     "year": 1904,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0701902733138931
+    "p90_area_error": 0.10828814412194103
    },
    {
     "index": 85,
     "year": 1905,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06573218436297609
+    "p90_area_error": 0.0952978747896256
    },
    {
     "index": 86,
     "year": 1906,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06346970763510003
+    "p90_area_error": 0.08795551709834885
    },
    {
     "index": 87,
     "year": 1907,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06551121748939778
+    "p90_area_error": 0.07273536161675621
    },
    {
     "index": 88,
     "year": 1908,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05456127585966702
+    "p90_area_error": 0.06905681467451323
    },
    {
     "index": 89,
     "year": 1909,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.057831758570078995
+    "p90_area_error": 0.07038222847037265
    },
    {
     "index": 90,
     "year": 1910,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.052970416095176345
+    "p90_area_error": 0.08992216678458977
    },
    {
     "index": 91,
     "year": 1911,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.051426709740211435
+    "p90_area_error": 0.07712322068482978
    },
    {
     "index": 92,
     "year": 1912,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.056131430467774926
+    "p90_area_error": 0.07474030827674476
    },
    {
     "index": 93,
     "year": 1913,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06066033020038793
+    "p90_area_error": 0.07810575457338709
    },
    {
     "index": 94,
     "year": 1914,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05480764605094819
+    "p90_area_error": 0.07476721445121716
    },
    {
     "index": 95,
     "year": 1915,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05916235645415883
+    "p90_area_error": 0.07735366868852189
    },
    {
     "index": 96,
     "year": 1916,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.057770418300866974
+    "p90_area_error": 0.07931512710048363
    },
    {
     "index": 97,
     "year": 1917,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05981997927781416
+    "p90_area_error": 0.07968304877924917
    },
    {
     "index": 98,
     "year": 1918,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06301847283290787
+    "p90_area_error": 0.08018061585660753
    },
    {
     "index": 99,
     "year": 1919,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06332788780866419
+    "p90_area_error": 0.08065892430216079
    },
    {
     "index": 100,
     "year": 1920,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.07561986140639103
+    "p90_area_error": 0.08234186562024588
    },
    {
     "index": 101,
     "year": 1921,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06929249332601775
+    "p90_area_error": 0.07987381853422527
    },
    {
     "index": 102,
     "year": 1922,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.0643861943661472
+    "p90_area_error": 0.07113384000100358
    },
    {
     "index": 103,
     "year": 1923,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06157809336752261
+    "p90_area_error": 0.08240524094652146
    },
    {
     "index": 104,
     "year": 1924,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06456721624933587
+    "p90_area_error": 0.07950635354270795
    },
    {
     "index": 105,
     "year": 1925,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06641325073155055
+    "p90_area_error": 0.08163195814715492
    },
    {
     "index": 106,
     "year": 1926,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06750894650489862
+    "p90_area_error": 0.07420587605624292
    },
    {
     "index": 107,
     "year": 1927,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06203073766024073
+    "p90_area_error": 0.07130444375648422
    },
    {
     "index": 108,
     "year": 1928,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06351924826452107
+    "p90_area_error": 0.06806442997152752
    },
    {
     "index": 109,
     "year": 1929,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.06149739658377823
+    "p90_area_error": 0.06529534371018378
    },
    {
     "index": 110,
     "year": 1930,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.054249436765832694
+    "p90_area_error": 0.06999748082740095
    },
    {
     "index": 111,
     "year": 1931,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05732215294011458
+    "p90_area_error": 0.06719983744907697
    },
    {
     "index": 112,
     "year": 1932,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.05137846995045846
+    "p90_area_error": 0.061055528726951094
    },
    {
     "index": 113,
     "year": 1933,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.04466817392612146
+    "p90_area_error": 0.056505089788960565
    },
    {
     "index": 114,
     "year": 1934,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.051735697529557756
+    "p90_area_error": 0.06672706717896028
    },
    {
     "index": 115,
     "year": 1935,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.04806014172294463
+    "p90_area_error": 0.05836190602942772
    },
    {
     "index": 116,
     "year": 1936,
     "candidate": "direct",
-    "iterations": 15,
-    "p90_area_error": 0.043491178236580164
+    "iterations": 14,
+    "p90_area_error": 0.06387778283597147
    },
    {
     "index": 117,
     "year": 1937,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.04201530807797321
+    "p90_area_error": 0.05525451156882027
    },
    {
     "index": 118,
     "year": 1938,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.05559363306172108
+    "iterations": 16,
+    "p90_area_error": 0.05647873785258306
    },
    {
     "index": 119,
     "year": 1939,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.04797686196114225
+    "p90_area_error": 0.054049763549023876
    },
    {
     "index": 120,
     "year": 1940,
     "candidate": "direct",
-    "iterations": 16,
-    "p90_area_error": 0.05001567476058453
+    "iterations": 15,
+    "p90_area_error": 0.06156549440840426
    },
    {
     "index": 121,
     "year": 1941,
     "candidate": "direct",
-    "iterations": 16,
-    "p90_area_error": 0.03977994422355569
+    "iterations": 15,
+    "p90_area_error": 0.061439058541145904
    },
    {
     "index": 122,
     "year": 1942,
     "candidate": "direct",
-    "iterations": 15,
-    "p90_area_error": 0.05259932606190156
+    "iterations": 13,
+    "p90_area_error": 0.06696313540125712
    },
    {
     "index": 123,
     "year": 1943,
     "candidate": "direct",
     "iterations": 16,
-    "p90_area_error": 0.042582017854904085
+    "p90_area_error": 0.0511796164272372
    },
    {
     "index": 124,
     "year": 1944,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.04769248244135742
+    "iterations": 16,
+    "p90_area_error": 0.051980428278583436
    },
    {
     "index": 125,
     "year": 1945,
     "candidate": "direct",
-    "iterations": 15,
-    "p90_area_error": 0.04643445454746051
+    "iterations": 13,
+    "p90_area_error": 0.06002077543858836
    },
    {
     "index": 126,
     "year": 1946,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.05003556966926027
+    "iterations": 14,
+    "p90_area_error": 0.042035872389044
    },
    {
     "index": 127,
     "year": 1947,
     "candidate": "direct",
-    "iterations": 15,
-    "p90_area_error": 0.052590470827132044
+    "iterations": 13,
+    "p90_area_error": 0.04797696424852697
    },
    {
     "index": 128,
     "year": 1948,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.052877352398780775
+    "p90_area_error": 0.04950305982549083
    },
    {
     "index": 129,
     "year": 1949,
     "candidate": "direct",
-    "iterations": 14,
-    "p90_area_error": 0.05256349230963353
+    "iterations": 16,
+    "p90_area_error": 0.03605861063029586
    },
    {
     "index": 130,
     "year": 1950,
     "candidate": "direct",
     "iterations": 14,
-    "p90_area_error": 0.05118326252225998
+    "p90_area_error": 0.04075908966109934
    },
    {
     "index": 131,
     "year": 1951,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.055379465219830316
+    "p90_area_error": 0.04713061768472523
    },
    {
     "index": 132,
     "year": 1952,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.05483614382559792
+    "p90_area_error": 0.056562790860006845
    },
    {
     "index": 133,
     "year": 1953,
     "candidate": "direct",
-    "iterations": 15,
-    "p90_area_error": 0.045502113381068306
+    "iterations": 14,
+    "p90_area_error": 0.04923133275139063
    },
    {
     "index": 134,
     "year": 1954,
     "candidate": "direct",
-    "iterations": 15,
-    "p90_area_error": 0.04363317824819207
+    "iterations": 13,
+    "p90_area_error": 0.053031232137481225
    },
    {
     "index": 135,
     "year": 1955,
     "candidate": "direct",
-    "iterations": 14,
-    "p90_area_error": 0.048817081948411195
+    "iterations": 13,
+    "p90_area_error": 0.061484082786394736
    },
    {
     "index": 136,
     "year": 1956,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.056079312092431
+    "p90_area_error": 0.05825781232554779
    },
    {
     "index": 137,
     "year": 1957,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.06603032419154728
+    "p90_area_error": 0.06307717650380541
    },
    {
     "index": 138,
     "year": 1958,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.06261868660234819
+    "iterations": 13,
+    "p90_area_error": 0.06340039191860843
    },
    {
     "index": 139,
     "year": 1959,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.06272385990325995
+    "iterations": 13,
+    "p90_area_error": 0.06364108711836991
    },
    {
     "index": 140,
     "year": 1960,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.058318485794155994
+    "p90_area_error": 0.06307608828784955
    },
    {
     "index": 141,
     "year": 1961,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.059192994220314196
+    "iterations": 13,
+    "p90_area_error": 0.061063732871037696
    },
    {
     "index": 142,
     "year": 1962,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.06087596352763927
+    "iterations": 14,
+    "p90_area_error": 0.06130574375489337
    },
    {
     "index": 143,
     "year": 1963,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.06368955836108955
+    "iterations": 14,
+    "p90_area_error": 0.06535259122133885
    },
    {
     "index": 144,
     "year": 1964,
     "candidate": "direct",
-    "iterations": 14,
-    "p90_area_error": 0.05315204325021999
+    "iterations": 12,
+    "p90_area_error": 0.07183255728370845
    },
    {
     "index": 145,
     "year": 1965,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.05183446022943827
+    "iterations": 12,
+    "p90_area_error": 0.06445526331560124
    },
    {
     "index": 146,
     "year": 1966,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.04423517069394771
+    "p90_area_error": 0.0601687350093307
    },
    {
     "index": 147,
     "year": 1967,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.04466156038603587
+    "iterations": 14,
+    "p90_area_error": 0.05735176471238839
    },
    {
     "index": 148,
     "year": 1968,
     "candidate": "direct",
     "iterations": 14,
-    "p90_area_error": 0.044631229352139985
+    "p90_area_error": 0.05097172267130593
    },
    {
     "index": 149,
     "year": 1969,
     "candidate": "direct",
     "iterations": 15,
-    "p90_area_error": 0.04436143197968502
+    "p90_area_error": 0.04083323511366239
    },
    {
     "index": 150,
     "year": 1970,
     "candidate": "direct",
     "iterations": 14,
-    "p90_area_error": 0.04443290807231175
+    "p90_area_error": 0.042586910025006315
    },
    {
     "index": 151,
     "year": 1971,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.045387539463586445
+    "p90_area_error": 0.03931281352162577
    },
    {
     "index": 152,
     "year": 1972,
     "candidate": "direct",
-    "iterations": 11,
-    "p90_area_error": 0.04385330246950975
+    "iterations": 12,
+    "p90_area_error": 0.04169693728160536
    },
    {
     "index": 153,
     "year": 1973,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.041498690476479215
+    "p90_area_error": 0.04382448964029359
    },
    {
     "index": 154,
     "year": 1974,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.04376063386566185
+    "iterations": 11,
+    "p90_area_error": 0.04788881776105376
    },
    {
     "index": 155,
     "year": 1975,
     "candidate": "direct",
-    "iterations": 11,
-    "p90_area_error": 0.046580037855952244
+    "iterations": 12,
+    "p90_area_error": 0.05376174226424259
    },
    {
     "index": 156,
     "year": 1976,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.04684761920419087
+    "p90_area_error": 0.058118128090261685
    },
    {
     "index": 157,
     "year": 1977,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.0468259746703893
+    "p90_area_error": 0.05897414016026441
    },
    {
     "index": 158,
     "year": 1978,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.05281102011018713
+    "p90_area_error": 0.06510976251742902
    },
    {
     "index": 159,
     "year": 1979,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.05407608650128874
+    "p90_area_error": 0.05747422184766372
    },
    {
     "index": 160,
     "year": 1980,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.058547239529347726
+    "p90_area_error": 0.057808788214485166
    },
    {
     "index": 161,
     "year": 1981,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.05641975035394735
+    "p90_area_error": 0.0542338485671743
    },
    {
     "index": 162,
     "year": 1982,
     "candidate": "direct",
     "iterations": 11,
-    "p90_area_error": 0.049457899729268805
+    "p90_area_error": 0.06400805603903419
    },
    {
     "index": 163,
     "year": 1983,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.04633640911441087
+    "iterations": 11,
+    "p90_area_error": 0.052187658471984075
    },
    {
     "index": 164,
     "year": 1984,
     "candidate": "direct",
-    "iterations": 11,
-    "p90_area_error": 0.04166234835147402
+    "iterations": 12,
+    "p90_area_error": 0.05651144142840427
    },
    {
     "index": 165,
     "year": 1985,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.04197280357395411
+    "iterations": 11,
+    "p90_area_error": 0.0506667356786225
    },
    {
     "index": 166,
     "year": 1986,
     "candidate": "direct",
-    "iterations": 11,
-    "p90_area_error": 0.04233344815440449
+    "iterations": 12,
+    "p90_area_error": 0.04882048262002309
    },
    {
     "index": 167,
     "year": 1987,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.04211942948528628
+    "p90_area_error": 0.046436389827547137
    },
    {
     "index": 168,
     "year": 1988,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.03372319010435983
+    "p90_area_error": 0.05085208597503335
    },
    {
     "index": 169,
     "year": 1989,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.04236306050774233
+    "p90_area_error": 0.044517804051697744
    },
    {
     "index": 170,
     "year": 1990,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.04252274798802613
+    "p90_area_error": 0.04706723368486394
    },
    {
     "index": 171,
     "year": 1991,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.03869783463953233
+    "p90_area_error": 0.04261970595695207
    },
    {
     "index": 172,
     "year": 1992,
     "candidate": "direct",
     "iterations": 12,
-    "p90_area_error": 0.031116487599153406
+    "p90_area_error": 0.04283311996360294
    },
    {
     "index": 173,
     "year": 1993,
     "candidate": "direct",
-    "iterations": 11,
-    "p90_area_error": 0.03091528336610454
+    "iterations": 12,
+    "p90_area_error": 0.04337681516304219
    },
    {
     "index": 174,
     "year": 1994,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.02218056209074983
+    "iterations": 11,
+    "p90_area_error": 0.029952295053330743
    },
    {
     "index": 175,
     "year": 1995,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.021416821380815423
+    "iterations": 14,
+    "p90_area_error": 0.02737285661055671
    },
    {
     "index": 176,
     "year": 1996,
     "candidate": "direct",
-    "iterations": 12,
-    "p90_area_error": 0.019233556594783537
+    "iterations": 13,
+    "p90_area_error": 0.028383090121231393
    },
    {
     "index": 177,
     "year": 1997,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.018243384123694157
+    "iterations": 12,
+    "p90_area_error": 0.029599194262261378
    },
    {
     "index": 178,
     "year": 1998,
     "candidate": "direct",
-    "iterations": 13,
-    "p90_area_error": 0.016935343846639934
+    "iterations": 12,
+    "p90_area_error": 0.02994135812366184
    },
    {
     "index": 179,
     "year": 1999,
     "candidate": "direct",
     "iterations": 13,
-    "p90_area_error": 0.02016897697817295
+    "p90_area_error": 0.029846592353962118
    },
    {
     "index": 180,
     "year": 2000,
     "candidate": "direct",
-    "iterations": 14,
-    "p90_area_error": 0.020535639256251157
+    "iterations": 12,
+    "p90_area_error": 0.029750536209440237
    },
    {
     "index": 181,
     "year": 2001,
     "candidate": "direct",
     "iterations": 10,
-    "p90_area_error": 0.020410484404624528
+    "p90_area_error": 0.029477415626237267
    },
    {
     "index": 182,
     "year": 2002,
     "candidate": "direct",
     "iterations": 9,
-    "p90_area_error": 0.032434186402974345
+    "p90_area_error": 0.029198378870961713
    },
    {
     "index": 183,
     "year": 2003,
     "candidate": "direct",
-    "iterations": 9,
-    "p90_area_error": 0.03992697330740445
+    "iterations": 10,
+    "p90_area_error": 0.027047672116851062
    },
    {
     "index": 184,
     "year": 2004,
     "candidate": "direct",
     "iterations": 9,
-    "p90_area_error": 0.03915275475233354
+    "p90_area_error": 0.02951699830537586
    },
    {
     "index": 185,
     "year": 2005,
     "candidate": "direct",
-    "iterations": 8,
-    "p90_area_error": 0.046953713315135384
+    "iterations": 9,
+    "p90_area_error": 0.026006148145631007
    },
    {
     "index": 186,
     "year": 2006,
     "candidate": "direct",
-    "iterations": 8,
-    "p90_area_error": 0.042843151748185634
+    "iterations": 9,
+    "p90_area_error": 0.02531469292323569
    },
    {
     "index": 187,
     "year": 2007,
     "candidate": "direct",
     "iterations": 8,
-    "p90_area_error": 0.0434728890874636
+    "p90_area_error": 0.029925934127075803
    },
    {
     "index": 188,
     "year": 2008,
     "candidate": "direct",
     "iterations": 8,
-    "p90_area_error": 0.04438954168262833
+    "p90_area_error": 0.029044940460930105
    },
    {
     "index": 189,
     "year": 2009,
     "candidate": "direct",
     "iterations": 8,
-    "p90_area_error": 0.0435898945113593
+    "p90_area_error": 0.02801842305001482
    },
    {
     "index": 190,
     "year": 2010,
     "candidate": "direct",
     "iterations": 8,
-    "p90_area_error": 0.042798445041850514
+    "p90_area_error": 0.027765209865570472
    },
    {
     "index": 191,
     "year": 2011,
     "candidate": "direct",
-    "iterations": 7,
-    "p90_area_error": 0.04250154019274974
+    "iterations": 8,
+    "p90_area_error": 0.026032635946373325
    },
    {
     "index": 192,
     "year": 2012,
     "candidate": "direct",
-    "iterations": 7,
-    "p90_area_error": 0.04142146733601649
+    "iterations": 8,
+    "p90_area_error": 0.025085485574212286
    },
    {
     "index": 193,
     "year": 2013,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.04178352543664781
+    "p90_area_error": 0.02969655969152386
    },
    {
     "index": 194,
     "year": 2014,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.04286096521977696
+    "p90_area_error": 0.02943139783477547
    },
    {
     "index": 195,
     "year": 2015,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.04320377159898162
+    "p90_area_error": 0.02768415768152416
    },
    {
     "index": 196,
     "year": 2016,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.04057730967569695
+    "p90_area_error": 0.02577859657664417
    },
    {
     "index": 197,
     "year": 2017,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.0390359010121052
+    "p90_area_error": 0.025449721456547024
    },
    {
     "index": 198,
     "year": 2018,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.03812921746397656
+    "p90_area_error": 0.02227175121987199
    },
    {
     "index": 199,
     "year": 2019,
     "candidate": "direct",
     "iterations": 7,
-    "p90_area_error": 0.03823555358784459
+    "p90_area_error": 0.023260482704431807
    },
    {
     "index": 200,
     "year": 2020,
     "candidate": "direct",
-    "iterations": 8,
-    "p90_area_error": 0.03667429016365505
+    "iterations": 7,
+    "p90_area_error": 0.024931352384648157
    }
   ]
  },
@@ -2617,8 +2618,8 @@
  },
  "files": {
   "boundary_rings.u32": {
-   "bytes": 39288,
-   "sha256": "34177613fbac36d6fe60f9039041f2b457789227dcb8b562b63614d84f18d7f3"
+   "bytes": 39244,
+   "sha256": "6ca24d81d4ddb37bee7f5ad78dac04eb13473d4d697b9d7a82d1f5f20d99c360"
   },
   "entities.json": {
    "bytes": 18449,
@@ -2629,52 +2630,52 @@
    "sha256": "192c4231e129acbbdfddc9fe0644e76d90009d8f5528b069dc07f962ca9743ab"
   },
   "indices.u32": {
-   "bytes": 102540,
-   "sha256": "7398017c849a2be922e93146d642cbbed9db7cbb5e8a465df76f171a8403b18a"
+   "bytes": 102528,
+   "sha256": "dbe4fde7bddcf8f237fc4ac6906da1dde068514aeffa576a6c9e69be8e22ddfb"
   },
   "labels.f32": {
    "bytes": 117384,
-   "sha256": "161c6f74a31dad5afb3249e62a869197d185f072f36d929da377151bb3e2dbd8"
+   "sha256": "7eb4cee216708952dfd97023b69b7b5b65f1bb23b5faeb9e5b5f321a1a101131"
   },
   "positions.f32": {
-   "bytes": 10580640,
-   "sha256": "3b05ca44621d8a5f302600d08dbdb7382b30910c319f9b4bdb243d6828c12d9f"
+   "bytes": 10572600,
+   "sha256": "0847aadda195838fd47841ace31742866828acc86f2b96f92a637bc2e2506cc0"
   },
   "positions_original.f32": {
-   "bytes": 52640,
-   "sha256": "9c81d85f1e48904c5cdfe662fe28b5d300a12b69f4b1456f57516b8b95c48382"
+   "bytes": 52600,
+   "sha256": "aaf825440b70f1ab172d6c3aa7247fa1bb23bb1ca56d3c643049175da9967332"
   },
   "quality.parquet": {
-   "bytes": 162526,
-   "sha256": "6a544e195262bda2563667c47c24cdc77f28c27696064e206ceea3e08fc0cf12"
+   "bytes": 161326,
+   "sha256": "14c77d9c19017356051b9464366209d2401442d344e6e7b7e64e883e6078e91f"
   },
   "region_draw_ranges.u32": {
    "bytes": 584,
-   "sha256": "8bfc1a9e6d22111ea2319cbb1f53c42ca1a20b75d6693e02715482f351435528"
+   "sha256": "dc790d16f45b903a56204ea70b093eef20f55aafd15e4245b4c69000dbb097d7"
   },
   "ring_names.json": {
-   "bytes": 2163,
-   "sha256": "fb62fcde8bce39da135cc7009dc22b3588a31dc1a0cc2cf3d4efd8970c3d7c84"
+   "bytes": 2151,
+   "sha256": "6f3daee94293ab4bd5dbd103916a38f27d36d75485521de484f683b8b71d1af3"
   },
   "surface_vertex_to_canonical.u32": {
-   "bytes": 26320,
-   "sha256": "82ca29bed3b38ada4d62880b3e7c326198352c8a27c17dbb8b2b3715f7556940"
+   "bytes": 26300,
+   "sha256": "d7b724b5331a2d8c17af2a9d8ba730bdbe19d27be4e057567458b902584673e6"
   },
   "topology.bin": {
-   "bytes": 38276,
-   "sha256": "2b3bbb5623135746ae31e77a5ab4a6a62c975f020e437d1716d33483ffcefd8d"
+   "bytes": 38240,
+   "sha256": "2d1dc99c5ae174ebf52727e62e42e5ff3061eeefe766d956cd93d0229b69524a"
   },
   "triangle_ring.u32": {
-   "bytes": 34180,
-   "sha256": "c29933b9f88b7a9076700e66aa9c6058ede42195a0d91b49d4d33c9b34cadcfb"
+   "bytes": 34176,
+   "sha256": "84d1e01c4e747d303f752701c6ceddaf45ec3468e35e3d0db51515d061d47f3f"
   },
   "values.f32": {
    "bytes": 234768,
    "sha256": "cc5de86d94d80f808de4bd7d47dc94674c76aa875fe8905bcca23d4ebad170fa"
   },
   "vertices_lonlat.f32": {
-   "bytes": 52640,
-   "sha256": "4c452895a8cbbda83748ff78dcd588a6a93020fe52985828c37cd2aa91383392"
+   "bytes": 52600,
+   "sha256": "61bb667a1d5d4b4904180131ec9fe17f0f5b5037f88b08df034dad4586f3ae6f"
   }
  },
  "entities_file": "entities.json",

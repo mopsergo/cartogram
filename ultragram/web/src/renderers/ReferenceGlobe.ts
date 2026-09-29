@@ -101,6 +101,8 @@ export class ReferenceGlobe {
 
   constructor(art: Artifacts, domElement: HTMLElement) {
     this.art = art;
+    // Naht-Rotation zurückdrehen: Der Globus zeigt die wahre Erde
+    this.lonOffsetDeg = ((art.manifest.lon_offset_deg ?? 0) + 360) % 360;
     const nV = art.manifest.dimensions.num_vertices;
     const nE = art.manifest.dimensions.num_entities;
     // Wandsegmente direkt aus den Ringen – inklusive Ring-Vertices
@@ -195,10 +197,17 @@ export class ReferenceGlobe {
 
   // ----------------------------------------------------------- Frame
 
-  private static toSphereOut(lonDeg: number, latDeg: number,
-                             out: Float32Array, off: number,
-                             radius: number): void {
-    const lon = lonDeg * Math.PI / 180;
+  /** Längengrad-Offset (Naht-Rotation der Pipeline): Die Artefakte
+   *  liegen im rotierten Rahmen (Naht bei −168.5° statt ±180°,
+   *  Kartenmitte 11.5°E). Der Globus zeigt die WAHRE Erde, daher
+   *  wird der Offset beim Kugel-Mapping zurückaddiert – geografische
+   *  Positionen stimmen wieder (Greenwich bei 0°). */
+  private lonOffsetDeg = 0;
+
+  private toSphereOut(lonDeg: number, latDeg: number,
+                      out: Float32Array, off: number,
+                      radius: number): void {
+    const lon = (lonDeg + this.lonOffsetDeg) * Math.PI / 180;
     const lat = latDeg * Math.PI / 180;
     const c = Math.cos(lat);
     out[off] = c * Math.cos(lon) * radius;
@@ -238,7 +247,7 @@ export class ReferenceGlobe {
 
     // 2) Einheitskugel-Position je kanonischem Vertex
     for (let v = 0; v < nV; v++) {
-      ReferenceGlobe.toSphereOut(pll[v * 2], pll[v * 2 + 1],
+      this.toSphereOut(pll[v * 2], pll[v * 2 + 1],
         vx, v * 3, 1);
     }
 
@@ -385,15 +394,15 @@ export class ReferenceGlobe {
         const lon1 = pll[seg.v1 * 2] + (cx - pll[seg.v1 * 2]) * WALL_SHRINK;
         const lat1 = pll[seg.v1 * 2 + 1]
           + (cy - pll[seg.v1 * 2 + 1]) * WALL_SHRINK;
-        ReferenceGlobe.toSphereOut(lon0, lat0, sidePos, sp,
+        this.toSphereOut(lon0, lat0, sidePos, sp,
           GLOBE_RADIUS);
-        ReferenceGlobe.toSphereOut(lon1, lat1, sidePos, sp + 3,
+        this.toSphereOut(lon1, lat1, sidePos, sp + 3,
           GLOBE_RADIUS);
-        ReferenceGlobe.toSphereOut(lon1, lat1, sidePos, sp + 6, rTop);
-        ReferenceGlobe.toSphereOut(lon0, lat0, sidePos, sp + 9,
+        this.toSphereOut(lon1, lat1, sidePos, sp + 6, rTop);
+        this.toSphereOut(lon0, lat0, sidePos, sp + 9,
           GLOBE_RADIUS);
-        ReferenceGlobe.toSphereOut(lon1, lat1, sidePos, sp + 12, rTop);
-        ReferenceGlobe.toSphereOut(lon0, lat0, sidePos, sp + 15, rTop);
+        this.toSphereOut(lon1, lat1, sidePos, sp + 12, rTop);
+        this.toSphereOut(lon0, lat0, sidePos, sp + 15, rTop);
         for (let i = 0; i < 6; i++) {
           sideCol[(sp / 3) + i * 3] = rC;
           sideCol[(sp / 3) + i * 3 + 1] = gC;
