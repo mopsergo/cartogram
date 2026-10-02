@@ -415,17 +415,17 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
                 "available_metrics": color_cfg.get("available_metrics"),
                 "value_ranges": ranges,
             },
-            "height": {
-                "metric": height_cfg.get("metric"),
-                "transform": height_cfg.get("transform"),
-                "max_fraction": height_cfg.get("max_fraction"),
-                "formula": ("height = transform(max(value, 0) / "
-                            "year_max) * max_fraction * world_width; "
-                            "year_max = Maximum der Höhenkennzahl im "
-                            "aktuellen Jahr; transform im Renderer "
-                            "umschaltbar: sqrt (Standard, empfindlich) "
-                            "oder linear"),
-            },
+             "height": {
+                 "metric": height_cfg.get("metric"),
+                 "transform": height_cfg.get("transform"),
+                 "max_fraction": height_cfg.get("max_fraction"),
+                 "global_max": ranges.get(height_cfg.get("metric"), {}).get("max"),
+                 "formula": ("height = transform(max(value, 0) / "
+                             "normalization_max) * max_fraction * world_width; "
+                             "normalization_max = year_max (per-year) or global_max "
+                             "(global); transform im Renderer umschaltbar: "
+                             "sqrt (Standard, empfindlich) oder linear"),
+             },
         },
         "solver": {
             "chain": cfg.solver_chain,

@@ -154,8 +154,8 @@
   <div id="title" class="hud">
     <h1>Bevölkerung &amp; Energie 1820–2020</h1>
     <p>Cartogramm: Fläche = <span id="areaLabel">Bevölkerungsanteil</span> ·
-       Farbe = Energieverbrauch pro Kopf ·
-       Höhe = Energieverbrauch pro Kopf (umstellbar)</p>
+        Farbe = Energieverbrauch pro Kopf ·
+        Höhe = Energieverbrauch pro Kopf (umstellbar, relativ/absolut)</p>
   </div>
   <div id="controls" class="hud">
     <div class="group">
@@ -206,17 +206,22 @@
       <label>2.5D-Optionen</label>
       <label class="toggle"><input type="checkbox" id="heightToggle" checked />
         Höhe anzeigen</label>
-      <select id="heightSelect" title="Kennzahl für die Extrusionshöhe">
+      <select id="heightSelect" title="Kennzahl für die Extrusionshöhe (relativ pro Jahr oder absolut global)">
         <option value="3" selected>Energie pro Kopf (kWh)</option>
         <option value="2">Gesamtenergie (Mtoe)</option>
         <option value="0">Bevölkerung</option>
         <option value="1">Anteil Weltbevölkerung</option>
       </select>
       <select id="heightScaleSelect"
-        title="Höhentransformation – Skala gegen das Jahres-Maximum">
+        title="Höhentransformation – Skala gegen das Normalisierungs-Maximum (per Jahr oder global)">
         <option value="sqrt" selected>Wurzel (kleine Werte betont)</option>
         <option value="linear">Linear (proportional)</option>
         <option value="square">Quadrat (Spitzen differenzieren)</option>
+      </select>
+      <select id="heightNormSelect"
+        title="Normalisierung der Höhe: pro Jahr (relativ) oder global (absolut)">
+        <option value="perYear" selected>Pro Jahr (relativ)</option>
+        <option value="global">Global (absolut)</option>
       </select>
     </div>
     <div class="group" id="flatGroup" style="display:none">

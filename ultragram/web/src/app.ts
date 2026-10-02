@@ -41,6 +41,7 @@ export class App {
   /** Transformation der Farbskala (alle Kennzahlen gemeinsam) */
   private colorTransform: "linear" | "sqrt" | "log" = "sqrt";
   private heightEnabled = true;
+  private heightNormalization: "perYear" | "global" = "perYear";
   private ghostVisible = true;
   private geoMode = false;
   /** 0 = Kartogramm .. 1 = unverzerrte Original-Geografie (linearer Faktor) */
@@ -245,7 +246,7 @@ export class App {
     const s = this.timeline.state;
     const key = `${s.frameA}|${s.frameB}|${s.t.toFixed(5)}|${this.metric}` +
       `|${this.hovered}|${this.selected}|${this.heightEnabled}` +
-      `|${this.heightMetric}|${this.heightTransform}|${this.mode}` +
+      `|${this.heightMetric}|${this.heightTransform}|${this.heightNormalization}|${this.mode}` +
       `|${this.geoBlend.toFixed(3)}|${this.variant}` +
       `|${this.variantBlend.toFixed(3)}`;
     if (key === this.lastFrameKey) return;
@@ -330,20 +331,55 @@ export class App {
     // (nicht das globale Maximum 1820–2020: frühe Jahre hatten sonst
     // fast keine sichtbaren Unterschiede), optional Wurzel-Transfor-
     // mation für stärkere Sichtbarkeit kleinerer Werte.
-    const maxFrac = art.manifest.scales.height.max_fraction ?? 0.09;
+    // Alternativ: globale Normalisierung (absolute Werte, höhere
+    // max_fraction für bessere Sichtbarkeit).
+    const baseMaxFrac = art.manifest.scales.height.max_fraction ?? 0.09;
+    const maxFrac = this.heightNormalization === "global" ? 0.2 : baseMaxFrac;
+    
+    // Get global min/max for the current height metric from value_ranges
+    const metricNames = ["population", "world_share", "energy_consumption", "per_capita_energy_consumption"];
+    const heightMetricName = metricNames[this.heightMetric];
+    const valueRanges = art.manifest.scales.color.value_ranges;
+    // For heights, use actual non-zero min (exclude NaN/0) as baseline
+    const range = valueRanges[heightMetricName];
+    const globalMin = range?.min ?? 0;
+    const globalMax = range?.max ?? 1;
+    // If min is 0, use a small epsilon to avoid division by zero
+    const effectiveGlobalMin = globalMin > 0 ? globalMin : 0.001;
+    const globalRange = globalMax - effectiveGlobalMin;
+    
+    // Per-year mode: normalize against year max/min (excluding missing/zero values)
     let yearMax = 0;
+    let yearMin = Infinity;
     for (let e = 0; e < nE; e++) {
       const v = this.interpValues[e * 4 + this.heightMetric];
-      if (Number.isFinite(v) && v > yearMax) yearMax = v;
+      if (Number.isFinite(v) && v > 0) {
+        if (v > yearMax) yearMax = v;
+        if (v < yearMin) yearMin = v;
+      }
     }
     if (yearMax <= 0) yearMax = 1;
+    if (yearMin === Infinity) yearMin = 0;
+    // Use non-zero min for per-year normalization
+    const effectiveYearMin = yearMin > 0 ? yearMin : 0.001;
+    
     for (let e = 0; e < nE; e++) {
       const v = this.interpValues[e * 4 + this.heightMetric];
       if (!this.heightEnabled || !Number.isFinite(v) || v <= 0) {
         this.heights[e] = 0;
         continue;
       }
-      const x = v / yearMax;
+      
+      let x: number;
+      if (this.heightNormalization === "global") {
+        // Global mode: normalize against global min/max (excluding missing/zero)
+        x = (v - effectiveGlobalMin) / globalRange;
+      } else {
+        // Per-year mode: normalize against year min/max (excluding missing/zero)
+        const yearRange = yearMax - effectiveYearMin;
+        x = yearRange > 0 ? (v - effectiveYearMin) / yearRange : 0;
+      }
+      
       const t = this.heightTransform === "sqrt"
         ? Math.sqrt(x)
         : this.heightTransform === "square" ? x * x : x;
@@ -618,6 +654,16 @@ export class App {
       const v = heightScaleSelect.value;
       this.heightTransform =
         v === "linear" ? "linear" : v === "square" ? "square" : "sqrt";
+      this.markDirty();
+    });
+
+    // Höhen-Normalisierung: per Jahr (relativ) oder global (absolut)
+    const heightNormSelect =
+      document.getElementById("heightNormSelect") as HTMLSelectElement;
+    heightNormSelect.value = this.heightNormalization;
+    heightNormSelect.addEventListener("change", () => {
+      const v = heightNormSelect.value;
+      this.heightNormalization = v === "global" ? "global" : "perYear";
       this.markDirty();
     });
 

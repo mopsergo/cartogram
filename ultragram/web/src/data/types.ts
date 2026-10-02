@@ -46,7 +46,11 @@ export interface Manifest {
       ramp: string;
       value_ranges: Record<string, { min: number | null; max: number | null }>;
     };
-    height: { metric: string; max_fraction: number };
+    height: {
+      metric: string;
+      max_fraction: number;
+      global_max?: number;
+    };
   };
   solver: { chain: string[]; per_frame: unknown[] };
 }
