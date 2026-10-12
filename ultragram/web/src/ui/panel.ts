@@ -57,7 +57,8 @@ export class DetailPanel {
     this.rowsEl.innerHTML = html;
 
     this.hintEl.textContent = meta.note ||
-      "Zeitreihe 1820–2020: Bevölkerungsanteil (blau, links) und " +
+      `Zeitreihe ${this.art.manifest.years.data_range.join("–")}: ` +
+      "Bevölkerungsanteil (blau, links) und " +
       "Energie pro Kopf (orange, rechts).";
     this.drawSparkline(entityIndex, displayYear);
   }

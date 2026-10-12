@@ -145,11 +145,13 @@ Dev-Server einfach neu laden, der nimmt die Artefakte direkt aus
   in 2.5D als hellgraue Linien auf dem dunklen Boden hinter den
   Extrusionsblöcken; in der Original-Ansicht blendet sie sich
   automatisch aus.
-- **Kartogramm-Lauf**: „Aktuell (mit Reparaturen)" ⇄ „Original (Git-
-  Commit)" – der Originalzustand bleibt als eigener Export
-  (`web/public/cartogram/v0`) erhalten und ist jederzeit umschaltbar
-  (eigener Mesh, darum Seitenwechsel mit beibehaltenem Jahr).
-- **Kartogramm-Fläche** (nur aktueller Lauf): Bevölkerungsanteil ·
+- **Kartogramm-Lauf**: „Aktuell (mit Reparaturen)" ⇄ „OWID 1965–2025"
+  ⇄ „Original (Git-Commit)" – der Originalzustand bleibt als eigener
+  Export (`web/public/cartogram/v0`) erhalten und ist jederzeit
+  umschaltbar (eigener Mesh, darum Seitenwechsel mit beibehaltenem
+  Jahr). Der OWID-Lauf (`web/public/cartogram/owid/`) ist ein eigener
+  Datensatz, siehe Datengrundlage.
+- **Kartogramm-Fläche** (aktueller und OWID-Lauf): Bevölkerungsanteil ·
   Gesamtenergie · Energie pro Kopf – drei gelöste Kartogramme über
   derselben Topologie; Wechsel morpht weich zwischen den
   Positions-Sätzen. Entitäten ohne Wert der gewählten Kennzahl
@@ -318,3 +320,15 @@ eigene Geometrie in Natural Earth 110m; die 29 Kleinstaaten ohne
 Geometrie (Singapur, Malta, Bahrain, …) bilden zusammen mit den
 unbeanspruchten Gebieten (Taiwan, Grönland, Westsahara, …)
 `OTHER_WORLD`. Einheiten: Personen, Mtoe, kWh/Kopf.
+
+OWID-Lauf (1965–2025): `datasets/owid_population_energy_1965_2025.csv`,
+erzeugt von `datasets/prep_owid_data.py` aus zwei Our-World-in-Data-
+Paketen – Bevölkerung UN WPP 2024 (`datasets/owid_population/`,
+Schätzung bis 2023, mittlere Projektion 2024–2025) und Primärenergie
+pro Kopf (`datasets/owid_energy_mix/`, Energy Institute Statistical
+Review 2026 + EIA, kWh/Kopf; Länder ab 1965 bzw. 1980). Weltbevölkerung
+= OWID-Zeile „World"; was keine eigene Kartengeometrie hat, fällt in
+`OTHER_WORLD`. Nachfolgestaaten (UdSSR, Jugoslawien, Serbien-Montenegro,
+Tschechoslowakei) erhalten vor Beginn ihrer eigenen Reihe den Pro-Kopf-
+Wert des Aggregats. Gesamtenergie (Mtoe) = Pro-Kopf-Wert × Bevölkerung.
+Pipeline-Profil: `--dataset owid` (siehe PIPELINE.md §3.2a).

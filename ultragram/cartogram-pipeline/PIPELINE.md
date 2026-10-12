@@ -262,6 +262,32 @@ python3 -m worldcarto.cli quality         --metric energy_consumption
 python3 -m worldcarto.cli verify-stability --metric energy_consumption
 ```
 
+### 3.2a Zweiter Datensatz: OWID-Lauf (1965–2025)
+
+Das Datensatz-Profil `configs/datasets/owid.yaml` überschreibt
+`pipeline.yaml` (Eingabe-CSV, Jahre 1965–2025, eigene Ordner
+`data/intermediate/owid`, `build-cache/owid`, `dist/owid`, Export nach
+`web/public/cartogram/owid/v1|v2|v3`). Der Standardlauf bleibt
+unberührt; die Webapp zeigt das Ergebnis als Kartogramm-Lauf „OWID".
+
+```bash
+# Eingabe erzeugen (OWID-Bevölkerung UN WPP + Primärenergie pro Kopf)
+cd datasets && ../.venv/bin/python prep_owid_data.py
+cp owid_population_energy_1965_2025.csv \
+   ../ultragram/cartogram-pipeline/data/raw/
+
+cd ../ultragram/cartogram-pipeline
+export PYTHONPATH=src
+python3 -m worldcarto.cli --dataset owid ingest
+for m in world_share energy_consumption per_capita_energy_consumption; do
+  python3 -m worldcarto.cli --dataset owid solve  --metric $m
+  python3 -m worldcarto.cli --dataset owid export --metric $m
+done
+```
+
+`--dataset` steht **vor** dem Unterbefehl (alternativ
+`WORLDCARTO_DATASET=owid`).
+
 ### 3.3 Nach Änderungen – was muss neu laufen?
 
 | Änderung | nötig |
