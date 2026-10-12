@@ -5,6 +5,7 @@ Alle Pfade sind relativ zum cartogram-pipeline-Wurzelverzeichnis.
 from __future__ import annotations
 
 import hashlib
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -14,6 +15,31 @@ import yaml
 BASE_DIR = Path(__file__).resolve().parents[2]  # cartogram-pipeline/
 
 CONFIG_FILES = ("entities.yaml", "pipeline.yaml", "solver.yaml", "visualization.yaml")
+
+#: Datensatz-Profil (configs/datasets/<name>.yaml überschreibt
+#: pipeline.yaml): gesetzt über CLI --dataset bzw. diese Variable.
+DATASET_ENV = "WORLDCARTO_DATASET"
+
+
+def active_dataset() -> str | None:
+    return os.environ.get(DATASET_ENV) or None
+
+
+def dataset_overlay_path(name: str) -> Path:
+    path = BASE_DIR / "configs" / "datasets" / f"{name}.yaml"
+    if not path.is_file():
+        raise FileNotFoundError(f"Datensatz-Profil fehlt: {path}")
+    return path
+
+
+def _deep_merge(base: dict, over: dict) -> dict:
+    out = dict(base)
+    for k, v in over.items():
+        if isinstance(v, dict) and isinstance(out.get(k), dict):
+            out[k] = _deep_merge(out[k], v)
+        else:
+            out[k] = v
+    return out
 
 #: Zielkennzahl -> Export-Varianten-Ordner (dist/cartogram/<dir> bzw.
 #: web/public/cartogram/<dir>). Der Renderer lädt v1 vollständig und
@@ -59,6 +85,10 @@ def config_hash(cfg: "PipelineConfig") -> str:
     for name in CONFIG_FILES:
         h.update(name.encode())
         h.update(file_sha256(BASE_DIR / "configs" / name).encode())
+    dataset = active_dataset()
+    if dataset:
+        h.update(dataset.encode())
+        h.update(file_sha256(dataset_overlay_path(dataset)).encode())
     return h.hexdigest()[:16]
 
 
@@ -144,6 +174,10 @@ class PipelineConfig:
 def load_config(target_metric: str | None = None) -> PipelineConfig:
     entities = _load_yaml(BASE_DIR / "configs" / "entities.yaml")
     pipeline = _load_yaml(BASE_DIR / "configs" / "pipeline.yaml")
+    dataset = active_dataset()
+    if dataset:
+        pipeline = _deep_merge(pipeline,
+                               _load_yaml(dataset_overlay_path(dataset)))
     solver = _load_yaml(BASE_DIR / "configs" / "solver.yaml")
     viz = _load_yaml(BASE_DIR / "configs" / "visualization.yaml")
 

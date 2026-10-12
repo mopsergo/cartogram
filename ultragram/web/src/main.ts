@@ -1,7 +1,7 @@
 /** Einstiegspunkt: Artefakte laden, App starten, Fehler anzeigen.
  *
- * URL-Parameter: ?run=current|legacy&variant=population|energy|percapita
- * &year=1820..2020 – Lauf/Variante bestimmen den geladenen Export,
+ * URL-Parameter: ?run=current|owid|legacy&variant=population|energy|percapita
+ * &year=<Jahr im Bereich des Laufs> – Lauf/Variante bestimmen den geladenen Export,
  * year setzt die Startposition der Zeitleiste.
  */
 import { loadArtifacts } from "./data/artifacts";
@@ -28,7 +28,7 @@ async function main(): Promise<void> {
     wireFrameExport(app, yearMin, yearMax);
     // Startjahr aus URL (z.B. nach Laufwechsel beibehalten)
     const year = Number(new URLSearchParams(location.search).get("year"));
-    if (Number.isFinite(year) && year >= 1820 && year <= 2020) {
+    if (Number.isFinite(year) && year >= yearMin && year <= yearMax) {
       app.seekYear(year);
     }
     console.log("[app] App bereit");

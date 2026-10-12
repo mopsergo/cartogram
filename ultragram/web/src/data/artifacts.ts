@@ -4,10 +4,13 @@
  *   - current: cartogram/v1 (Reparatur-Lauf) – mit zusätzlichen
  *     Flächen-Varianten v2 (Gesamtenergie) und v3 (Energie pro Kopf);
  *     gleiche Topologie, nur positions.f32 unterscheidet sich.
+ *   - owid:    cartogram/owid/v1 (+ v2/v3) – eigener Datensatz 1965–2025
+ *     (OWID: UN-Bevölkerung, Primärenergie pro Kopf), Pipeline-Profil
+ *     --dataset owid; gleiche Topologie wie current, eigene Frames.
  *   - legacy:  cartogram/v0 – der Originalzustand aus dem Git-Commit
  *     („ursprüngliche Projektion", nur Bevölkerungs-Variante).
  *
- * Gewählt via URL: ?run=current|legacy&variant=population|energy|percapita
+ * Gewählt via URL: ?run=current|owid|legacy&variant=population|energy|percapita
  */
 import {
   Artifacts, EntityMeta, Manifest, Ring,
@@ -15,13 +18,19 @@ import {
 
 const BASE = import.meta.env.BASE_URL ?? "/";
 
-export type RunId = "current" | "legacy";
+export type RunId = "current" | "owid" | "legacy";
 export type VariantId = "population" | "energy" | "percapita";
 
 /** run -> Basisordner, Variante -> Unterordner (Export-VARIANT_DIRS) */
 const RUN_DIRS: Record<RunId, string> = {
   current: "cartogram/v1",
+  owid: "cartogram/owid/v1",
   legacy: "cartogram/v0",
+};
+/** Basisordner der Flächen-Varianten je Lauf (legacy: keine) */
+const VARIANT_BASES: Partial<Record<RunId, string>> = {
+  current: "cartogram",
+  owid: "cartogram/owid",
 };
 export const VARIANT_DIRS: Record<VariantId, string> = {
   population: "v1",
@@ -36,7 +45,8 @@ export const VARIANT_LABELS: Record<VariantId, string> = {
 
 function parseRun(): RunId {
   const p = new URLSearchParams(location.search);
-  return p.get("run") === "legacy" ? "legacy" : "current";
+  const run = p.get("run");
+  return run === "legacy" || run === "owid" ? run : "current";
 }
 
 function parseVariant(): VariantId {
@@ -200,8 +210,8 @@ export interface LoadedApp {
   art: Artifacts;
   run: RunId;
   variant: VariantId;
-  /** Für run=current: verfügbare Flächen-Varianten (v2/v3 erst nach
-   *  solve+export vorhanden). legacy: nur population. */
+  /** Verfügbare Flächen-Varianten (v2/v3 erst nach solve+export
+   *  vorhanden). legacy: nur population. */
   variantsAvailable: VariantId[];
 }
 
@@ -212,14 +222,15 @@ export async function loadArtifacts(): Promise<LoadedApp> {
   const art = await loadRun(run);
 
   let variantsAvailable: VariantId[] = ["population"];
-  if (run === "current") {
+  const variantBase = VARIANT_BASES[run];
+  if (variantBase) {
     // v2/v3 sind optional: gleiche Topologie, nur positions.f32
     const extra: VariantId[] = ["energy", "percapita"];
     variantsAvailable = ["population"];
     for (const v of extra) {
       try {
         const m = await fetchJSON<Manifest>(
-          `cartogram/${VARIANT_DIRS[v]}`, "manifest.json");
+          `${variantBase}/${VARIANT_DIRS[v]}`, "manifest.json");
         if (m.dimensions.num_vertices
             === art.manifest.dimensions.num_vertices) {
           variantsAvailable.push(v);
@@ -239,17 +250,17 @@ export async function loadArtifacts(): Promise<LoadedApp> {
 
   const active = variantsAvailable.includes(variant)
     ? variant : "population";
-  if (active !== "population") {
+  if (active !== "population" && variantBase) {
     art.positions = new Float32Array(await fetchBinary(
-      `cartogram/${VARIANT_DIRS[active]}`, "positions.f32"));
+      `${variantBase}/${VARIANT_DIRS[active]}`, "positions.f32"));
   }
   return { art, run, variant: active, variantsAvailable };
 }
 
-/** positions.f32 einer Variante nachladen (run=current). */
+/** positions.f32 einer Variante nachladen (Läufe mit Varianten). */
 export async function fetchVariantPositions(
-  variant: VariantId): Promise<Float32Array> {
-  const dir = `cartogram/${VARIANT_DIRS[variant]}`;
+  run: RunId, variant: VariantId): Promise<Float32Array> {
+  const dir = `${VARIANT_BASES[run] ?? "cartogram"}/${VARIANT_DIRS[variant]}`;
   const buf = await fetchBinary(dir, "positions.f32");
   return new Float32Array(buf);
 }

@@ -91,6 +91,8 @@ export class ValueScale {
   min: number;
   max: number;
   transform: ColorTransform;
+  /** Obergrenze ist gekappt (Ausreißer darüber in der Endfarbe) */
+  openMax = false;
 
   constructor(min: number, max: number,
              transform: ColorTransform = "linear") {

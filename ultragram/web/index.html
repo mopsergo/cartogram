@@ -167,7 +167,7 @@
 <body>
   <div id="app"></div>
   <div id="title" class="hud">
-    <h1>Bevölkerung &amp; Energie 1820–2020</h1>
+    <h1>Bevölkerung &amp; Energie <span id="yearRange">1820–2020</span></h1>
     <p>Cartogramm: Fläche = <span id="areaLabel">Bevölkerungsanteil</span> ·
        Farbe = Energieverbrauch pro Kopf ·
        Höhe = Anteil Weltbevölkerung (umstellbar, relativ/absolut)</p>
@@ -190,6 +190,7 @@
       <label>Kartogramm-Lauf</label>
       <select id="runSelect" title="Exportierte Version des Solvers">
         <option value="current">Aktuell (mit Reparaturen)</option>
+        <option value="owid">OWID 1965–2025 (UN-Bevölkerung, Energy Institute)</option>
         <option value="legacy">Original (Commit, 16 h)</option>
       </select>
     </div>

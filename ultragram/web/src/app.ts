@@ -184,6 +184,24 @@ export class App {
         dataMin(VALUE.world_share, ranges.world_share.min ?? 0),
         ranges.world_share.max ?? 1, this.colorTransform),
     };
+    // Pro-Kopf-Ausreißer (OWID-Lauf: Katar, Island bis ~320k kWh,
+    // 99. Perzentil ~160k) würden die Rampe stauchen: liegt das
+    // Maximum über 1,5 × 99. Perzentil, endet die Skala dort, darüber
+    // Endfarbe (Legende „≥"). Aktueller Lauf: 104k vs. 85k – unverändert.
+    {
+      const pc = VALUE.per_capita_energy_consumption;
+      const xs: number[] = [];
+      for (let i = pc; i < vals.length; i += 4) {
+        if (Number.isFinite(vals[i]) && vals[i] > 0) xs.push(vals[i]);
+      }
+      xs.sort((a, b) => a - b);
+      const p99 = xs.length ? xs[Math.floor(0.99 * (xs.length - 1))] : 0;
+      const scale = this.scales[pc];
+      if (p99 > 0 && scale.max > 1.5 * p99) {
+        scale.max = p99;
+        scale.openMax = true;
+      }
+    }
     this.heightMetric = VALUE.world_share;
 
     let minX = Infinity, maxX = -Infinity;
@@ -201,6 +219,13 @@ export class App {
     this.tooltip = document.getElementById("tooltip")!;
     this.playBtn = document.getElementById("playBtn") as HTMLButtonElement;
     this.yearSlider = document.getElementById("yearSlider") as HTMLInputElement;
+    // Jahresbereich je Lauf (z. B. OWID 1965–2025)
+    const [yearMin, yearMax] = this.art.manifest.years.data_range;
+    this.yearSlider.min = String(yearMin);
+    this.yearSlider.max = String(yearMax);
+    document.getElementById("yearRange")!.textContent =
+      `${yearMin}–${yearMax}`;
+    document.title = `Animated Energy Cartogram · ${yearMin}–${yearMax}`;
     this.yearDisplay = document.getElementById("yearDisplay")!;
 
     this.buildWorldChart();
@@ -310,7 +335,12 @@ export class App {
     for (let i = 0; i < nE * 4; i++) {
       const a = art.values[fa * nE * 4 + i];
       const b = art.values[fb * nE * 4 + i];
-      this.interpValues[i] = a * (1 - t) + b * t;
+      // Datenlücke auf einer Seite (Reihenbeginn/-ende): Wert des
+      // näheren Frames statt NaN (NaN · 0 bliebe NaN, z. B. 1980
+      // als Frame 1979 mit t = 1)
+      this.interpValues[i] = Number.isFinite(a) && Number.isFinite(b)
+        ? a * (1 - t) + b * t
+        : (t < 0.5 ? a : b);
     }
 
     // Farben: Kennzahl-Skala, keine Daten -> Grau, Hervorhebungen
@@ -735,7 +765,7 @@ export class App {
     const variantSelect = document.getElementById("variantSelect") as
       HTMLSelectElement;
     document.getElementById("variantGroup")!.style.display =
-      this.run === "current" ? "flex" : "none";
+      this.run !== "legacy" ? "flex" : "none";
     for (const opt of Array.from(variantSelect.options)) {
       const v = opt.value as VariantId;
       const avail = this.variantsAvailable.includes(v);
@@ -757,7 +787,7 @@ export class App {
       const p = new URLSearchParams();
       p.set("run", runSelect.value);
       if (this.variant !== "population"
-          && runSelect.value === "current") {
+          && runSelect.value !== "legacy") {
         p.set("variant", this.variant);
       }
       p.set("year", String(Math.round(this.timeline.displayYear)));
@@ -912,14 +942,14 @@ export class App {
   }
 
   /** Flächen-Variante wechseln (Positionssatz morphen, URL aktuell
-   *  halten). Läuft nur für run=current (legacy hat nur Bevölkerung). */
+   *  halten). Nicht für run=legacy (nur Bevölkerung). */
   private async setVariant(variant: VariantId): Promise<void> {
     if (variant === this.variant
         || !this.variantsAvailable.includes(variant)) return;
     let next = this.variantPositions.get(variant) ?? null;
     if (next === null) {
       try {
-        next = await fetchVariantPositions(variant);
+        next = await fetchVariantPositions(this.run, variant);
         this.variantPositions.set(variant, next);
       } catch (err) {
         console.error("[app] Variante nicht ladbar:", err);

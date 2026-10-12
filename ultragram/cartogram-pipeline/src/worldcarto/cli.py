@@ -1,6 +1,9 @@
 """CLI der Cartogram-Pipeline (Plan §9).
 
-    PYTHONPATH=src python -m worldcarto.cli <command>
+    PYTHONPATH=src python -m worldcarto.cli [--dataset NAME] <command>
+
+--dataset NAME aktiviert das Datensatz-Profil configs/datasets/NAME.yaml
+(z.B. owid: 1965–2025, eigene Caches und Export-Ordner).
 
 Commands:
     validate       Minimalvalidierung der Rohdaten (Plan §2)
@@ -292,6 +295,8 @@ def main(argv=None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--version", action="version",
                         version=f"worldcarto {__version__}")
+    parser.add_argument("--dataset", default=None,
+                        help="Datensatz-Profil (configs/datasets/NAME.yaml)")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("validate", help="Rohdaten validieren")
@@ -331,6 +336,11 @@ def main(argv=None) -> int:
                          choices=list(VARIANT_DIRS))
 
     args = parser.parse_args(argv)
+    if args.dataset:
+        import os
+        from .config import DATASET_ENV, dataset_overlay_path
+        dataset_overlay_path(args.dataset)   # früh scheitern
+        os.environ[DATASET_ENV] = args.dataset
     handlers = {
         "validate": cmd_validate, "ingest": cmd_ingest, "mesh": cmd_mesh,
         "solve": cmd_solve, "export": cmd_export,

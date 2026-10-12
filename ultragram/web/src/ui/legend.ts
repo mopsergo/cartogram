@@ -47,7 +47,7 @@ export class Legend {
     const min = fmt(scale.min);
     // Wert in der Mitte der Rampe: zeigt die Wirkung der Transformation
     const mid = fmt(scale.denormalize(0.5));
-    const max = fmt(scale.max);
+    const max = (scale.openMax ? "≥ " : "") + fmt(scale.max);
     this.minEl.textContent = min;
     this.midEl.textContent = mid;
     this.maxEl.textContent = max;
