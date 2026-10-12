@@ -16,6 +16,7 @@ import { FrameUpdate, PickResult, lerpPositions }
 import { NO_DATA_COLOR, ValueScale, formatValue, formatYear, rampColor }
   from "./renderers/colormap";
 import { Legend } from "./ui/legend";
+import { FrameOverlay } from "./ui/frameOverlay";
 import { DetailPanel } from "./ui/panel";
 
 type ViewMode = "flat" | "extruded" | "globe";
@@ -97,6 +98,11 @@ export class App {
   private wcLastYear = NaN;
   /** Kurven-Elemente des Diagramms */
   private wcPolysRel: SVGPolylineElement[] = [];
+
+  /** Seitenverhältnis der Bildausschnitt-Vorschau (null = Fenster) */
+  private previewAspect: number | null = null;
+  /** Während des Frame-Exports pausiert die Rendering-Schleife */
+  private exporting = false;
 
   private playBtn: HTMLButtonElement;
   private yearSlider: HTMLInputElement;
@@ -210,6 +216,10 @@ export class App {
     const loop = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
+      if (this.exporting) {
+        requestAnimationFrame(loop);
+        return;
+      }
       this.timeline.tick(dt);
       // Sanfter Übergang Kartogramm <-> Original-Geografie (600 ms)
       if (this.geoBlend !== this.geoBlendTarget) {
@@ -513,7 +523,7 @@ export class App {
     const y0 = frames[0], y1 = frames[nF - 1];
     const xOf = (year: number): number => (year - y0) / (y1 - y0) * W;
     const NS = "http://www.w3.org/2000/svg";
-    const colors = ["var(--accent)", "var(--accent-warm)", "#9ece6a"];
+    const colors = App.WC_COLORS;
 
     this.wcSeries.forEach((series, si) => {
       let lo = Infinity, hi = -Infinity;
@@ -561,7 +571,18 @@ export class App {
     this.wcMarker.setAttribute("x1", mx);
     this.wcMarker.setAttribute("x2", mx);
 
-    // Reihenwerte am aktuellen Jahr interpolieren
+    const [pop, energy, perCap] = this.worldTotalsText(year);
+    this.wcPop.textContent = pop;
+    this.wcEnergy.textContent = energy;
+    this.wcPerCap.textContent = perCap;
+  }
+
+  /** Weltsummen [Bevölkerung, Gesamtenergie, Pro Kopf] am Jahr,
+   *  zwischen den Keyframes interpoliert und formatiert. */
+  private worldTotalsText(year: number): [string, string, string] {
+    const nF = this.wcYears.length;
+    const y0 = this.wcYears[0], y1 = this.wcYears[nF - 1];
+    const t = Math.min(1, Math.max(0, (year - y0) / (y1 - y0)));
     const at = (series: Float32Array): number => {
       const fy = t * (nF - 1);
       const i0 = Math.min(nF - 1, Math.max(0, Math.floor(fy)));
@@ -575,12 +596,17 @@ export class App {
     const pop = at(this.wcSeries[0]);
     const energy = at(this.wcSeries[1]);
     const perCap = at(this.wcSeries[2]);
-    this.wcPop.textContent = App.fmtBig(pop);
-    this.wcEnergy.textContent = Number.isFinite(energy)
-      ? App.fmtBig(energy) + " Mtoe" : "–";
-    this.wcPerCap.textContent = Number.isFinite(perCap)
-      ? Math.round(perCap).toLocaleString("de-DE") + " kWh" : "–";
+    return [
+      App.fmtBig(pop),
+      Number.isFinite(energy) ? App.fmtBig(energy) + " Mtoe" : "–",
+      Number.isFinite(perCap)
+        ? Math.round(perCap).toLocaleString("de-DE") + " kWh" : "–",
+    ];
   }
+
+  /** Kurvenfarben des Welt-Diagramms (wie die Legende in index.html) */
+  private static readonly WC_COLORS =
+    ["var(--accent)", "var(--accent-warm)", "#9ece6a"];
 
   /** Große Zahlen kompakt (deutsch): 8,1 Mrd · 1,2 M · 84.500 */
   private static fmtBig(v: number): string {
@@ -746,6 +772,9 @@ export class App {
 
     window.addEventListener("keydown", (e) => {
       if (e.target instanceof HTMLSelectElement) return;
+      // Zahlenfelder (Export-Jahre) brauchen Pfeiltasten selbst
+      if (e.target instanceof HTMLInputElement &&
+          e.target.type !== "checkbox") return;
       if (e.code === "Space") {
         e.preventDefault();
         this.timeline.setPlaying(!this.timeline.state.playing);
@@ -766,9 +795,15 @@ export class App {
 
     // Hover + Auswahl
     const canvas = this.renderer.domElement;
+    // Canvas-relative Koordinaten (bei 16:9-Vorschau liegt die Canvas
+    // zentriert mit Rand im Fenster)
+    const pickAt = (e: MouseEvent): PickResult | null => {
+      const r = canvas.getBoundingClientRect();
+      return this.views[this.mode].pick(
+        e.clientX - r.left, e.clientY - r.top, r.width, r.height);
+    };
     canvas.addEventListener("pointermove", (e) => {
-      const hit = this.views[this.mode].pick(
-        e.clientX, e.clientY, canvas.clientWidth, canvas.clientHeight);
+      const hit = pickAt(e);
       const entity = hit ? hit.entity : null;
       if (entity !== this.hovered) {
         this.hovered = entity;
@@ -782,8 +817,7 @@ export class App {
       this.markDirty();
     });
     canvas.addEventListener("click", (e) => {
-      const hit = this.views[this.mode].pick(
-        e.clientX, e.clientY, canvas.clientWidth, canvas.clientHeight);
+      const hit = pickAt(e);
       const entity = hit ? hit.entity : null;
       this.selected = entity;
       this.selectedTriangle = hit ? hit.triangle : null;
@@ -907,12 +941,116 @@ export class App {
   }
 
   resize(): void {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const ww = window.innerWidth;
+    const wh = window.innerHeight;
+    let w = ww, h = wh;
+    const a = this.previewAspect;
+    if (a !== null) {
+      // Größtes Rechteck mit Seitenverhältnis a, zentriert (Letterbox)
+      if (ww / wh > a) w = Math.round(wh * a);
+      else h = Math.round(ww / a);
+    }
     this.renderer.setSize(w, h);
+    const style = this.renderer.domElement.style;
+    style.position = a !== null ? "absolute" : "";
+    style.left = a !== null ? `${Math.floor((ww - w) / 2)}px` : "";
+    style.top = a !== null ? `${Math.floor((wh - h) / 2)}px` : "";
     for (const view of Object.values(this.views)) {
       view.resize(w, h);
     }
     this.views[this.mode].applyCamera();
+  }
+
+  /** Bildausschnitt-Vorschau: Canvas auf ein Seitenverhältnis
+   *  beschränken, damit der Export genau das Gezeigte rendert. */
+  setPreviewAspect(aspect: number | null): void {
+    this.previewAspect = aspect;
+    this.resize();
+  }
+
+  // ---------------------------------------------------------- Export
+
+  /**
+   * Rendert eine Jahresfolge als PNG-Einzelbilder in fester Auflösung
+   * mit der aktuellen Ansicht und Kamera (Zoom, Perspektive). Die
+   * Kameras behalten ihr vertikales Sichtfeld; bei gleichem Seiten-
+   * verhältnis wie die Vorschau entspricht das Bild exakt der Anzeige.
+   * write() erhält je Bild Dateiname + PNG; gibt cancelled() true
+   * zurück, bricht der Export nach dem laufenden Bild ab.
+   */
+  async exportFrames(opts: {
+    width: number; height: number;
+    yearFrom: number; yearTo: number; framesPerYear: number;
+    yearLabel: boolean;
+    legend: boolean;
+    worldChart: boolean;
+    write: (name: string, png: Blob) => Promise<void>;
+    progress: (done: number, total: number) => void;
+    cancelled: () => boolean;
+  }): Promise<number> {
+    const { width, height, yearFrom, yearTo, framesPerYear } = opts;
+    const total = Math.round((yearTo - yearFrom) * framesPerYear) + 1;
+    const digits = String(total - 1).length;
+    const wasPlaying = this.timeline.state.playing;
+    const prevRatio = this.renderer.getPixelRatio();
+    const prevHovered = this.hovered;
+    this.exporting = true;
+    this.timeline.setPlaying(false);
+    this.hovered = null;
+    this.tooltip.style.display = "none";
+    // Übergänge (Geo/Variante) auf ihr Ziel setzen, sonst würden die
+    // ersten Bilder einen halben Morph zeigen
+    this.geoBlend = this.geoBlendTarget;
+    this.variantBlend = this.variantBlendTarget;
+
+    const out = document.createElement("canvas");
+    out.width = width;
+    out.height = height;
+    const ctx = out.getContext("2d")!;
+    const overlay = new FrameOverlay(ctx, width, height);
+    let done = 0;
+    try {
+      this.renderer.setPixelRatio(1);
+      this.renderer.setSize(width, height, false);
+      const view = this.views[this.mode];
+      view.resize(width, height);
+      for (let i = 0; i < total && !opts.cancelled(); i++) {
+        const year = Math.min(yearFrom + i / framesPerYear, yearTo);
+        this.timeline.seekYear(year);
+        this.markDirty();
+        this.updateFrameIfNeeded();
+        view.applyCamera();
+        this.renderer.render(view.scene, view.camera);
+        ctx.drawImage(this.renderer.domElement, 0, 0);
+        if (opts.yearLabel) overlay.drawYear(formatYear(year));
+        if (opts.legend) overlay.drawLegend(this.legend.info);
+        if (opts.worldChart && this.wcSeries.length > 0) {
+          overlay.drawWorldChart({
+            title: "Welt gesamt · relativ zum Maximum",
+            years: this.wcYears,
+            series: this.wcSeries,
+            names: ["Bevölkerung", "Gesamtenergie", "Energie pro Kopf"],
+            colors: App.WC_COLORS,
+            values: this.worldTotalsText(year),
+            year,
+          });
+        }
+        const png = await new Promise<Blob>((resolve, reject) =>
+          out.toBlob((b) => b ? resolve(b) : reject(
+            new Error("PNG-Kodierung fehlgeschlagen")), "image/png"));
+        await opts.write(`frame_${String(i).padStart(digits, "0")}.png`,
+          png);
+        done = i + 1;
+        opts.progress(done, total);
+      }
+    } finally {
+      this.renderer.setPixelRatio(prevRatio);
+      this.hovered = prevHovered;
+      this.exporting = false;
+      this.resize();
+      this.markDirty();
+      this.timeline.setPlaying(wasPlaying);
+    }
+    return done;
   }
 }

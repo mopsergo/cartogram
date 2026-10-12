@@ -6,6 +6,7 @@
  */
 import { loadArtifacts } from "./data/artifacts";
 import { App } from "./app";
+import { wireFrameExport } from "./ui/frameExport";
 
 async function main(): Promise<void> {
   const status = document.createElement("div");
@@ -23,6 +24,8 @@ async function main(): Promise<void> {
     status.remove();
     const app = new App(loaded, document.getElementById("app")!);
     (window as unknown as { __app: App }).__app = app;
+    const [yearMin, yearMax] = loaded.art.manifest.years.data_range;
+    wireFrameExport(app, yearMin, yearMax);
     // Startjahr aus URL (z.B. nach Laufwechsel beibehalten)
     const year = Number(new URLSearchParams(location.search).get("year"));
     if (Number.isFinite(year) && year >= 1820 && year <= 2020) {
