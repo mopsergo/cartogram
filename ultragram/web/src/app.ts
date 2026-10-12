@@ -42,10 +42,11 @@ export class App {
   private colorTransform: "linear" | "sqrt" | "log" = "sqrt";
   private heightEnabled = true;
   private ghostVisible = true;
-  private geoMode = false;
+  /** Standard: unverzerrte Original-Geografie (keine Kartogramm-Verzerrung) */
+  private geoMode = true;
   /** 0 = Kartogramm .. 1 = unverzerrte Original-Geografie (linearer Faktor) */
-  private geoBlend = 0;
-  private geoBlendTarget = 0;
+  private geoBlend = 1;
+  private geoBlendTarget = 1;
 
   // ---- Flächen-Varianten (Kartogramm-Grundlage) -------------------
   private variant: VariantId;
@@ -174,7 +175,7 @@ export class App {
         dataMin(VALUE.world_share, ranges.world_share.min ?? 0),
         ranges.world_share.max ?? 1, this.colorTransform),
     };
-    this.heightMetric = VALUE.per_capita_energy_consumption;
+    this.heightMetric = VALUE.world_share;
 
     let minX = Infinity, maxX = -Infinity;
     for (let i = 0; i < nV; i++) {
@@ -633,6 +634,7 @@ export class App {
 
     const geoToggle = document.getElementById("geoToggle") as
       HTMLInputElement;
+    geoToggle.checked = this.geoMode;
     geoToggle.addEventListener("change", () => {
       this.setGeoMode(geoToggle.checked);
     });
