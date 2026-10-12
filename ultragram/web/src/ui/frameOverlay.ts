@@ -4,14 +4,17 @@
  * in jeder Auflösung). Gestaltung wie die HUD-Elemente der App;
  * Maße in Pixeln bei 1080p, skaliert mit der Bildhöhe.
  */
-import { PLASMA_R } from "../renderers/colormap";
+import type { Rgb } from "../renderers/colormap";
 
 /** Farblegende: Kennzahl, Skalenhinweis, Endwerte der Rampe */
 export interface LegendInfo {
   title: string;
   note: string;
   min: string;
+  /** Wert in der Mitte der Rampe */
+  mid: string;
   max: string;
+  ramp?: Rgb[];
 }
 
 /** Welt-Verlaufsdiagramm: Kurven je Keyframe-Jahr + Werte am Jahr */
@@ -62,7 +65,7 @@ export class FrameOverlay {
   /** Farblegende unten rechts: Kennzahl, Rampe, Endwerte, Skalenhinweis */
   drawLegend(info: LegendInfo): void {
     const { ctx, s } = this;
-    const w = 420 * s, pad = 16 * s;
+    const w = 480 * s, pad = 16 * s;
     const barH = 18 * s;
     const titleSize = 19 * s, smallSize = 15 * s;
     const h = pad + titleSize * 1.3 + 8 * s + barH + 6 * s
@@ -81,8 +84,9 @@ export class FrameOverlay {
 
     const bx = x + pad, bw = w - 2 * pad;
     const grad = ctx.createLinearGradient(bx, 0, bx + bw, 0);
-    PLASMA_R.forEach((c, i) => grad.addColorStop(
-      i / (PLASMA_R.length - 1), `rgb(${c[0]},${c[1]},${c[2]})`));
+    const ramp = info.ramp ?? [];
+    ramp.forEach((c, i) => grad.addColorStop(
+      i / (ramp.length - 1), `rgb(${c[0]},${c[1]},${c[2]})`));
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.roundRect(bx, cy, bw, barH, 4 * s);
@@ -92,6 +96,8 @@ export class FrameOverlay {
     ctx.font = `400 ${smallSize}px ${this.font}`;
     ctx.fillStyle = MUTED;
     ctx.fillText(info.min, bx, cy);
+    ctx.textAlign = "center";
+    ctx.fillText(info.mid, bx + bw / 2, cy);
     ctx.textAlign = "right";
     ctx.fillText(info.max, bx + bw, cy);
     ctx.textAlign = "left";

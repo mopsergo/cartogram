@@ -13,8 +13,10 @@ import { ExtrudedCartogram } from "./renderers/ExtrudedCartogram";
 import { ReferenceGlobe } from "./renderers/ReferenceGlobe";
 import { FrameUpdate, PickResult, lerpPositions }
   from "./renderers/shared";
-import { NO_DATA_COLOR, ValueScale, formatValue, formatYear, rampColor }
+import { COLORMAPS, DEFAULT_COLORMAP, NO_DATA_COLOR, ValueScale,
+  formatValue, formatYear, rampColor, setColormap }
   from "./renderers/colormap";
+import type { ColorTransform } from "./renderers/colormap";
 import { Legend } from "./ui/legend";
 import { FrameOverlay } from "./ui/frameOverlay";
 import { DetailPanel } from "./ui/panel";
@@ -40,7 +42,7 @@ export class App {
   private mode: ViewMode = "extruded";
   private metric: number = VALUE.per_capita_energy_consumption;
   /** Transformation der Farbskala (alle Kennzahlen gemeinsam) */
-  private colorTransform: "linear" | "sqrt" | "log" = "sqrt";
+  private colorTransform: ColorTransform = "sqrt";
   private heightEnabled = true;
   private heightNormalization: "perYear" | "global" = "perYear";
   private ghostVisible = true;
@@ -648,7 +650,7 @@ export class App {
       HTMLSelectElement;
     colorScaleSelect.value = this.colorTransform;
     colorScaleSelect.addEventListener("change", () => {
-      const t = colorScaleSelect.value as "linear" | "sqrt" | "log";
+      const t = colorScaleSelect.value as ColorTransform;
       this.colorTransform = t;
       for (const k of Object.keys(this.scales)) {
         this.scales[Number(k)].transform = t;
@@ -656,6 +658,23 @@ export class App {
       this.updateLegend();
       this.markDirty();
     });
+
+    // Farbskala (Rampe), optional umgekehrt
+    const colormapSelect = document.getElementById("colormapSelect") as
+      HTMLSelectElement;
+    const colormapReverse = document.getElementById("colormapReverse") as
+      HTMLInputElement;
+    for (const [key, cm] of Object.entries(COLORMAPS)) {
+      colormapSelect.add(new Option(cm.label, key));
+    }
+    colormapSelect.value = DEFAULT_COLORMAP;
+    const applyColormap = () => {
+      setColormap(colormapSelect.value, colormapReverse.checked);
+      this.updateLegend();
+      this.markDirty();
+    };
+    colormapSelect.addEventListener("change", applyColormap);
+    colormapReverse.addEventListener("change", applyColormap);
 
     const heightToggle = document.getElementById("heightToggle") as
       HTMLInputElement;
