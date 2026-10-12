@@ -60,9 +60,11 @@ zentralen Invarianten:
 ### 2.2 `ingest` – kanonisches Parquet
 
 `CSV → data/intermediate/canonical.parquet`. Pro Entität × Jahr eine
-Zeile. Fehlt OTHER_WORLD in der CSV, wird es hier aus der Differenz
-Weltbevölkerung − erfasste Länder **berechnet und ergänzt** (keine
-Energiedaten, nur Bevölkerung). Die Entitäts-Zuordnung läuft über
+Zeile. OTHER_WORLD wird hier **berechnet**: Weltbevölkerung − Summe
+der Länder mit eigener Entität. Darin landen die Kleinstaaten ohne
+eigene 110m-Geometrie (in `entities.yaml` als `source_names` der
+Restlichen Welt geführt) und eine evtl. Differenz zur Weltbevölkerung
+(keine Energiedaten, nur Bevölkerung). Die Entitäts-Zuordnung läuft über
 `source_names` aus `entities.yaml` (z. B. `UK → GBR`).
 
 ### 2.3 `mesh` – kanonisches Mesh (einmalig)
@@ -86,8 +88,9 @@ Energiedaten, nur Bevölkerung). Die Entitäts-Zuordnung läuft über
    Hard-Guard prüft, dass kein (nicht ausgeschlossenes) Feature
    den Naht-Meridian berührt.
 3. **Entitäten dissolven**: eine Entität = eine (Multi-)Polygon-
-   Geometrie. Historische Aggregate (UdSSR, Jugoslawien, …) bleiben
-   **verschmolzen** – eine Datenentität, eine Form.
+   Geometrie. Historische Aggregate (`historical_aggregate`, z. B. eine
+   frühere UdSSR-Entität) bleiben **verschmolzen** – eine Datenentität,
+   eine Form. Der aktuelle Datensatz (195 Einzelländer) hat keine.
 4. **OTHER_WORLD = alle unbeanspruchten Länder** (ohne Antarktis,
    konfiguriert in `exclude_features`) – **bewusst NICHT verschmolzen**:
    jedes Land bleibt eigener Polygon-Teil, damit die tatsächlich

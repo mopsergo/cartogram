@@ -275,7 +275,8 @@ leeren Seite).
     Welt" damit als die tatsächlich vorhandenen Länder erkennbar;
     die Anteile *innerhalb* der Region folgen der geografischen Form
     (Einzelwerte gibt es dafür nicht). Historische Aggregate
-    (UdSSR etc.) bleiben verschmolzen: eine Datenentität, eine Form.
+    (`historical_aggregate`) blieben verschmolzen: eine Datenentität,
+    eine Form – der aktuelle Datensatz (195 Einzelländer) hat keine.
 11. **Drei Flächen-Varianten**: `data.target_metric` wählt die
     Kartogramm-Grundlage (v1 Bevölkerung, v2 Gesamtenergie, v3 Energie
     pro Kopf). Gleiche Topologie, je Variante eigene `positions.f32` +
@@ -300,7 +301,13 @@ leeren Seite).
 
 ## Datengrundlage
 
-`data/raw/country_populationshare_energypercapita.csv` – 72 Länder +
-`OTHER_WORLD`, 1820–2020 jährlich. `World_share` summiert sich je Jahr
-auf 1,0; Israel ist vor 1950 datenlos (passive Entität). Einheiten:
-Personen, Mtoe, kWh/Kopf (vgl. `datasets/prep_data.py` im Repo).
+`data/raw/country_populationshare_energypercapita.csv` – 195 Länder,
+1820–2020 jährlich, erzeugt von `datasets/prep_data.py`.
+Weltbevölkerung = TOTAL-Zeile von TableP2 (Summe aller Länder), daher
+summiert sich `World_share` je Jahr auf 1,0. Bevölkerung gibt es für
+alle Länder, Energiedaten nur für 68 (die übrigen erscheinen grau,
+„keine Daten"; Israel hat Energie erst ab 1950). 166 Länder haben eine
+eigene Geometrie in Natural Earth 110m; die 29 Kleinstaaten ohne
+Geometrie (Singapur, Malta, Bahrain, …) bilden zusammen mit den
+unbeanspruchten Gebieten (Taiwan, Grönland, Westsahara, …)
+`OTHER_WORLD`. Einheiten: Personen, Mtoe, kWh/Kopf.
