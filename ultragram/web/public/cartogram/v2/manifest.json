@@ -3,8 +3,9 @@
  "artifact_version": "v2",
  "target_metric": "energy_consumption",
  "target_metric_label": "Gesamtenergie",
+ "lon_offset_deg": 11.5,
  "data_version": "1.0.0",
- "generated_utc": "2026-10-12T12:15:22.066675+00:00",
+ "generated_utc": "2026-10-12T12:47:33.338909+00:00",
  "years": {
   "data_range": [
    1820,
@@ -1187,7 +1188,8 @@
    "metric": "per_capita_energy_consumption",
    "transform": "linear",
    "max_fraction": 0.09,
-   "formula": "height = transform(max(value, 0) / year_max) * max_fraction * world_width; year_max = Maximum der Höhenkennzahl im aktuellen Jahr; transform im Renderer umschaltbar: sqrt (Standard, empfindlich) oder linear"
+   "global_max": 104403.8,
+   "formula": "height = transform(max(value, 0) / normalization_max) * max_fraction * world_width; normalization_max = year_max (per-year) or global_max (global); transform im Renderer umschaltbar: sqrt (Standard, empfindlich) oder linear"
   }
  },
  "solver": {

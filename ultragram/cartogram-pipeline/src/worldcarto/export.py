@@ -318,6 +318,10 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
         "target_metric": cfg.target_metric,
         "target_metric_label": VARIANT_LABELS.get(cfg.target_metric,
                                                   cfg.target_metric),
+        # Naht-Rotation (geometry.seam_lon): Der Globus-Renderer
+        # addiert diesen Offset zurück und zeigt die wahre Erde.
+        # seam_lon=180 (Identität) ergibt 0 – abwärtskompatibel.
+        "lon_offset_deg": round((cfg.seam_lon + 180.0) % 360.0, 6),
         "data_version": __version__,
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "years": {
@@ -411,17 +415,17 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
                 "available_metrics": color_cfg.get("available_metrics"),
                 "value_ranges": ranges,
             },
-            "height": {
-                "metric": height_cfg.get("metric"),
-                "transform": height_cfg.get("transform"),
-                "max_fraction": height_cfg.get("max_fraction"),
-                "formula": ("height = transform(max(value, 0) / "
-                            "year_max) * max_fraction * world_width; "
-                            "year_max = Maximum der Höhenkennzahl im "
-                            "aktuellen Jahr; transform im Renderer "
-                            "umschaltbar: sqrt (Standard, empfindlich) "
-                            "oder linear"),
-            },
+             "height": {
+                 "metric": height_cfg.get("metric"),
+                 "transform": height_cfg.get("transform"),
+                 "max_fraction": height_cfg.get("max_fraction"),
+                 "global_max": ranges.get(height_cfg.get("metric"), {}).get("max"),
+                 "formula": ("height = transform(max(value, 0) / "
+                             "normalization_max) * max_fraction * world_width; "
+                             "normalization_max = year_max (per-year) or global_max "
+                             "(global); transform im Renderer umschaltbar: "
+                             "sqrt (Standard, empfindlich) oder linear"),
+             },
         },
         "solver": {
             "chain": cfg.solver_chain,

@@ -23,6 +23,10 @@ export interface Manifest {
   artifact_version: string;
   /** Zielkennzahl der Kartogramm-Fläche (data.target_metric) */
   target_metric?: string;
+  /** Längengrad-Offset der Naht-Rotation (0 = klassischer
+   *  Antimeridian-Schnitt). Der Globus addiert ihn zurück und zeigt
+   *  die wahre Erde; 11.5 bei Naht −168.5°. */
+  lon_offset_deg?: number;
   data_version: string;
   years: { data_range: [number, number]; frames: FrameInfo[] };
   dimensions: {
@@ -42,7 +46,11 @@ export interface Manifest {
       ramp: string;
       value_ranges: Record<string, { min: number | null; max: number | null }>;
     };
-    height: { metric: string; max_fraction: number };
+    height: {
+      metric: string;
+      max_fraction: number;
+      global_max?: number;
+    };
   };
   solver: { chain: string[]; per_frame: unknown[] };
 }

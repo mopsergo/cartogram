@@ -54,6 +54,13 @@ PYTHONPATH=src python3 -m worldcarto.cli export      # Artefakte + Kopie nach we
 PYTHONPATH=src python3 -m worldcarto.cli debug-frames --years 1820 1900 1950 2000 2020
 ```
 
+$env:PYTHONPATH = "src"
+python -m worldcarto.cli ingest
+python -m worldcarto.cli mesh
+python -m worldcarto.cli solve
+python -m worldcarto.cli export
+
+
 oder alles auf einmal: `build`. Qualität ansehen: `quality`.
 Stabilität der exportierten Keyframes (keine Sprünge zwischen Jahren)
 prüfen: `verify-stability`.
