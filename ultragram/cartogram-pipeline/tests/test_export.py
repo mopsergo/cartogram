@@ -99,7 +99,10 @@ def test_flags(exported, registry):
     out, _ = exported
     flags = np.fromfile(out / "flags.u8", dtype=np.uint8)
     assert int(flags[registry.index_of("OTHER_WORLD")]) & 1 == 1
-    assert int(flags[registry.index_of("SUN")]) & 0b10  # historisch
+    # Datensatz mit 195 Einzelländern: keine historischen Aggregate
+    hist = [e.index for e in registry if e.historical_aggregate]
+    assert all(int(flags[i]) & 0b10 for i in hist)
+    assert int(flags[registry.index_of("RUS")]) == 0
     assert int(flags[registry.index_of("AUT")]) == 0
 
 
@@ -133,7 +136,8 @@ def test_entities_json(exported, registry):
     assert len(meta["entities"]) == len(registry)
     ids = [e["id"] for e in meta["entities"]]
     assert ids == registry.ids()
-    assert meta["entities"][registry.index_of("SUN")]["historical_aggregate"]
+    assert [e["historical_aggregate"] for e in meta["entities"]] == [
+        e.historical_aggregate for e in registry]
 
 
 def test_quality_parquet(exported):

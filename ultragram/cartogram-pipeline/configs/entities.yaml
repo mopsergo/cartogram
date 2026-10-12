@@ -15,6 +15,10 @@
 #   is_other_world     – Rest-Welt-Entität (flags.u8, Bit 0)
 #
 # Reihenfolge = kanonischer Entitäts-Index in allen Export-Artefakten.
+#
+# Erzeugt aus TableP2_population_per_country_annual.csv (195 Länder);
+# Länder ohne eigene Geometrie in Natural Earth 110m (Kleinstaaten)
+# zählen als source_names zur Restlichen Welt.
 # =====================================================================
 
 macroarea_labels:
@@ -32,20 +36,10 @@ entities:
   # ------------------------------------------------------------------
   # Westeuropa (WE)
   # ------------------------------------------------------------------
-  - id: AUT
-    display_name: Österreich
-    source_names: [Austria]
-    geometry_members: [AUT]
-    macroarea: WE
   - id: BEL
     display_name: Belgien
     source_names: [Belgium]
     geometry_members: [BEL]
-    macroarea: WE
-  - id: CHE
-    display_name: Schweiz
-    source_names: [Switzerland]
-    geometry_members: [CHE]
     macroarea: WE
   - id: DEU
     display_name: Deutschland
@@ -57,11 +51,6 @@ entities:
     source_names: [Denmark]
     geometry_members: [DNK]
     macroarea: WE
-  - id: ESP
-    display_name: Spanien
-    source_names: [Spain]
-    geometry_members: [ESP]
-    macroarea: WE
   - id: FIN
     display_name: Finnland
     source_names: [Finland]
@@ -71,11 +60,6 @@ entities:
     display_name: Frankreich
     source_names: [France]
     geometry_members: [FRA]
-    macroarea: WE
-  - id: GBR
-    display_name: Vereinigtes Königreich
-    source_names: [UK]
-    geometry_members: [GBR]
     macroarea: WE
   - id: GRC
     display_name: Griechenland
@@ -87,10 +71,20 @@ entities:
     source_names: [Ireland]
     geometry_members: [IRL]
     macroarea: WE
+  - id: ISL
+    display_name: Island
+    source_names: [Iceland]
+    geometry_members: [ISL]
+    macroarea: WE
   - id: ITA
     display_name: Italien
     source_names: [Italy]
     geometry_members: [ITA]
+    macroarea: WE
+  - id: LUX
+    display_name: Luxemburg
+    source_names: [Luxembourg]
+    geometry_members: [LUX]
     macroarea: WE
   - id: NLD
     display_name: Niederlande
@@ -112,25 +106,84 @@ entities:
     source_names: [Sweden]
     geometry_members: [SWE]
     macroarea: WE
+  - id: CHE
+    display_name: Schweiz
+    source_names: [Switzerland]
+    geometry_members: [CHE]
+    macroarea: WE
+  - id: ESP
+    display_name: Spanien
+    source_names: [Spain]
+    geometry_members: [ESP]
+    macroarea: WE
+  - id: GBR
+    display_name: Vereinigtes Königreich
+    source_names: [United Kingdom]
+    geometry_members: [GBR]
+    macroarea: WE
+  - id: AUT
+    display_name: Österreich
+    source_names: [Austria]
+    geometry_members: [AUT]
+    macroarea: WE
 
   # ------------------------------------------------------------------
-  # Osteuropa (EE) – inkl. historischer Aggregate
+  # Osteuropa (EE)
   # ------------------------------------------------------------------
+  - id: ALB
+    display_name: Albanien
+    source_names: [Albania]
+    geometry_members: [ALB]
+    macroarea: EE
+  - id: BLR
+    display_name: Belarus
+    source_names: [Belarus]
+    geometry_members: [BLR]
+    macroarea: EE
+  - id: BIH
+    display_name: Bosnien und Herzegowina
+    source_names: [Bosnia and Herzegovina]
+    geometry_members: [BIH]
+    macroarea: EE
   - id: BGR
     display_name: Bulgarien
     source_names: [Bulgaria]
     geometry_members: [BGR]
     macroarea: EE
-  - id: CSK
-    display_name: Tschechoslowakei
-    source_names: [Czechoslovakia]
-    geometry_members: [CZE, SVK]
+  - id: EST
+    display_name: Estland
+    source_names: [Estonia]
+    geometry_members: [EST]
     macroarea: EE
-    historical_aggregate: true
-  - id: HUN
-    display_name: Ungarn
-    source_names: [Hungary]
-    geometry_members: [HUN]
+  - id: HRV
+    display_name: Kroatien
+    source_names: [Croatia]
+    geometry_members: [HRV]
+    macroarea: EE
+  - id: LVA
+    display_name: Lettland
+    source_names: [Latvia]
+    geometry_members: [LVA]
+    macroarea: EE
+  - id: LTU
+    display_name: Litauen
+    source_names: [Lithuania]
+    geometry_members: [LTU]
+    macroarea: EE
+  - id: MDA
+    display_name: Moldau
+    source_names: [Moldova]
+    geometry_members: [MDA]
+    macroarea: EE
+  - id: MNE
+    display_name: Montenegro
+    source_names: [Montenegro]
+    geometry_members: [MNE]
+    macroarea: EE
+  - id: MKD
+    display_name: Nordmazedonien
+    source_names: [North Macedonia]
+    geometry_members: [MKD]
     macroarea: EE
   - id: POL
     display_name: Polen
@@ -142,18 +195,41 @@ entities:
     source_names: [Romania]
     geometry_members: [ROU]
     macroarea: EE
-  - id: SUN
-    display_name: UdSSR (ehemalige)
-    source_names: [F. USSR]
-    geometry_members: [RUS, UKR, BLR, EST, LVA, LTU, MDA, GEO, ARM, AZE, KAZ, UZB, TKM, TJK, KGZ]
+  - id: RUS
+    display_name: Russland
+    source_names: [Russia]
+    geometry_members: [RUS]
     macroarea: EE
-    historical_aggregate: true
-  - id: YUG
-    display_name: Jugoslawien
-    source_names: [Yugoslavia]
-    geometry_members: [SRB, HRV, BIH, MNE, MKD, SVN]
+  - id: SRB
+    display_name: Serbien
+    source_names: [Serbia]
+    geometry_members: [SRB]
     macroarea: EE
-    historical_aggregate: true
+  - id: SVK
+    display_name: Slowakei
+    source_names: [Slovakia]
+    geometry_members: [SVK]
+    macroarea: EE
+  - id: SVN
+    display_name: Slowenien
+    source_names: [Slovenia]
+    geometry_members: [SVN]
+    macroarea: EE
+  - id: CZE
+    display_name: Tschechien
+    source_names: [Czech Republic]
+    geometry_members: [CZE]
+    macroarea: EE
+  - id: UKR
+    display_name: Ukraine
+    source_names: [Ukraine]
+    geometry_members: [UKR]
+    macroarea: EE
+  - id: HUN
+    display_name: Ungarn
+    source_names: [Hungary]
+    geometry_members: [HUN]
+    macroarea: EE
 
   # ------------------------------------------------------------------
   # Nordamerika (NAm)
@@ -165,7 +241,7 @@ entities:
     macroarea: NAm
   - id: USA
     display_name: USA
-    source_names: [USA]
+    source_names: [United States]
     geometry_members: [USA]
     macroarea: NAm
 
@@ -176,6 +252,16 @@ entities:
     display_name: Argentinien
     source_names: [Argentina]
     geometry_members: [ARG]
+    macroarea: LA
+  - id: BHS
+    display_name: Bahamas
+    source_names: [Bahamas]
+    geometry_members: [BHS]
+    macroarea: LA
+  - id: BLZ
+    display_name: Belize
+    source_names: [Belize]
+    geometry_members: [BLZ]
     macroarea: LA
   - id: BOL
     display_name: Bolivien
@@ -192,24 +278,14 @@ entities:
     source_names: [Chile]
     geometry_members: [CHL]
     macroarea: LA
-  - id: COL
-    display_name: Kolumbien
-    source_names: [Colombia]
-    geometry_members: [COL]
-    macroarea: LA
   - id: CRI
     display_name: Costa Rica
     source_names: [Costa Rica]
     geometry_members: [CRI]
     macroarea: LA
-  - id: CUB
-    display_name: Kuba
-    source_names: [Cuba]
-    geometry_members: [CUB]
-    macroarea: LA
   - id: DOM
     display_name: Dominikanische Republik
-    source_names: [Dominican Rep.]
+    source_names: [Dominican Republic]
     geometry_members: [DOM]
     macroarea: LA
   - id: ECU
@@ -217,20 +293,45 @@ entities:
     source_names: [Ecuador]
     geometry_members: [ECU]
     macroarea: LA
+  - id: SLV
+    display_name: El Salvador
+    source_names: [El Salvador]
+    geometry_members: [SLV]
+    macroarea: LA
   - id: GTM
     display_name: Guatemala
     source_names: [Guatemala]
     geometry_members: [GTM]
     macroarea: LA
+  - id: GUY
+    display_name: Guyana
+    source_names: [Guyana]
+    geometry_members: [GUY]
+    macroarea: LA
   - id: HTI
     display_name: Haiti
-    source_names: [Haïti]
+    source_names: [Haiti]
     geometry_members: [HTI]
     macroarea: LA
   - id: HND
     display_name: Honduras
     source_names: [Honduras]
     geometry_members: [HND]
+    macroarea: LA
+  - id: JAM
+    display_name: Jamaika
+    source_names: [Jamaica]
+    geometry_members: [JAM]
+    macroarea: LA
+  - id: COL
+    display_name: Kolumbien
+    source_names: [Colombia]
+    geometry_members: [COL]
+    macroarea: LA
+  - id: CUB
+    display_name: Kuba
+    source_names: [Cuba]
+    geometry_members: [CUB]
     macroarea: LA
   - id: MEX
     display_name: Mexiko
@@ -257,10 +358,15 @@ entities:
     source_names: [Peru]
     geometry_members: [PER]
     macroarea: LA
-  - id: SLV
-    display_name: El Salvador
-    source_names: [El Salvador]
-    geometry_members: [SLV]
+  - id: SUR
+    display_name: Suriname
+    source_names: [Suriname]
+    geometry_members: [SUR]
+    macroarea: LA
+  - id: TTO
+    display_name: Trinidad und Tobago
+    source_names: [Trinidad and Tobago]
+    geometry_members: [TTO]
     macroarea: LA
   - id: URY
     display_name: Uruguay
@@ -281,63 +387,198 @@ entities:
     source_names: [Australia]
     geometry_members: [AUS]
     macroarea: O
+  - id: FJI
+    display_name: Fidschi
+    source_names: [Fiji]
+    geometry_members: [FJI]
+    macroarea: O
   - id: NZL
     display_name: Neuseeland
-    source_names: [N. Zealand]
+    source_names: [New Zealand]
     geometry_members: [NZL]
+    macroarea: O
+  - id: PNG
+    display_name: Papua-Neuguinea
+    source_names: [Papua New Guinea]
+    geometry_members: [PNG]
+    macroarea: O
+  - id: SLB
+    display_name: Salomonen
+    source_names: [Solomon Islands]
+    geometry_members: [SLB]
+    macroarea: O
+  - id: VUT
+    display_name: Vanuatu
+    source_names: [Vanuatu]
+    geometry_members: [VUT]
     macroarea: O
 
   # ------------------------------------------------------------------
   # Asien (As)
   # ------------------------------------------------------------------
+  - id: AFG
+    display_name: Afghanistan
+    source_names: [Afghanistan]
+    geometry_members: [AFG]
+    macroarea: As
+  - id: ARM
+    display_name: Armenien
+    source_names: [Armenia]
+    geometry_members: [ARM]
+    macroarea: As
+  - id: AZE
+    display_name: Aserbaidschan
+    source_names: [Azerbaijan]
+    geometry_members: [AZE]
+    macroarea: As
+  - id: BGD
+    display_name: Bangladesch
+    source_names: [Bangladesh]
+    geometry_members: [BGD]
+    macroarea: As
+  - id: BTN
+    display_name: Bhutan
+    source_names: [Bhutan]
+    geometry_members: [BTN]
+    macroarea: As
+  - id: BRN
+    display_name: Brunei
+    source_names: [Brunei]
+    geometry_members: [BRN]
+    macroarea: As
   - id: CHN
     display_name: China
     source_names: [China]
     geometry_members: [CHN]
     macroarea: As
-  - id: IDN
-    display_name: Indonesien
-    source_names: [Indonesia]
-    geometry_members: [IDN]
+  - id: GEO
+    display_name: Georgien
+    source_names: [Georgia]
+    geometry_members: [GEO]
     macroarea: As
   - id: IND
     display_name: Indien
     source_names: [India]
     geometry_members: [IND]
     macroarea: As
+  - id: IDN
+    display_name: Indonesien
+    source_names: [Indonesia]
+    geometry_members: [IDN]
+    macroarea: As
   - id: JPN
     display_name: Japan
     source_names: [Japan]
     geometry_members: [JPN]
+    macroarea: As
+  - id: KHM
+    display_name: Kambodscha
+    source_names: [Cambodia]
+    geometry_members: [KHM]
+    macroarea: As
+  - id: KAZ
+    display_name: Kasachstan
+    source_names: [Kazakhstan]
+    geometry_members: [KAZ]
+    macroarea: As
+  - id: KGZ
+    display_name: Kirgisistan
+    source_names: [Kyrgyzstan]
+    geometry_members: [KGZ]
+    macroarea: As
+  - id: LAO
+    display_name: Laos
+    source_names: [Laos]
+    geometry_members: [LAO]
     macroarea: As
   - id: MYS
     display_name: Malaysia
     source_names: [Malaysia]
     geometry_members: [MYS]
     macroarea: As
+  - id: MNG
+    display_name: Mongolei
+    source_names: [Mongolia]
+    geometry_members: [MNG]
+    macroarea: As
+  - id: MMR
+    display_name: Myanmar
+    source_names: [Myanmar]
+    geometry_members: [MMR]
+    macroarea: As
+  - id: NPL
+    display_name: Nepal
+    source_names: [Nepal]
+    geometry_members: [NPL]
+    macroarea: As
+  - id: PRK
+    display_name: Nordkorea
+    source_names: [North Korea]
+    geometry_members: [PRK]
+    macroarea: As
+  - id: TLS
+    display_name: Osttimor
+    source_names: [Timor-Leste]
+    geometry_members: [TLS]
+    macroarea: As
+  - id: PAK
+    display_name: Pakistan
+    source_names: [Pakistan]
+    geometry_members: [PAK]
+    macroarea: As
   - id: PHL
     display_name: Philippinen
     source_names: [Philippines]
     geometry_members: [PHL]
+    macroarea: As
+  - id: LKA
+    display_name: Sri Lanka
+    source_names: [Sri Lanka]
+    geometry_members: [LKA]
+    macroarea: As
+  - id: KOR
+    display_name: Südkorea
+    source_names: [South Korea]
+    geometry_members: [KOR]
+    macroarea: As
+  - id: TJK
+    display_name: Tadschikistan
+    source_names: [Tajikistan]
+    geometry_members: [TJK]
     macroarea: As
   - id: THA
     display_name: Thailand
     source_names: [Thailand]
     geometry_members: [THA]
     macroarea: As
+  - id: TKM
+    display_name: Turkmenistan
+    source_names: [Turkmenistan]
+    geometry_members: [TKM]
+    macroarea: As
+  - id: UZB
+    display_name: Usbekistan
+    source_names: [Uzbekistan]
+    geometry_members: [UZB]
+    macroarea: As
+  - id: VNM
+    display_name: Vietnam
+    source_names: [Vietnam]
+    geometry_members: [VNM]
+    macroarea: As
 
   # ------------------------------------------------------------------
   # Naher Osten (ME)
   # ------------------------------------------------------------------
-  - id: IRN
-    display_name: Iran
-    source_names: [Iran]
-    geometry_members: [IRN]
-    macroarea: ME
   - id: IRQ
     display_name: Irak
     source_names: [Iraq]
     geometry_members: [IRQ]
+    macroarea: ME
+  - id: IRN
+    display_name: Iran
+    source_names: [Iran]
+    geometry_members: [IRN]
     macroarea: ME
   - id: ISR
     display_name: Israel
@@ -345,12 +586,45 @@ entities:
     geometry_members: [ISR]
     macroarea: ME
     note: >-
-      Datensatz beginnt 1950. Vor 1950 keine Zielgewichte: die Entität
-      wird im Solver passiv behandelt (Dichte 1, driftet mit) und im
-      Renderer ohne Werte dargestellt.
+      Energiedaten erst ab 1950. Davor bestimmt nur die Bevölkerung die Fläche; Energie-Varianten behandeln Israel vor 1950 passiv (Dichte 1, driftet mit).
+  - id: YEM
+    display_name: Jemen
+    source_names: [Yemen]
+    geometry_members: [YEM]
+    macroarea: ME
+  - id: JOR
+    display_name: Jordanien
+    source_names: [Jordan]
+    geometry_members: [JOR]
+    macroarea: ME
+  - id: QAT
+    display_name: Katar
+    source_names: [Qatar]
+    geometry_members: [QAT]
+    macroarea: ME
+  - id: KWT
+    display_name: Kuwait
+    source_names: [Kuwait]
+    geometry_members: [KWT]
+    macroarea: ME
+  - id: LBN
+    display_name: Libanon
+    source_names: [Lebanon]
+    geometry_members: [LBN]
+    macroarea: ME
+  - id: OMN
+    display_name: Oman
+    source_names: [Oman]
+    geometry_members: [OMN]
+    macroarea: ME
+  - id: PSX
+    display_name: Palästina
+    source_names: [Palestine]
+    geometry_members: [PSX]
+    macroarea: ME
   - id: SAU
     display_name: Saudi-Arabien
-    source_names: [S. Arabia]
+    source_names: [Saudi Arabia]
     geometry_members: [SAU]
     macroarea: ME
   - id: SYR
@@ -363,6 +637,16 @@ entities:
     source_names: [Turkey]
     geometry_members: [TUR]
     macroarea: ME
+  - id: ARE
+    display_name: Vereinigte Arabische Emirate
+    source_names: [United Arab Emirates]
+    geometry_members: [ARE]
+    macroarea: ME
+  - id: CYP
+    display_name: Zypern
+    source_names: [Cyprus]
+    geometry_members: [CYP]
+    macroarea: ME
 
   # ------------------------------------------------------------------
   # Afrika (Af)
@@ -372,72 +656,290 @@ entities:
     source_names: [Algeria]
     geometry_members: [DZA]
     macroarea: Af
+  - id: AGO
+    display_name: Angola
+    source_names: [Angola]
+    geometry_members: [AGO]
+    macroarea: Af
+  - id: BEN
+    display_name: Benin
+    source_names: [Benin]
+    geometry_members: [BEN]
+    macroarea: Af
+  - id: BWA
+    display_name: Botswana
+    source_names: [Botswana]
+    geometry_members: [BWA]
+    macroarea: Af
+  - id: BFA
+    display_name: Burkina Faso
+    source_names: [Burkina Faso]
+    geometry_members: [BFA]
+    macroarea: Af
+  - id: BDI
+    display_name: Burundi
+    source_names: [Burundi]
+    geometry_members: [BDI]
+    macroarea: Af
   - id: COD
     display_name: DR Kongo
-    source_names: [Congo R.D.]
+    source_names: ["Congo, Dem. Rep."]
     geometry_members: [COD]
     macroarea: Af
-  - id: EGY
-    display_name: Ägypten
-    source_names: [Egypt]
-    geometry_members: [EGY]
+  - id: DJI
+    display_name: Dschibuti
+    source_names: [Djibouti]
+    geometry_members: [DJI]
     macroarea: Af
-  - id: ERI_ETH
-    display_name: Eritrea & Äthiopien
-    source_names: [Eritrea & Ethiopia]
-    geometry_members: [ERI, ETH]
+  - id: CIV
+    display_name: Elfenbeinküste
+    source_names: ["Cote d'Ivoire"]
+    geometry_members: [CIV]
     macroarea: Af
-    historical_aggregate: true
+  - id: ERI
+    display_name: Eritrea
+    source_names: [Eritrea]
+    geometry_members: [ERI]
+    macroarea: Af
+  - id: SWZ
+    display_name: Eswatini
+    source_names: [Eswatini]
+    geometry_members: [SWZ]
+    macroarea: Af
+  - id: GAB
+    display_name: Gabun
+    source_names: [Gabon]
+    geometry_members: [GAB]
+    macroarea: Af
+  - id: GMB
+    display_name: Gambia
+    source_names: [Gambia]
+    geometry_members: [GMB]
+    macroarea: Af
+  - id: GHA
+    display_name: Ghana
+    source_names: [Ghana]
+    geometry_members: [GHA]
+    macroarea: Af
+  - id: GIN
+    display_name: Guinea
+    source_names: [Guinea]
+    geometry_members: [GIN]
+    macroarea: Af
+  - id: GNB
+    display_name: Guinea-Bissau
+    source_names: [Guinea-Bissau]
+    geometry_members: [GNB]
+    macroarea: Af
+  - id: CMR
+    display_name: Kamerun
+    source_names: [Cameroon]
+    geometry_members: [CMR]
+    macroarea: Af
+  - id: KEN
+    display_name: Kenia
+    source_names: [Kenya]
+    geometry_members: [KEN]
+    macroarea: Af
+  - id: LSO
+    display_name: Lesotho
+    source_names: [Lesotho]
+    geometry_members: [LSO]
+    macroarea: Af
+  - id: LBR
+    display_name: Liberia
+    source_names: [Liberia]
+    geometry_members: [LBR]
+    macroarea: Af
   - id: LBY
     display_name: Libyen
     source_names: [Libya]
     geometry_members: [LBY]
     macroarea: Af
-  - id: MAR
-    display_name: Marokko
-    source_names: [Morocco]
-    geometry_members: [MAR]
+  - id: MDG
+    display_name: Madagaskar
+    source_names: [Madagascar]
+    geometry_members: [MDG]
     macroarea: Af
   - id: MWI
     display_name: Malawi
     source_names: [Malawi]
     geometry_members: [MWI]
     macroarea: Af
+  - id: MLI
+    display_name: Mali
+    source_names: [Mali]
+    geometry_members: [MLI]
+    macroarea: Af
+  - id: MAR
+    display_name: Marokko
+    source_names: [Morocco]
+    geometry_members: [MAR]
+    macroarea: Af
+  - id: MRT
+    display_name: Mauretanien
+    source_names: [Mauritania]
+    geometry_members: [MRT]
+    macroarea: Af
+  - id: MOZ
+    display_name: Mosambik
+    source_names: [Mozambique]
+    geometry_members: [MOZ]
+    macroarea: Af
+  - id: NAM
+    display_name: Namibia
+    source_names: [Namibia]
+    geometry_members: [NAM]
+    macroarea: Af
+  - id: NER
+    display_name: Niger
+    source_names: [Niger]
+    geometry_members: [NER]
+    macroarea: Af
   - id: NGA
     display_name: Nigeria
     source_names: [Nigeria]
     geometry_members: [NGA]
     macroarea: Af
-  - id: TUN
-    display_name: Tunesien
-    source_names: [Tunisia]
-    geometry_members: [TUN]
+  - id: COG
+    display_name: Republik Kongo
+    source_names: ["Congo, Rep."]
+    geometry_members: [COG]
     macroarea: Af
-  - id: ZAF
-    display_name: Südafrika
-    source_names: [South Africa]
-    geometry_members: [ZAF]
+  - id: RWA
+    display_name: Ruanda
+    source_names: [Rwanda]
+    geometry_members: [RWA]
     macroarea: Af
   - id: ZMB
     display_name: Sambia
     source_names: [Zambia]
     geometry_members: [ZMB]
     macroarea: Af
+  - id: SEN
+    display_name: Senegal
+    source_names: [Senegal]
+    geometry_members: [SEN]
+    macroarea: Af
+  - id: SLE
+    display_name: Sierra Leone
+    source_names: [Sierra Leone]
+    geometry_members: [SLE]
+    macroarea: Af
   - id: ZWE
     display_name: Simbabwe
     source_names: [Zimbabwe]
     geometry_members: [ZWE]
     macroarea: Af
+  - id: SOM
+    display_name: Somalia
+    source_names: [Somalia]
+    geometry_members: [SOM, SOL]
+    macroarea: Af
+    note: >-
+      Geometrie inkl. Somaliland (in den Bevölkerungsdaten enthalten).
+  - id: SDN
+    display_name: Sudan
+    source_names: [Sudan]
+    geometry_members: [SDN]
+    macroarea: Af
+  - id: ZAF
+    display_name: Südafrika
+    source_names: [South Africa]
+    geometry_members: [ZAF]
+    macroarea: Af
+  - id: SDS
+    display_name: Südsudan
+    source_names: [South Sudan]
+    geometry_members: [SDS]
+    macroarea: Af
+  - id: TZA
+    display_name: Tansania
+    source_names: [Tanzania]
+    geometry_members: [TZA]
+    macroarea: Af
+  - id: TGO
+    display_name: Togo
+    source_names: [Togo]
+    geometry_members: [TGO]
+    macroarea: Af
+  - id: TCD
+    display_name: Tschad
+    source_names: [Chad]
+    geometry_members: [TCD]
+    macroarea: Af
+  - id: TUN
+    display_name: Tunesien
+    source_names: [Tunisia]
+    geometry_members: [TUN]
+    macroarea: Af
+  - id: UGA
+    display_name: Uganda
+    source_names: [Uganda]
+    geometry_members: [UGA]
+    macroarea: Af
+  - id: CAF
+    display_name: Zentralafrikanische Republik
+    source_names: [Central African Republic]
+    geometry_members: [CAF]
+    macroarea: Af
+  - id: EGY
+    display_name: Ägypten
+    source_names: [Egypt]
+    geometry_members: [EGY]
+    macroarea: Af
+  - id: GNQ
+    display_name: Äquatorialguinea
+    source_names: [Equatorial Guinea]
+    geometry_members: [GNQ]
+    macroarea: Af
+  - id: ETH
+    display_name: Äthiopien
+    source_names: [Ethiopia]
+    geometry_members: [ETH]
+    macroarea: Af
 
   # ------------------------------------------------------------------
   # Restliche Welt – Auffangentität (Plan §2 / §5.3)
-  # Geometrie = alle nicht beanspruchten Gebiete (ohne Antarktis),
-  # Werte = Weltbevölkerung minus Summe der erfassten Länder.
+  # Geometrie = alle nicht beanspruchten Natural-Earth-Gebiete (ohne
+  # Antarktis), z. B. Taiwan, Grönland, Westsahara, Kosovo.
+  # Werte = Summe der Kleinstaaten ohne eigene 110m-Geometrie (unten
+  # als source_names) plus Weltbevölkerung minus Summe der Länder.
   # Keine Energiedaten (vgl. datasets/prep_data.py).
   # ------------------------------------------------------------------
   - id: OTHER_WORLD
     display_name: Restliche Welt
-    source_names: [OTHER_WORLD]
+    source_names:
+      - OTHER_WORLD
+      - Andorra
+      - Antigua and Barbuda
+      - Bahrain
+      - Barbados
+      - Cape Verde
+      - Comoros
+      - Dominica
+      - Grenada
+      - Holy See
+      - Kiribati
+      - Liechtenstein
+      - Maldives
+      - Malta
+      - Marshall Islands
+      - Mauritius
+      - Micronesia
+      - Monaco
+      - Nauru
+      - Palau
+      - Samoa
+      - San Marino
+      - Sao Tome and Principe
+      - Seychelles
+      - Singapore
+      - St. Kitts and Nevis
+      - St. Lucia
+      - St. Vincent and the Grenadines
+      - Tonga
+      - Tuvalu
     geometry_members: []
     macroarea: ""
     is_other_world: true

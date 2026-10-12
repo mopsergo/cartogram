@@ -37,20 +37,25 @@ def test_other_world_matches_remainder(canonical, cfg):
         assert abs(ow_share - (1.0 - represented)) < 1e-5, year
 
 
-def test_israel_passive_before_1950(canonical, registry):
+def test_israel_energy_passive_before_1950(canonical, registry):
+    """Israel: Bevölkerung ab 1820, Energiedaten erst ab 1950."""
     isr = registry.index_of("ISR")
     rows = canonical[canonical["entity_id"] == "ISR"]
-    assert rows["year"].min() == 1950
+    assert rows["year"].min() == 1820
+    assert rows.loc[rows["energy_consumption"].notna(), "year"].min() == 1950
     targets, passive = _targets(canonical, registry, 1900)
-    assert passive[isr]
-    targets_50, passive_50 = _targets(canonical, registry, 1950)
+    assert not passive[isr] and targets[isr] > 0
+    _, passive_e = _targets(canonical, registry, 1900, "energy_consumption")
+    assert passive_e[isr]
+    targets_50, passive_50 = _targets(canonical, registry, 1950,
+                                      "energy_consumption")
     assert not passive_50[isr]
     assert targets_50[isr] > 0
 
 
-def _targets(canonical, registry, year):
+def _targets(canonical, registry, year, metric="world_share"):
     from worldcarto.ingest import targets_for_year
-    return targets_for_year(canonical, registry, year)
+    return targets_for_year(canonical, registry, year, metric=metric)
 
 
 def test_targets_complete(canonical, registry):

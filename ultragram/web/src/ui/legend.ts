@@ -1,12 +1,15 @@
 /** Legende: Farbskala mit Beschriftung in echten Einheiten (Plan §8). */
 import { ValueScale, formatValue } from "../renderers/colormap";
 import { PLASMA_R } from "../renderers/colormap";
+import type { LegendInfo } from "./frameOverlay";
 
 export class Legend {
   private bar: HTMLCanvasElement;
   private minEl: HTMLElement;
   private maxEl: HTMLElement;
   private captionEl: HTMLElement;
+  /** Zuletzt angezeigte Beschriftung (für den PNG-Export) */
+  info: LegendInfo = { title: "", note: "", min: "", max: "" };
 
   constructor() {
     this.bar = document.getElementById("legendBar") as HTMLCanvasElement;
@@ -38,8 +41,10 @@ export class Legend {
       }
       return formatValue(v, component);
     };
-    this.minEl.textContent = fmt(scale.min);
-    this.maxEl.textContent = fmt(scale.max);
+    const min = fmt(scale.min);
+    const max = fmt(scale.max);
+    this.minEl.textContent = min;
+    this.maxEl.textContent = max;
     const names: Record<number, string> = {
       0: "Bevölkerung",
       1: "Anteil an der Weltbevölkerung",
@@ -51,8 +56,9 @@ export class Legend {
       sqrt: "Wurzel-Skala (empfindlich)",
       log: "logarithmisch",
     };
-    this.captionEl.textContent =
-      `${names[component] ?? "Wert"} · ${tNames[transform] ?? transform}`
-      + " · Grau = keine Daten";
+    const title = names[component] ?? "Wert";
+    const note = `${tNames[transform] ?? transform} · Grau = keine Daten`;
+    this.captionEl.textContent = `${title} · ${note}`;
+    this.info = { title, note, min, max };
   }
 }

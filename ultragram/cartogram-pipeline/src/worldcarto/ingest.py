@@ -27,26 +27,33 @@ def load_raw(cfg: PipelineConfig) -> pd.DataFrame:
 
 def ensure_other_world(df: pd.DataFrame, registry: EntityRegistry,
                        cfg: PipelineConfig) -> pd.DataFrame:
-    """OTHER_WORLD prüfen oder ergänzen (Plan §2, §5.6 Schritt 2).
+    """OTHER_WORLD je Jahr bilden (Plan §2, §5.6 Schritt 2).
 
-    Falls der Datensatz OTHER_WORLD enthält, wird dessen Anteil gegen
-    remainder_share geprüft (validate_year_shares). Andernfalls wird die
-    Entität aus der Differenz Weltbevölkerung - Summe erfasster Länder
-    erzeugt.
+    OTHER_WORLD = Weltbevölkerung - Summe aller Länder mit eigener
+    Entität. Damit fließen ein:
+      - Länder, deren Quellname im Register OTHER_WORLD zugeordnet ist
+        (Kleinstaaten ohne eigene Natural-Earth-110m-Geometrie),
+      - eine evtl. vorhandene OTHER_WORLD-Zeile des Datensatzes,
+      - die Differenz Weltbevölkerung - Summe der Datensatzländer.
+    Diese Zeilen werden durch eine OTHER_WORLD-Zeile je Jahr ersetzt.
+    Energiedaten gibt es für die Rest-Welt nicht.
     """
     ow = registry.other_world()
-    if (df["Country"] == ow.source_names[0]).any():
-        return df
+    in_ow = df["Country"].map(
+        lambda c: (e := registry.by_source(c)) is not None and e.is_other_world)
 
     rows = []
-    for year, g in df.groupby("Year"):
+    for year, g in df.loc[~in_ow].groupby("Year"):
         represented = g["Population"].sum()
         world = g["World_population"].iloc[0]
         remainder_pop = float(world - represented)
         if remainder_pop < 0:
-            raise ValidationError(
-                f"{year}: Weltbevölkerung {world} < Summe der Länder {represented}"
-            )
+            # Rundungsrest der Quelle (Anteile auf 1e-8 gerundet) tolerieren
+            if -remainder_pop / world > cfg.remainder_tolerance:
+                raise ValidationError(
+                    f"{year}: Weltbevölkerung {world} < Summe der Länder {represented}"
+                )
+            remainder_pop = 0.0
         rows.append({
             "Country": ow.source_names[0],
             "Macroarea": np.nan,
@@ -58,7 +65,7 @@ def ensure_other_world(df: pd.DataFrame, registry: EntityRegistry,
             "Per_capita_energy_consumption": np.nan,
         })
     other = pd.DataFrame(rows, columns=RAW_COLUMNS)
-    return pd.concat([df, other], ignore_index=True)
+    return pd.concat([df.loc[~in_ow], other], ignore_index=True)
 
 
 def build_canonical(cfg: PipelineConfig, registry: EntityRegistry) -> pd.DataFrame:

@@ -64,6 +64,20 @@
     }
     .toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
     .toggle input { accent-color: var(--accent); }
+    .export-row { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+    .export-row input {
+      width: 100%; min-width: 0; background: #1c2431; color: var(--text);
+      border: 1px solid var(--border); border-radius: 7px; padding: 5px 6px;
+      font-size: 13px;
+    }
+    .export-row label { color: var(--muted); white-space: nowrap; }
+    .export-btn {
+      width: 100%; padding: 6px; cursor: pointer; font-size: 12.5px;
+      background: #1c2431; color: var(--text);
+      border: 1px solid var(--accent); border-radius: 7px;
+    }
+    .export-btn:hover { background: var(--accent); color: #06222a; }
+    #exportStatus { font-size: 11px; color: var(--muted); min-height: 1em; }
 
     #legend { padding: 8px 10px; }
     #legend canvas { width: 100%; height: 14px; border-radius: 4px; display: block; }
@@ -154,8 +168,8 @@
   <div id="title" class="hud">
     <h1>Bevölkerung &amp; Energie 1820–2020</h1>
     <p>Cartogramm: Fläche = <span id="areaLabel">Bevölkerungsanteil</span> ·
-        Farbe = Energieverbrauch pro Kopf ·
-        Höhe = Energieverbrauch pro Kopf (umstellbar, relativ/absolut)</p>
+       Farbe = Energieverbrauch pro Kopf ·
+       Höhe = Anteil Weltbevölkerung (umstellbar, relativ/absolut)</p>
   </div>
   <div id="controls" class="hud">
     <div class="group">
@@ -168,7 +182,7 @@
     </div>
     <div class="group" id="geoGroup">
       <label>Geometrie</label>
-      <label class="toggle"><input type="checkbox" id="geoToggle" />
+      <label class="toggle"><input type="checkbox" id="geoToggle" checked />
         Original-Geografie (unverzerrt) · Taste G</label>
     </div>
     <div class="group" id="runGroup">
@@ -207,10 +221,10 @@
       <label class="toggle"><input type="checkbox" id="heightToggle" checked />
         Höhe anzeigen</label>
       <select id="heightSelect" title="Kennzahl für die Extrusionshöhe (relativ pro Jahr oder absolut global)">
-        <option value="3" selected>Energie pro Kopf (kWh)</option>
+        <option value="3">Energie pro Kopf (kWh)</option>
         <option value="2">Gesamtenergie (Mtoe)</option>
         <option value="0">Bevölkerung</option>
-        <option value="1">Anteil Weltbevölkerung</option>
+        <option value="1" selected>Anteil Weltbevölkerung</option>
       </select>
       <select id="heightScaleSelect"
         title="Höhentransformation – Skala gegen das Normalisierungs-Maximum (per Jahr oder global)">
@@ -234,6 +248,34 @@
       <div class="range"><span id="legendMin"></span><span id="legendMax"></span></div>
       <div class="caption" id="legendCaption"></div>
       <div class="caption" id="legendArea" style="color: var(--accent-warm)"></div>
+    </div>
+    <div class="group" id="exportGroup">
+      <label>Animation (PNG-Frames, 16:9)</label>
+      <label class="toggle"><input type="checkbox" id="exportPreview" />
+        16:9-Bildausschnitt anzeigen</label>
+      <select id="exportRes" title="Auflösung der Einzelbilder">
+        <option value="1920x1080" selected>1920 × 1080 (Full HD)</option>
+        <option value="2560x1440">2560 × 1440 (QHD)</option>
+        <option value="3840x2160">3840 × 2160 (4K)</option>
+      </select>
+      <div class="export-row">
+        <label for="exportFrom">Von</label>
+        <input type="number" id="exportFrom" step="1" />
+        <label for="exportTo">bis</label>
+        <input type="number" id="exportTo" step="1" />
+      </div>
+      <div class="export-row">
+        <label for="exportFpy">Bilder pro Jahr</label>
+        <input type="number" id="exportFpy" min="1" max="60" step="1" value="5" />
+      </div>
+      <label class="toggle"><input type="checkbox" id="exportYearLabel" checked />
+        Jahreszahl einblenden</label>
+      <label class="toggle"><input type="checkbox" id="exportLegend" checked />
+        Farblegende einblenden</label>
+      <label class="toggle"><input type="checkbox" id="exportWorldChart" checked />
+        Welt-Verlauf einblenden</label>
+      <button id="exportBtn" class="export-btn">PNG-Frames exportieren</button>
+      <div class="caption" id="exportStatus"></div>
     </div>
     <div class="group"><button id="resetCam" style="width:100%; padding:6px; background:#1c2431; color:var(--text); border:1px solid var(--border); border-radius:7px; cursor:pointer;">Kamera zurücksetzen</button></div>
   </div>

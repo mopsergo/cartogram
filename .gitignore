@@ -15,6 +15,7 @@ ultragram/cartogram-pipeline/debug_frames/
 __pycache__/
 *.pyc
 .pytest_cache/
+.venv/
 
 # --- System ---------------------------------------------------------
 .DS_Store
