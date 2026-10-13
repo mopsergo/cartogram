@@ -1,0 +1,27 @@
+# =====================================================================
+# Datensatz-Profil „owid" (Kartogramm-Lauf OWID, 1965–2025)
+# ---------------------------------------------------------------------
+# Überschreibt pipeline.yaml (rekursiv zusammengeführt). Aktivieren:
+#   PYTHONPATH=src python -m worldcarto.cli --dataset owid <command>
+# (oder Umgebungsvariable WORLDCARTO_DATASET=owid).
+#
+# Bevölkerung: UN WPP 2024 via Our World in Data (Schätzung bis 2023,
+# mittlere Projektion 2024–2025); Energie pro Kopf: OWID Primärenergie
+# (Energy Institute + EIA). Erzeugt von datasets/prep_owid_data.py.
+# Eigene Caches/Ausgaben, damit der Standardlauf (1820–2020) unberührt
+# bleibt; der Export landet in web/public/cartogram/owid/v1|v2|v3.
+# =====================================================================
+
+paths:
+  raw_csv: data/raw/owid_population_energy_1965_2025.csv
+  intermediate: data/intermediate/owid
+  build_cache: build-cache/owid
+  dist: dist/owid
+  web_public: ../web/public/cartogram/owid
+
+data:
+  year_min: 1965
+  year_max: 2025
+
+temporal:
+  test_years: [1965, 1990, 2000, 2020, 2025]
