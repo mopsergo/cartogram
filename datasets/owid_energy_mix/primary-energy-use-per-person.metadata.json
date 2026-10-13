@@ -1,0 +1,39 @@
+{
+  "chart": {
+    "title": "Primary energy use per person",
+    "subtitle": "Measured in kilowatt-hours of total energy supply per person.",
+    "note": "Traditional biomass is not included.",
+    "citation": "Energy Institute – Statistical Review of World Energy (2026) and other sources",
+    "originalChartUrl": "https://ourworldindata.org/grapher/energy-mix?v=1&csvType=full&useColumnShortNames=false&metric=per_capita&source=total",
+    "selection": [
+      "United States",
+      "United Kingdom",
+      "China",
+      "World",
+      "India",
+      "Brazil",
+      "South Africa"
+    ]
+  },
+  "columns": {
+    "Total energy supply per capita": {
+      "titleShort": "Total energy supply per capita",
+      "titleLong": "Total energy supply per capita",
+      "descriptionShort": "Measured in kilowatt-hours of total energy supply per person.",
+      "descriptionProcessing": "- Total energy supply is extended with total energy consumption from the U.S. Energy Information Administration (EIA), to cover countries and years for which the Statistical Review does not report a total. Where both sources report a value, we use the Statistical Review.\n- For the World, data before 1965 (going back to 1800) comes from Vaclav Smil's historical estimates (2017).",
+      "shortUnit": "kWh",
+      "unit": "kilowatt-hours per person",
+      "timespan": "1800-2025",
+      "type": "Numeric",
+      "owidVariableId": 1295475,
+      "shortName": "total_energy_supply_per_capita_kwh",
+      "lastUpdated": "2026-06-30",
+      "nextUpdate": "2027-06-30",
+      "citationShort": "Energy Institute – Statistical Review of World Energy (2026) and other sources – with major processing by Our World in Data",
+      "citationLong": "Energy Institute – Statistical Review of World Energy (2026); Smil (2017); U.S. Energy Information Administration (2026); Population based on various sources (2024) – with major processing by Our World in Data. “Total energy supply per capita” [dataset]. Energy Institute, “Statistical Review of World Energy”; Smil, “Energy Transitions: Global and National Perspectives”; U.S. Energy Information Administration, “International Energy Data”; Various sources, “Population” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/1295475.metadata.json"
+    }
+  },
+  "dateDownloaded": "2026-10-12",
+  "activeFilters": {}
+}

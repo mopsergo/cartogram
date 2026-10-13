@@ -1,0 +1,1016 @@
+{
+ "format": "ultragram.cartogram.v1",
+ "artifact_version": "v2",
+ "target_metric": "energy_consumption",
+ "target_metric_label": "Gesamtenergie",
+ "lon_offset_deg": 11.5,
+ "data_version": "1.0.0",
+ "generated_utc": "2026-10-12T16:11:14.836138+00:00",
+ "years": {
+  "data_range": [
+   1965,
+   2025
+  ],
+  "frames": [
+   {
+    "index": 0,
+    "year": 1965,
+    "intermediate": false
+   },
+   {
+    "index": 1,
+    "year": 1966,
+    "intermediate": false
+   },
+   {
+    "index": 2,
+    "year": 1967,
+    "intermediate": false
+   },
+   {
+    "index": 3,
+    "year": 1968,
+    "intermediate": false
+   },
+   {
+    "index": 4,
+    "year": 1969,
+    "intermediate": false
+   },
+   {
+    "index": 5,
+    "year": 1970,
+    "intermediate": false
+   },
+   {
+    "index": 6,
+    "year": 1971,
+    "intermediate": false
+   },
+   {
+    "index": 7,
+    "year": 1972,
+    "intermediate": false
+   },
+   {
+    "index": 8,
+    "year": 1973,
+    "intermediate": false
+   },
+   {
+    "index": 9,
+    "year": 1974,
+    "intermediate": false
+   },
+   {
+    "index": 10,
+    "year": 1975,
+    "intermediate": false
+   },
+   {
+    "index": 11,
+    "year": 1976,
+    "intermediate": false
+   },
+   {
+    "index": 12,
+    "year": 1977,
+    "intermediate": false
+   },
+   {
+    "index": 13,
+    "year": 1978,
+    "intermediate": false
+   },
+   {
+    "index": 14,
+    "year": 1979,
+    "intermediate": false
+   },
+   {
+    "index": 15,
+    "year": 1980,
+    "intermediate": false
+   },
+   {
+    "index": 16,
+    "year": 1981,
+    "intermediate": false
+   },
+   {
+    "index": 17,
+    "year": 1982,
+    "intermediate": false
+   },
+   {
+    "index": 18,
+    "year": 1983,
+    "intermediate": false
+   },
+   {
+    "index": 19,
+    "year": 1984,
+    "intermediate": false
+   },
+   {
+    "index": 20,
+    "year": 1985,
+    "intermediate": false
+   },
+   {
+    "index": 21,
+    "year": 1986,
+    "intermediate": false
+   },
+   {
+    "index": 22,
+    "year": 1987,
+    "intermediate": false
+   },
+   {
+    "index": 23,
+    "year": 1988,
+    "intermediate": false
+   },
+   {
+    "index": 24,
+    "year": 1989,
+    "intermediate": false
+   },
+   {
+    "index": 25,
+    "year": 1990,
+    "intermediate": false
+   },
+   {
+    "index": 26,
+    "year": 1991,
+    "intermediate": false
+   },
+   {
+    "index": 27,
+    "year": 1992,
+    "intermediate": false
+   },
+   {
+    "index": 28,
+    "year": 1993,
+    "intermediate": false
+   },
+   {
+    "index": 29,
+    "year": 1994,
+    "intermediate": false
+   },
+   {
+    "index": 30,
+    "year": 1995,
+    "intermediate": false
+   },
+   {
+    "index": 31,
+    "year": 1996,
+    "intermediate": false
+   },
+   {
+    "index": 32,
+    "year": 1997,
+    "intermediate": false
+   },
+   {
+    "index": 33,
+    "year": 1998,
+    "intermediate": false
+   },
+   {
+    "index": 34,
+    "year": 1999,
+    "intermediate": false
+   },
+   {
+    "index": 35,
+    "year": 2000,
+    "intermediate": false
+   },
+   {
+    "index": 36,
+    "year": 2001,
+    "intermediate": false
+   },
+   {
+    "index": 37,
+    "year": 2002,
+    "intermediate": false
+   },
+   {
+    "index": 38,
+    "year": 2003,
+    "intermediate": false
+   },
+   {
+    "index": 39,
+    "year": 2004,
+    "intermediate": false
+   },
+   {
+    "index": 40,
+    "year": 2005,
+    "intermediate": false
+   },
+   {
+    "index": 41,
+    "year": 2006,
+    "intermediate": false
+   },
+   {
+    "index": 42,
+    "year": 2007,
+    "intermediate": false
+   },
+   {
+    "index": 43,
+    "year": 2008,
+    "intermediate": false
+   },
+   {
+    "index": 44,
+    "year": 2009,
+    "intermediate": false
+   },
+   {
+    "index": 45,
+    "year": 2010,
+    "intermediate": false
+   },
+   {
+    "index": 46,
+    "year": 2011,
+    "intermediate": false
+   },
+   {
+    "index": 47,
+    "year": 2012,
+    "intermediate": false
+   },
+   {
+    "index": 48,
+    "year": 2013,
+    "intermediate": false
+   },
+   {
+    "index": 49,
+    "year": 2014,
+    "intermediate": false
+   },
+   {
+    "index": 50,
+    "year": 2015,
+    "intermediate": false
+   },
+   {
+    "index": 51,
+    "year": 2016,
+    "intermediate": false
+   },
+   {
+    "index": 52,
+    "year": 2017,
+    "intermediate": false
+   },
+   {
+    "index": 53,
+    "year": 2018,
+    "intermediate": false
+   },
+   {
+    "index": 54,
+    "year": 2019,
+    "intermediate": false
+   },
+   {
+    "index": 55,
+    "year": 2020,
+    "intermediate": false
+   },
+   {
+    "index": 56,
+    "year": 2021,
+    "intermediate": false
+   },
+   {
+    "index": 57,
+    "year": 2022,
+    "intermediate": false
+   },
+   {
+    "index": 58,
+    "year": 2023,
+    "intermediate": false
+   },
+   {
+    "index": 59,
+    "year": 2024,
+    "intermediate": false
+   },
+   {
+    "index": 60,
+    "year": 2025,
+    "intermediate": false
+   },
+   {
+    "index": 61,
+    "year": 2025,
+    "intermediate": false
+   }
+  ]
+ },
+ "dimensions": {
+  "num_frames": 62,
+  "num_entities": 167,
+  "num_vertices": 6869,
+  "num_triangles": 9132,
+  "num_rings": 279
+ },
+ "arrays": {
+  "positions": {
+   "file": "positions.f32",
+   "dtype": "<f4",
+   "shape": [
+    62,
+    6869,
+    2
+   ]
+  },
+  "values": {
+   "file": "values.f32",
+   "dtype": "<f4",
+   "shape": [
+    62,
+    167,
+    4
+   ],
+   "components": [
+    "population",
+    "world_share",
+    "energy_consumption",
+    "per_capita_energy_consumption"
+   ],
+   "nan": "keine Daten"
+  },
+  "labels": {
+   "file": "labels.f32",
+   "dtype": "<f4",
+   "shape": [
+    62,
+    167,
+    2
+   ]
+  },
+  "indices": {
+   "file": "indices.u32",
+   "dtype": "<u4",
+   "shape": [
+    9132,
+    3
+   ]
+  },
+  "surface_vertex_to_canonical": {
+   "file": "surface_vertex_to_canonical.u32",
+   "dtype": "<u4",
+   "shape": [
+    6869
+   ],
+   "note": "Identität – Dreiecke nutzen direkt kanonische IDs"
+  },
+  "region_draw_ranges": {
+   "file": "region_draw_ranges.u32",
+   "dtype": "<u4",
+   "shape": [
+    167,
+    2
+   ],
+   "components": [
+    "start_triangle",
+    "count"
+   ]
+  },
+  "boundary_rings": {
+   "file": "boundary_rings.u32",
+   "dtype": "<u4",
+   "layout": "[numRings] dann je Ring [owner_entity, num_vertices, is_hole, v0..v{n-1}]"
+  },
+  "triangle_ring": {
+   "file": "triangle_ring.u32",
+   "dtype": "<u4",
+   "shape": [
+    9132
+   ],
+   "note": "Exterior-Ring-Index je Dreieck – mit ring_names.json zeigt Tooltip/Panel das konkrete Land (Natural-Earth-Länder der Restliche-Welt-Entität)"
+  },
+  "ring_names": {
+   "file": "ring_names.json",
+   "note": "Ländername je Ring (null = Entitätsname verwenden); ältere Läufe ohne diese Datei fallen darauf zurück"
+  },
+  "flags": {
+   "file": "flags.u8",
+   "dtype": "<u1",
+   "shape": [
+    167
+   ],
+   "bits": {
+    "0": "is_other_world",
+    "1": "historical_aggregate"
+   }
+  },
+  "positions_original": {
+   "file": "positions_original.f32",
+   "dtype": "<f4",
+   "shape": [
+    6869,
+    2
+   ],
+   "note": "unverzerrte Equal-Earth-Basis (Ghost-Ebene)"
+  },
+  "vertices_lonlat": {
+   "file": "vertices_lonlat.f32",
+   "dtype": "<f4",
+   "shape": [
+    6869,
+    2
+   ],
+   "note": "unverzerrte Längen-/Breitengrade (Reference Globe)"
+  }
+ },
+ "crs": {
+  "name": "Equal Earth",
+  "epsg": 8857,
+  "units": "meters",
+  "note": "flächentreue Pseudozylinderprojektion (Plan §5.3)"
+ },
+ "units": {
+  "population": "Personen",
+  "world_share": "Anteil an der Weltbevölkerung (0..1)",
+  "energy_consumption": "Mtoe",
+  "per_capita_energy_consumption": "kWh pro Kopf",
+  "positions": "Meter (Equal Earth)"
+ },
+ "scales": {
+  "area": {
+   "metric": "energy_consumption",
+   "label": "Gesamtenergie",
+   "note": "Fläche = Anteil an der gewählten Zielkennzahl (data.target_metric); Entitäten ohne Wert dieser Kennzahl sind passiv und behalten näherungsweise ihre Fläche"
+  },
+  "color": {
+   "metric": "per_capita_energy_consumption",
+   "transform": "linear",
+   "ramp": "plasma_r",
+   "available_metrics": [
+    "per_capita_energy_consumption",
+    "energy_consumption",
+    "population",
+    "world_share"
+   ],
+   "value_ranges": {
+    "population": {
+     "min": 64082.0,
+     "max": 1463865527.0
+    },
+    "world_share": {
+     "min": 1.921767946379525e-05,
+     "max": 0.2252787391182815
+    },
+    "energy_consumption": {
+     "min": 0.0023477943692024,
+     "max": 3873.921907523592
+    },
+    "per_capita_energy_consumption": {
+     "min": 62.999752,
+     "max": 318559.7
+    }
+   }
+  },
+  "height": {
+   "metric": "per_capita_energy_consumption",
+   "transform": "linear",
+   "max_fraction": 0.09,
+   "global_max": 318559.7,
+   "formula": "height = transform(max(value, 0) / normalization_max) * max_fraction * world_width; normalization_max = year_max (per-year) or global_max (global); transform im Renderer umschaltbar: sqrt (Standard, empfindlich) oder linear"
+  }
+ },
+ "solver": {
+  "chain": [
+   "cartogram_cpp",
+   "carto_flow"
+  ],
+  "per_frame": [
+   {
+    "index": 0,
+    "year": 1965,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07091981953593099
+   },
+   {
+    "index": 1,
+    "year": 1966,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04474345052160306
+   },
+   {
+    "index": 2,
+    "year": 1967,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0511426683876945
+   },
+   {
+    "index": 3,
+    "year": 1968,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.056211770697640474
+   },
+   {
+    "index": 4,
+    "year": 1969,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03635457537075544
+   },
+   {
+    "index": 5,
+    "year": 1970,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.042066863030795994
+   },
+   {
+    "index": 6,
+    "year": 1971,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03653910015587201
+   },
+   {
+    "index": 7,
+    "year": 1972,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03410914653390022
+   },
+   {
+    "index": 8,
+    "year": 1973,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.037310849163079404
+   },
+   {
+    "index": 9,
+    "year": 1974,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.047593289485908304
+   },
+   {
+    "index": 10,
+    "year": 1975,
+    "candidate": "direct",
+    "iterations": 13,
+    "p90_area_error": 0.061424526218964604
+   },
+   {
+    "index": 11,
+    "year": 1976,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0424304598193498
+   },
+   {
+    "index": 12,
+    "year": 1977,
+    "candidate": "direct",
+    "iterations": 13,
+    "p90_area_error": 0.057548392168982075
+   },
+   {
+    "index": 13,
+    "year": 1978,
+    "candidate": "direct",
+    "iterations": 12,
+    "p90_area_error": 0.06384561326630908
+   },
+   {
+    "index": 14,
+    "year": 1979,
+    "candidate": "direct",
+    "iterations": 11,
+    "p90_area_error": 0.0597383962523748
+   },
+   {
+    "index": 15,
+    "year": 1980,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2914557751405343
+   },
+   {
+    "index": 16,
+    "year": 1981,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2790382763649578
+   },
+   {
+    "index": 17,
+    "year": 1982,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.28578166483074646
+   },
+   {
+    "index": 18,
+    "year": 1983,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2673211222899437
+   },
+   {
+    "index": 19,
+    "year": 1984,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2658143991375033
+   },
+   {
+    "index": 20,
+    "year": 1985,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24657980209058347
+   },
+   {
+    "index": 21,
+    "year": 1986,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2404520378384035
+   },
+   {
+    "index": 22,
+    "year": 1987,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24843322554905942
+   },
+   {
+    "index": 23,
+    "year": 1988,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23811730685402266
+   },
+   {
+    "index": 24,
+    "year": 1989,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23674435081350192
+   },
+   {
+    "index": 25,
+    "year": 1990,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24169102629404032
+   },
+   {
+    "index": 26,
+    "year": 1991,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.25160982639193097
+   },
+   {
+    "index": 27,
+    "year": 1992,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23221455288070023
+   },
+   {
+    "index": 28,
+    "year": 1993,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2500720097358315
+   },
+   {
+    "index": 29,
+    "year": 1994,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24423484660638511
+   },
+   {
+    "index": 30,
+    "year": 1995,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.262305456489594
+   },
+   {
+    "index": 31,
+    "year": 1996,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.254428743976702
+   },
+   {
+    "index": 32,
+    "year": 1997,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2657003657851037
+   },
+   {
+    "index": 33,
+    "year": 1998,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23769164204624435
+   },
+   {
+    "index": 34,
+    "year": 1999,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24092276443176217
+   },
+   {
+    "index": 35,
+    "year": 2000,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23207446868696258
+   },
+   {
+    "index": 36,
+    "year": 2001,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21654578727700827
+   },
+   {
+    "index": 37,
+    "year": 2002,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21137811670642323
+   },
+   {
+    "index": 38,
+    "year": 2003,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23624629436393915
+   },
+   {
+    "index": 39,
+    "year": 2004,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.22869589407122703
+   },
+   {
+    "index": 40,
+    "year": 2005,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.22312459312332789
+   },
+   {
+    "index": 41,
+    "year": 2006,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21747240250368619
+   },
+   {
+    "index": 42,
+    "year": 2007,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2090277028040735
+   },
+   {
+    "index": 43,
+    "year": 2008,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23964286596948764
+   },
+   {
+    "index": 44,
+    "year": 2009,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.22527373727904712
+   },
+   {
+    "index": 45,
+    "year": 2010,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21078875208028286
+   },
+   {
+    "index": 46,
+    "year": 2011,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19624383720546598
+   },
+   {
+    "index": 47,
+    "year": 2012,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1628969499586605
+   },
+   {
+    "index": 48,
+    "year": 2013,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2144825694968141
+   },
+   {
+    "index": 49,
+    "year": 2014,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19605087522907189
+   },
+   {
+    "index": 50,
+    "year": 2015,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.17732460690384336
+   },
+   {
+    "index": 51,
+    "year": 2016,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1843956732823096
+   },
+   {
+    "index": 52,
+    "year": 2017,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13442267535973088
+   },
+   {
+    "index": 53,
+    "year": 2018,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15033104923114904
+   },
+   {
+    "index": 54,
+    "year": 2019,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1669690953726923
+   },
+   {
+    "index": 55,
+    "year": 2020,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15578865143059367
+   },
+   {
+    "index": 56,
+    "year": 2021,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15560140933650451
+   },
+   {
+    "index": 57,
+    "year": 2022,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13948267535736392
+   },
+   {
+    "index": 58,
+    "year": 2023,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.14352525135368005
+   },
+   {
+    "index": 59,
+    "year": 2024,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16162865165221488
+   },
+   {
+    "index": 60,
+    "year": 2025,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16288157286762656
+   },
+   {
+    "index": 61,
+    "year": 2025,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16288157286762656
+   }
+  ]
+ },
+ "inputs": {
+  "raw_csv": {
+   "path": "/home/skmue/work/cartogram/ultragram/cartogram-pipeline/data/raw/owid_population_energy_1965_2025.csv",
+   "sha256": "c7806546327ce70b851e7352cd442bd772aafdc9bdbf878b85dadd98fba9c5c8"
+  },
+  "natural_earth": {
+   "path": "/home/skmue/work/cartogram/ultragram/cartogram-pipeline/data/reference/ne_110m_admin_0_countries.geojson",
+   "sha256": "6866c877d39cba9c357620878839b336d569f8c662d3cfab4cb1dbe2d39c977f"
+  }
+ },
+ "files": {
+  "boundary_rings.u32": {
+   "bytes": 42096,
+   "sha256": "070f759d492a7faded9d8648ed3254a20f136c787c639714b62e0deb184428d6"
+  },
+  "entities.json": {
+   "bytes": 41350,
+   "sha256": "bf58997f2b38c27637e1c4dff807be96be6f68ebcbbaf608dc290cf5e846532b"
+  },
+  "flags.u8": {
+   "bytes": 167,
+   "sha256": "0bb3e5b0fb9dc63cb684342382f07ffbc4c56dcd407b56b7dbf3199da7e36c25"
+  },
+  "indices.u32": {
+   "bytes": 109584,
+   "sha256": "424f80f5be16dd261167b6c14d9efbb55f103d27766982a1c3ded71647a01122"
+  },
+  "labels.f32": {
+   "bytes": 82832,
+   "sha256": "b5d1d9a6d8954880295ad498bec8a57892ab62a33793da6e57f897ad9cb37dce"
+  },
+  "positions.f32": {
+   "bytes": 3407024,
+   "sha256": "65238eb1a215ee9f3773d59a7337d8a5757e73d5a1bd7e649eda94ae07d1d093"
+  },
+  "positions_original.f32": {
+   "bytes": 54952,
+   "sha256": "1252a6d4a91cd21f72dee7589d75333d19c29eac241e44183070aa951de67595"
+  },
+  "quality.parquet": {
+   "bytes": 104313,
+   "sha256": "5a56f5a246022758a7056ffd989f150a1ab846aea2ed122332587e89a605c41c"
+  },
+  "region_draw_ranges.u32": {
+   "bytes": 1336,
+   "sha256": "d78e8b11288f5dd6511413ff78693cb25994baf02c026f3cd9000b04c52c8166"
+  },
+  "ring_names.json": {
+   "bytes": 1744,
+   "sha256": "64d6558d1b5f09c57921279ad096711c818a30ea72d108c650155b50c19218c6"
+  },
+  "surface_vertex_to_canonical.u32": {
+   "bytes": 27476,
+   "sha256": "53f9915a1043120e828e2d65f58dc9fdd139be276dd8f899bf32b0f3c307998c"
+  },
+  "topology.bin": {
+   "bytes": 40992,
+   "sha256": "6e7399c482bb0c4fa6913bfca76e5847f939d5d687fcf51d96d99730de8c8d74"
+  },
+  "triangle_ring.u32": {
+   "bytes": 36528,
+   "sha256": "cd0865a7fbf7e0a67bb05cad08d8f92cc92324269d36a4cdd941f9afc1d78427"
+  },
+  "values.f32": {
+   "bytes": 165664,
+   "sha256": "2a67eee8b4e3e0e95dd91502632e38f770189ac683c17db221bcfc2552c1bcd4"
+  },
+  "vertices_lonlat.f32": {
+   "bytes": 54952,
+   "sha256": "ae086320d095486a9586c17e9195beb50db30359dff949736d9ec6fea208c79c"
+  }
+ },
+ "entities_file": "entities.json",
+ "quality_file": "quality.parquet"
+}
