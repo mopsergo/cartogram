@@ -288,6 +288,39 @@ done
 `--dataset` steht **vor** dem Unterbefehl (alternativ
 `WORLDCARTO_DATASET=owid`).
 
+### 3.2b Dritter Datensatz: kombinierter Lauf (1820–2025)
+
+Profil `configs/datasets/merged.yaml`: Malanima 1820–1964, ab 1965
+OWID (Regeln und Abweichungsbericht: `datasets/prep_merged_data.py`).
+Ordner `data/intermediate/merged`, `build-cache/merged`, `dist/merged`,
+Export nach `web/public/cartogram/merged/v1|v2|v3`, in der Webapp der
+Kartogramm-Lauf „Kombiniert".
+
+```bash
+cd datasets && ../.venv/bin/python prep_merged_data.py
+cp merged_population_energy_1820_2025.csv \
+   ../ultragram/cartogram-pipeline/data/raw/
+
+cd ../ultragram/cartogram-pipeline
+export PYTHONPATH=src
+python3 -m worldcarto.cli --dataset merged ingest
+python3 -m worldcarto.cli --dataset merged mesh
+for m in world_share energy_consumption per_capita_energy_consumption; do
+  python3 -m worldcarto.cli --dataset merged solve  --metric $m
+  python3 -m worldcarto.cli --dataset merged export --metric $m
+done
+```
+
+Die Malanima-Zeilen (bis 1964) und die übernommenen OWID-Zeilen sind
+byte-identisch mit den Eingaben, die Zielgewichte dieser Jahre also
+identisch mit dem Standard- bzw. OWID-Lauf. Da Mesh und Solver-
+Konfiguration gleich sind, lassen sich deren gelöste Frames
+übernehmen: Frame-Dateien nach `build-cache/merged/frames/` kopieren
+und ihre Einträge (Schlüssel `Jahr:Targets-Hash`) in den Index des
+kombinierten Laufs aufnehmen – nicht passende Targets werden ohnehin
+neu gelöst. Neu zu lösen bleiben dann nur die Jahre mit geänderten
+Targets (v2/v3 1965–1979 wegen der Malanima-Lückenfüllung).
+
 ### 3.3 Nach Änderungen – was muss neu laufen?
 
 | Änderung | nötig |

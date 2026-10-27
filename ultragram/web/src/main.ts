@@ -1,6 +1,6 @@
 /** Einstiegspunkt: Artefakte laden, App starten, Fehler anzeigen.
  *
- * URL-Parameter: ?run=current|owid|legacy&variant=population|energy|percapita
+ * URL-Parameter: ?run=current|owid|merged|legacy&variant=population|energy|percapita
  * &year=<Jahr im Bereich des Laufs> – Lauf/Variante bestimmen den geladenen Export,
  * year setzt die Startposition der Zeitleiste.
  */

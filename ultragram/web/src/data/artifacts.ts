@@ -7,10 +7,13 @@
  *   - owid:    cartogram/owid/v1 (+ v2/v3) – eigener Datensatz 1965–2025
  *     (OWID: UN-Bevölkerung, Primärenergie pro Kopf), Pipeline-Profil
  *     --dataset owid; gleiche Topologie wie current, eigene Frames.
+ *   - merged:  cartogram/merged/v1 (+ v2/v3) – 1820–2025, Malanima bis
+ *     1964, ab 1965 OWID (Pipeline-Profil --dataset merged).
  *   - legacy:  cartogram/v0 – der Originalzustand aus dem Git-Commit
  *     („ursprüngliche Projektion", nur Bevölkerungs-Variante).
  *
- * Gewählt via URL: ?run=current|owid|legacy&variant=population|energy|percapita
+ * Gewählt via URL:
+ *   ?run=current|owid|merged|legacy&variant=population|energy|percapita
  */
 import {
   Artifacts, EntityMeta, Manifest, Ring,
@@ -18,19 +21,21 @@ import {
 
 const BASE = import.meta.env.BASE_URL ?? "/";
 
-export type RunId = "current" | "owid" | "legacy";
+export type RunId = "current" | "owid" | "merged" | "legacy";
 export type VariantId = "population" | "energy" | "percapita";
 
 /** run -> Basisordner, Variante -> Unterordner (Export-VARIANT_DIRS) */
 const RUN_DIRS: Record<RunId, string> = {
   current: "cartogram/v1",
   owid: "cartogram/owid/v1",
+  merged: "cartogram/merged/v1",
   legacy: "cartogram/v0",
 };
 /** Basisordner der Flächen-Varianten je Lauf (legacy: keine) */
 const VARIANT_BASES: Partial<Record<RunId, string>> = {
   current: "cartogram",
   owid: "cartogram/owid",
+  merged: "cartogram/merged",
 };
 export const VARIANT_DIRS: Record<VariantId, string> = {
   population: "v1",
@@ -46,7 +51,8 @@ export const VARIANT_LABELS: Record<VariantId, string> = {
 function parseRun(): RunId {
   const p = new URLSearchParams(location.search);
   const run = p.get("run");
-  return run === "legacy" || run === "owid" ? run : "current";
+  return run === "legacy" || run === "owid" || run === "merged"
+    ? run : "current";
 }
 
 function parseVariant(): VariantId {
