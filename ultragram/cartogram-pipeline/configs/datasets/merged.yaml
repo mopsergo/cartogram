@@ -1,0 +1,29 @@
+# =====================================================================
+# Datensatz-Profil „merged" (Kartogramm-Lauf Malanima + OWID, 1820–2025)
+# ---------------------------------------------------------------------
+# Überschreibt pipeline.yaml (rekursiv zusammengeführt). Aktivieren:
+#   PYTHONPATH=src python -m worldcarto.cli --dataset merged <command>
+# (oder Umgebungsvariable WORLDCARTO_DATASET=merged).
+#
+# 1820–1964: Malanima (WEC 2022) unverändert; ab 1965 ersetzt OWID
+# (UN WPP 2024, Primärenergie Energy Institute + EIA) die Jahre der
+# Publikation. Länder, deren OWID-Energiereihe erst 1980 beginnt,
+# behalten 1965–1979 den Malanima-Pro-Kopf-Wert. Erzeugt von
+# datasets/prep_merged_data.py (Abweichungsbericht:
+# datasets/merged_discrepancies.csv). Eigene Caches/Ausgaben; der
+# Export landet in web/public/cartogram/merged/v1|v2|v3.
+# =====================================================================
+
+paths:
+  raw_csv: data/raw/merged_population_energy_1820_2025.csv
+  intermediate: data/intermediate/merged
+  build_cache: build-cache/merged
+  dist: dist/merged
+  web_public: ../web/public/cartogram/merged
+
+data:
+  year_min: 1820
+  year_max: 2025
+
+temporal:
+  test_years: [1820, 1900, 1964, 1965, 2000, 2025]

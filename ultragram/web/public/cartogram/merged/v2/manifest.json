@@ -1,0 +1,2936 @@
+{
+ "format": "ultragram.cartogram.v1",
+ "artifact_version": "v2",
+ "target_metric": "energy_consumption",
+ "target_metric_label": "Gesamtenergie",
+ "lon_offset_deg": 11.5,
+ "data_version": "1.0.0",
+ "generated_utc": "2026-10-27T09:00:43.426325+00:00",
+ "years": {
+  "data_range": [
+   1820,
+   2025
+  ],
+  "frames": [
+   {
+    "index": 0,
+    "year": 1820,
+    "intermediate": false
+   },
+   {
+    "index": 1,
+    "year": 1821,
+    "intermediate": false
+   },
+   {
+    "index": 2,
+    "year": 1822,
+    "intermediate": false
+   },
+   {
+    "index": 3,
+    "year": 1823,
+    "intermediate": false
+   },
+   {
+    "index": 4,
+    "year": 1824,
+    "intermediate": false
+   },
+   {
+    "index": 5,
+    "year": 1825,
+    "intermediate": false
+   },
+   {
+    "index": 6,
+    "year": 1826,
+    "intermediate": false
+   },
+   {
+    "index": 7,
+    "year": 1827,
+    "intermediate": false
+   },
+   {
+    "index": 8,
+    "year": 1828,
+    "intermediate": false
+   },
+   {
+    "index": 9,
+    "year": 1829,
+    "intermediate": false
+   },
+   {
+    "index": 10,
+    "year": 1830,
+    "intermediate": false
+   },
+   {
+    "index": 11,
+    "year": 1831,
+    "intermediate": false
+   },
+   {
+    "index": 12,
+    "year": 1832,
+    "intermediate": false
+   },
+   {
+    "index": 13,
+    "year": 1833,
+    "intermediate": false
+   },
+   {
+    "index": 14,
+    "year": 1834,
+    "intermediate": false
+   },
+   {
+    "index": 15,
+    "year": 1835,
+    "intermediate": false
+   },
+   {
+    "index": 16,
+    "year": 1836,
+    "intermediate": false
+   },
+   {
+    "index": 17,
+    "year": 1837,
+    "intermediate": false
+   },
+   {
+    "index": 18,
+    "year": 1838,
+    "intermediate": false
+   },
+   {
+    "index": 19,
+    "year": 1839,
+    "intermediate": false
+   },
+   {
+    "index": 20,
+    "year": 1840,
+    "intermediate": false
+   },
+   {
+    "index": 21,
+    "year": 1841,
+    "intermediate": false
+   },
+   {
+    "index": 22,
+    "year": 1842,
+    "intermediate": false
+   },
+   {
+    "index": 23,
+    "year": 1843,
+    "intermediate": false
+   },
+   {
+    "index": 24,
+    "year": 1844,
+    "intermediate": false
+   },
+   {
+    "index": 25,
+    "year": 1845,
+    "intermediate": false
+   },
+   {
+    "index": 26,
+    "year": 1846,
+    "intermediate": false
+   },
+   {
+    "index": 27,
+    "year": 1847,
+    "intermediate": false
+   },
+   {
+    "index": 28,
+    "year": 1848,
+    "intermediate": false
+   },
+   {
+    "index": 29,
+    "year": 1849,
+    "intermediate": false
+   },
+   {
+    "index": 30,
+    "year": 1850,
+    "intermediate": false
+   },
+   {
+    "index": 31,
+    "year": 1851,
+    "intermediate": false
+   },
+   {
+    "index": 32,
+    "year": 1852,
+    "intermediate": false
+   },
+   {
+    "index": 33,
+    "year": 1853,
+    "intermediate": false
+   },
+   {
+    "index": 34,
+    "year": 1854,
+    "intermediate": false
+   },
+   {
+    "index": 35,
+    "year": 1855,
+    "intermediate": false
+   },
+   {
+    "index": 36,
+    "year": 1856,
+    "intermediate": false
+   },
+   {
+    "index": 37,
+    "year": 1857,
+    "intermediate": false
+   },
+   {
+    "index": 38,
+    "year": 1858,
+    "intermediate": false
+   },
+   {
+    "index": 39,
+    "year": 1859,
+    "intermediate": false
+   },
+   {
+    "index": 40,
+    "year": 1860,
+    "intermediate": false
+   },
+   {
+    "index": 41,
+    "year": 1861,
+    "intermediate": false
+   },
+   {
+    "index": 42,
+    "year": 1862,
+    "intermediate": false
+   },
+   {
+    "index": 43,
+    "year": 1863,
+    "intermediate": false
+   },
+   {
+    "index": 44,
+    "year": 1864,
+    "intermediate": false
+   },
+   {
+    "index": 45,
+    "year": 1865,
+    "intermediate": false
+   },
+   {
+    "index": 46,
+    "year": 1866,
+    "intermediate": false
+   },
+   {
+    "index": 47,
+    "year": 1867,
+    "intermediate": false
+   },
+   {
+    "index": 48,
+    "year": 1868,
+    "intermediate": false
+   },
+   {
+    "index": 49,
+    "year": 1869,
+    "intermediate": false
+   },
+   {
+    "index": 50,
+    "year": 1870,
+    "intermediate": false
+   },
+   {
+    "index": 51,
+    "year": 1871,
+    "intermediate": false
+   },
+   {
+    "index": 52,
+    "year": 1872,
+    "intermediate": false
+   },
+   {
+    "index": 53,
+    "year": 1873,
+    "intermediate": false
+   },
+   {
+    "index": 54,
+    "year": 1874,
+    "intermediate": false
+   },
+   {
+    "index": 55,
+    "year": 1875,
+    "intermediate": false
+   },
+   {
+    "index": 56,
+    "year": 1876,
+    "intermediate": false
+   },
+   {
+    "index": 57,
+    "year": 1877,
+    "intermediate": false
+   },
+   {
+    "index": 58,
+    "year": 1878,
+    "intermediate": false
+   },
+   {
+    "index": 59,
+    "year": 1879,
+    "intermediate": false
+   },
+   {
+    "index": 60,
+    "year": 1880,
+    "intermediate": false
+   },
+   {
+    "index": 61,
+    "year": 1881,
+    "intermediate": false
+   },
+   {
+    "index": 62,
+    "year": 1882,
+    "intermediate": false
+   },
+   {
+    "index": 63,
+    "year": 1883,
+    "intermediate": false
+   },
+   {
+    "index": 64,
+    "year": 1884,
+    "intermediate": false
+   },
+   {
+    "index": 65,
+    "year": 1885,
+    "intermediate": false
+   },
+   {
+    "index": 66,
+    "year": 1886,
+    "intermediate": false
+   },
+   {
+    "index": 67,
+    "year": 1887,
+    "intermediate": false
+   },
+   {
+    "index": 68,
+    "year": 1888,
+    "intermediate": false
+   },
+   {
+    "index": 69,
+    "year": 1889,
+    "intermediate": false
+   },
+   {
+    "index": 70,
+    "year": 1890,
+    "intermediate": false
+   },
+   {
+    "index": 71,
+    "year": 1891,
+    "intermediate": false
+   },
+   {
+    "index": 72,
+    "year": 1892,
+    "intermediate": false
+   },
+   {
+    "index": 73,
+    "year": 1893,
+    "intermediate": false
+   },
+   {
+    "index": 74,
+    "year": 1894,
+    "intermediate": false
+   },
+   {
+    "index": 75,
+    "year": 1895,
+    "intermediate": false
+   },
+   {
+    "index": 76,
+    "year": 1896,
+    "intermediate": false
+   },
+   {
+    "index": 77,
+    "year": 1897,
+    "intermediate": false
+   },
+   {
+    "index": 78,
+    "year": 1898,
+    "intermediate": false
+   },
+   {
+    "index": 79,
+    "year": 1899,
+    "intermediate": false
+   },
+   {
+    "index": 80,
+    "year": 1900,
+    "intermediate": false
+   },
+   {
+    "index": 81,
+    "year": 1901,
+    "intermediate": false
+   },
+   {
+    "index": 82,
+    "year": 1902,
+    "intermediate": false
+   },
+   {
+    "index": 83,
+    "year": 1903,
+    "intermediate": false
+   },
+   {
+    "index": 84,
+    "year": 1904,
+    "intermediate": false
+   },
+   {
+    "index": 85,
+    "year": 1905,
+    "intermediate": false
+   },
+   {
+    "index": 86,
+    "year": 1906,
+    "intermediate": false
+   },
+   {
+    "index": 87,
+    "year": 1907,
+    "intermediate": false
+   },
+   {
+    "index": 88,
+    "year": 1908,
+    "intermediate": false
+   },
+   {
+    "index": 89,
+    "year": 1909,
+    "intermediate": false
+   },
+   {
+    "index": 90,
+    "year": 1910,
+    "intermediate": false
+   },
+   {
+    "index": 91,
+    "year": 1911,
+    "intermediate": false
+   },
+   {
+    "index": 92,
+    "year": 1912,
+    "intermediate": false
+   },
+   {
+    "index": 93,
+    "year": 1913,
+    "intermediate": false
+   },
+   {
+    "index": 94,
+    "year": 1914,
+    "intermediate": false
+   },
+   {
+    "index": 95,
+    "year": 1915,
+    "intermediate": false
+   },
+   {
+    "index": 96,
+    "year": 1916,
+    "intermediate": false
+   },
+   {
+    "index": 97,
+    "year": 1917,
+    "intermediate": false
+   },
+   {
+    "index": 98,
+    "year": 1918,
+    "intermediate": false
+   },
+   {
+    "index": 99,
+    "year": 1919,
+    "intermediate": false
+   },
+   {
+    "index": 100,
+    "year": 1920,
+    "intermediate": false
+   },
+   {
+    "index": 101,
+    "year": 1921,
+    "intermediate": false
+   },
+   {
+    "index": 102,
+    "year": 1922,
+    "intermediate": false
+   },
+   {
+    "index": 103,
+    "year": 1923,
+    "intermediate": false
+   },
+   {
+    "index": 104,
+    "year": 1924,
+    "intermediate": false
+   },
+   {
+    "index": 105,
+    "year": 1925,
+    "intermediate": false
+   },
+   {
+    "index": 106,
+    "year": 1926,
+    "intermediate": false
+   },
+   {
+    "index": 107,
+    "year": 1927,
+    "intermediate": false
+   },
+   {
+    "index": 108,
+    "year": 1928,
+    "intermediate": false
+   },
+   {
+    "index": 109,
+    "year": 1929,
+    "intermediate": false
+   },
+   {
+    "index": 110,
+    "year": 1930,
+    "intermediate": false
+   },
+   {
+    "index": 111,
+    "year": 1931,
+    "intermediate": false
+   },
+   {
+    "index": 112,
+    "year": 1932,
+    "intermediate": false
+   },
+   {
+    "index": 113,
+    "year": 1933,
+    "intermediate": false
+   },
+   {
+    "index": 114,
+    "year": 1934,
+    "intermediate": false
+   },
+   {
+    "index": 115,
+    "year": 1935,
+    "intermediate": false
+   },
+   {
+    "index": 116,
+    "year": 1936,
+    "intermediate": false
+   },
+   {
+    "index": 117,
+    "year": 1937,
+    "intermediate": false
+   },
+   {
+    "index": 118,
+    "year": 1938,
+    "intermediate": false
+   },
+   {
+    "index": 119,
+    "year": 1939,
+    "intermediate": false
+   },
+   {
+    "index": 120,
+    "year": 1940,
+    "intermediate": false
+   },
+   {
+    "index": 121,
+    "year": 1941,
+    "intermediate": false
+   },
+   {
+    "index": 122,
+    "year": 1942,
+    "intermediate": false
+   },
+   {
+    "index": 123,
+    "year": 1943,
+    "intermediate": false
+   },
+   {
+    "index": 124,
+    "year": 1944,
+    "intermediate": false
+   },
+   {
+    "index": 125,
+    "year": 1945,
+    "intermediate": false
+   },
+   {
+    "index": 126,
+    "year": 1946,
+    "intermediate": false
+   },
+   {
+    "index": 127,
+    "year": 1947,
+    "intermediate": false
+   },
+   {
+    "index": 128,
+    "year": 1948,
+    "intermediate": false
+   },
+   {
+    "index": 129,
+    "year": 1949,
+    "intermediate": false
+   },
+   {
+    "index": 130,
+    "year": 1950,
+    "intermediate": false
+   },
+   {
+    "index": 131,
+    "year": 1951,
+    "intermediate": false
+   },
+   {
+    "index": 132,
+    "year": 1952,
+    "intermediate": false
+   },
+   {
+    "index": 133,
+    "year": 1953,
+    "intermediate": false
+   },
+   {
+    "index": 134,
+    "year": 1954,
+    "intermediate": false
+   },
+   {
+    "index": 135,
+    "year": 1955,
+    "intermediate": false
+   },
+   {
+    "index": 136,
+    "year": 1956,
+    "intermediate": false
+   },
+   {
+    "index": 137,
+    "year": 1957,
+    "intermediate": false
+   },
+   {
+    "index": 138,
+    "year": 1958,
+    "intermediate": false
+   },
+   {
+    "index": 139,
+    "year": 1959,
+    "intermediate": false
+   },
+   {
+    "index": 140,
+    "year": 1960,
+    "intermediate": false
+   },
+   {
+    "index": 141,
+    "year": 1961,
+    "intermediate": false
+   },
+   {
+    "index": 142,
+    "year": 1962,
+    "intermediate": false
+   },
+   {
+    "index": 143,
+    "year": 1963,
+    "intermediate": false
+   },
+   {
+    "index": 144,
+    "year": 1964,
+    "intermediate": false
+   },
+   {
+    "index": 145,
+    "year": 1965,
+    "intermediate": false
+   },
+   {
+    "index": 146,
+    "year": 1965,
+    "intermediate": false
+   },
+   {
+    "index": 147,
+    "year": 1966,
+    "intermediate": false
+   },
+   {
+    "index": 148,
+    "year": 1966,
+    "intermediate": false
+   },
+   {
+    "index": 149,
+    "year": 1967,
+    "intermediate": false
+   },
+   {
+    "index": 150,
+    "year": 1967,
+    "intermediate": false
+   },
+   {
+    "index": 151,
+    "year": 1968,
+    "intermediate": false
+   },
+   {
+    "index": 152,
+    "year": 1968,
+    "intermediate": false
+   },
+   {
+    "index": 153,
+    "year": 1969,
+    "intermediate": false
+   },
+   {
+    "index": 154,
+    "year": 1969,
+    "intermediate": false
+   },
+   {
+    "index": 155,
+    "year": 1970,
+    "intermediate": false
+   },
+   {
+    "index": 156,
+    "year": 1970,
+    "intermediate": false
+   },
+   {
+    "index": 157,
+    "year": 1971,
+    "intermediate": false
+   },
+   {
+    "index": 158,
+    "year": 1971,
+    "intermediate": false
+   },
+   {
+    "index": 159,
+    "year": 1972,
+    "intermediate": false
+   },
+   {
+    "index": 160,
+    "year": 1972,
+    "intermediate": false
+   },
+   {
+    "index": 161,
+    "year": 1973,
+    "intermediate": false
+   },
+   {
+    "index": 162,
+    "year": 1973,
+    "intermediate": false
+   },
+   {
+    "index": 163,
+    "year": 1974,
+    "intermediate": false
+   },
+   {
+    "index": 164,
+    "year": 1974,
+    "intermediate": false
+   },
+   {
+    "index": 165,
+    "year": 1975,
+    "intermediate": false
+   },
+   {
+    "index": 166,
+    "year": 1975,
+    "intermediate": false
+   },
+   {
+    "index": 167,
+    "year": 1976,
+    "intermediate": false
+   },
+   {
+    "index": 168,
+    "year": 1976,
+    "intermediate": false
+   },
+   {
+    "index": 169,
+    "year": 1977,
+    "intermediate": false
+   },
+   {
+    "index": 170,
+    "year": 1977,
+    "intermediate": false
+   },
+   {
+    "index": 171,
+    "year": 1978,
+    "intermediate": false
+   },
+   {
+    "index": 172,
+    "year": 1978,
+    "intermediate": false
+   },
+   {
+    "index": 173,
+    "year": 1979,
+    "intermediate": false
+   },
+   {
+    "index": 174,
+    "year": 1979,
+    "intermediate": false
+   },
+   {
+    "index": 175,
+    "year": 1980,
+    "intermediate": false
+   },
+   {
+    "index": 176,
+    "year": 1981,
+    "intermediate": false
+   },
+   {
+    "index": 177,
+    "year": 1982,
+    "intermediate": false
+   },
+   {
+    "index": 178,
+    "year": 1983,
+    "intermediate": false
+   },
+   {
+    "index": 179,
+    "year": 1984,
+    "intermediate": false
+   },
+   {
+    "index": 180,
+    "year": 1985,
+    "intermediate": false
+   },
+   {
+    "index": 181,
+    "year": 1986,
+    "intermediate": false
+   },
+   {
+    "index": 182,
+    "year": 1987,
+    "intermediate": false
+   },
+   {
+    "index": 183,
+    "year": 1988,
+    "intermediate": false
+   },
+   {
+    "index": 184,
+    "year": 1989,
+    "intermediate": false
+   },
+   {
+    "index": 185,
+    "year": 1990,
+    "intermediate": false
+   },
+   {
+    "index": 186,
+    "year": 1991,
+    "intermediate": false
+   },
+   {
+    "index": 187,
+    "year": 1992,
+    "intermediate": false
+   },
+   {
+    "index": 188,
+    "year": 1993,
+    "intermediate": false
+   },
+   {
+    "index": 189,
+    "year": 1994,
+    "intermediate": false
+   },
+   {
+    "index": 190,
+    "year": 1995,
+    "intermediate": false
+   },
+   {
+    "index": 191,
+    "year": 1996,
+    "intermediate": false
+   },
+   {
+    "index": 192,
+    "year": 1997,
+    "intermediate": false
+   },
+   {
+    "index": 193,
+    "year": 1998,
+    "intermediate": false
+   },
+   {
+    "index": 194,
+    "year": 1999,
+    "intermediate": false
+   },
+   {
+    "index": 195,
+    "year": 2000,
+    "intermediate": false
+   },
+   {
+    "index": 196,
+    "year": 2001,
+    "intermediate": false
+   },
+   {
+    "index": 197,
+    "year": 2002,
+    "intermediate": false
+   },
+   {
+    "index": 198,
+    "year": 2003,
+    "intermediate": false
+   },
+   {
+    "index": 199,
+    "year": 2004,
+    "intermediate": false
+   },
+   {
+    "index": 200,
+    "year": 2005,
+    "intermediate": false
+   },
+   {
+    "index": 201,
+    "year": 2006,
+    "intermediate": false
+   },
+   {
+    "index": 202,
+    "year": 2007,
+    "intermediate": false
+   },
+   {
+    "index": 203,
+    "year": 2008,
+    "intermediate": false
+   },
+   {
+    "index": 204,
+    "year": 2009,
+    "intermediate": false
+   },
+   {
+    "index": 205,
+    "year": 2010,
+    "intermediate": false
+   },
+   {
+    "index": 206,
+    "year": 2011,
+    "intermediate": false
+   },
+   {
+    "index": 207,
+    "year": 2012,
+    "intermediate": false
+   },
+   {
+    "index": 208,
+    "year": 2013,
+    "intermediate": false
+   },
+   {
+    "index": 209,
+    "year": 2014,
+    "intermediate": false
+   },
+   {
+    "index": 210,
+    "year": 2015,
+    "intermediate": false
+   },
+   {
+    "index": 211,
+    "year": 2016,
+    "intermediate": false
+   },
+   {
+    "index": 212,
+    "year": 2017,
+    "intermediate": false
+   },
+   {
+    "index": 213,
+    "year": 2018,
+    "intermediate": false
+   },
+   {
+    "index": 214,
+    "year": 2019,
+    "intermediate": false
+   },
+   {
+    "index": 215,
+    "year": 2020,
+    "intermediate": false
+   },
+   {
+    "index": 216,
+    "year": 2021,
+    "intermediate": false
+   },
+   {
+    "index": 217,
+    "year": 2022,
+    "intermediate": false
+   },
+   {
+    "index": 218,
+    "year": 2023,
+    "intermediate": false
+   },
+   {
+    "index": 219,
+    "year": 2024,
+    "intermediate": false
+   },
+   {
+    "index": 220,
+    "year": 2025,
+    "intermediate": false
+   },
+   {
+    "index": 221,
+    "year": 2025,
+    "intermediate": false
+   }
+  ]
+ },
+ "dimensions": {
+  "num_frames": 222,
+  "num_entities": 167,
+  "num_vertices": 6869,
+  "num_triangles": 9132,
+  "num_rings": 279
+ },
+ "arrays": {
+  "positions": {
+   "file": "positions.f32",
+   "dtype": "<f4",
+   "shape": [
+    222,
+    6869,
+    2
+   ]
+  },
+  "values": {
+   "file": "values.f32",
+   "dtype": "<f4",
+   "shape": [
+    222,
+    167,
+    4
+   ],
+   "components": [
+    "population",
+    "world_share",
+    "energy_consumption",
+    "per_capita_energy_consumption"
+   ],
+   "nan": "keine Daten"
+  },
+  "labels": {
+   "file": "labels.f32",
+   "dtype": "<f4",
+   "shape": [
+    222,
+    167,
+    2
+   ]
+  },
+  "indices": {
+   "file": "indices.u32",
+   "dtype": "<u4",
+   "shape": [
+    9132,
+    3
+   ]
+  },
+  "surface_vertex_to_canonical": {
+   "file": "surface_vertex_to_canonical.u32",
+   "dtype": "<u4",
+   "shape": [
+    6869
+   ],
+   "note": "Identität – Dreiecke nutzen direkt kanonische IDs"
+  },
+  "region_draw_ranges": {
+   "file": "region_draw_ranges.u32",
+   "dtype": "<u4",
+   "shape": [
+    167,
+    2
+   ],
+   "components": [
+    "start_triangle",
+    "count"
+   ]
+  },
+  "boundary_rings": {
+   "file": "boundary_rings.u32",
+   "dtype": "<u4",
+   "layout": "[numRings] dann je Ring [owner_entity, num_vertices, is_hole, v0..v{n-1}]"
+  },
+  "triangle_ring": {
+   "file": "triangle_ring.u32",
+   "dtype": "<u4",
+   "shape": [
+    9132
+   ],
+   "note": "Exterior-Ring-Index je Dreieck – mit ring_names.json zeigt Tooltip/Panel das konkrete Land (Natural-Earth-Länder der Restliche-Welt-Entität)"
+  },
+  "ring_names": {
+   "file": "ring_names.json",
+   "note": "Ländername je Ring (null = Entitätsname verwenden); ältere Läufe ohne diese Datei fallen darauf zurück"
+  },
+  "flags": {
+   "file": "flags.u8",
+   "dtype": "<u1",
+   "shape": [
+    167
+   ],
+   "bits": {
+    "0": "is_other_world",
+    "1": "historical_aggregate"
+   }
+  },
+  "positions_original": {
+   "file": "positions_original.f32",
+   "dtype": "<f4",
+   "shape": [
+    6869,
+    2
+   ],
+   "note": "unverzerrte Equal-Earth-Basis (Ghost-Ebene)"
+  },
+  "vertices_lonlat": {
+   "file": "vertices_lonlat.f32",
+   "dtype": "<f4",
+   "shape": [
+    6869,
+    2
+   ],
+   "note": "unverzerrte Längen-/Breitengrade (Reference Globe)"
+  }
+ },
+ "crs": {
+  "name": "Equal Earth",
+  "epsg": 8857,
+  "units": "meters",
+  "note": "flächentreue Pseudozylinderprojektion (Plan §5.3)"
+ },
+ "units": {
+  "population": "Personen",
+  "world_share": "Anteil an der Weltbevölkerung (0..1)",
+  "energy_consumption": "Mtoe",
+  "per_capita_energy_consumption": "kWh pro Kopf",
+  "positions": "Meter (Equal Earth)"
+ },
+ "scales": {
+  "area": {
+   "metric": "energy_consumption",
+   "label": "Gesamtenergie",
+   "note": "Fläche = Anteil an der gewählten Zielkennzahl (data.target_metric); Entitäten ohne Wert dieser Kennzahl sind passiv und behalten näherungsweise ihre Fläche"
+  },
+  "color": {
+   "metric": "per_capita_energy_consumption",
+   "transform": "linear",
+   "ramp": "plasma_r",
+   "available_metrics": [
+    "per_capita_energy_consumption",
+    "energy_consumption",
+    "population",
+    "world_share"
+   ],
+   "value_ranges": {
+    "population": {
+     "min": 2300.0,
+     "max": 1463865527.0
+    },
+    "world_share": {
+     "min": 2.18e-06,
+     "max": 0.36472021
+    },
+    "energy_consumption": {
+     "min": 0.0,
+     "max": 3873.921907523592
+    },
+    "per_capita_energy_consumption": {
+     "min": 0.0,
+     "max": 318559.7
+    }
+   }
+  },
+  "height": {
+   "metric": "per_capita_energy_consumption",
+   "transform": "linear",
+   "max_fraction": 0.09,
+   "global_max": 318559.7,
+   "formula": "height = transform(max(value, 0) / normalization_max) * max_fraction * world_width; normalization_max = year_max (per-year) or global_max (global); transform im Renderer umschaltbar: sqrt (Standard, empfindlich) oder linear"
+  }
+ },
+ "solver": {
+  "chain": [
+   "cartogram_cpp",
+   "carto_flow"
+  ],
+  "per_frame": [
+   {
+    "index": 0,
+    "year": 1820,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.219358267578678
+   },
+   {
+    "index": 1,
+    "year": 1821,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2000779344350379
+   },
+   {
+    "index": 2,
+    "year": 1822,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21689341485106248
+   },
+   {
+    "index": 3,
+    "year": 1823,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.20584593432161893
+   },
+   {
+    "index": 4,
+    "year": 1824,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2021616158112481
+   },
+   {
+    "index": 5,
+    "year": 1825,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19878899259723093
+   },
+   {
+    "index": 6,
+    "year": 1826,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.20455472272387212
+   },
+   {
+    "index": 7,
+    "year": 1827,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1938179527677099
+   },
+   {
+    "index": 8,
+    "year": 1828,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19580011878765125
+   },
+   {
+    "index": 9,
+    "year": 1829,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19358384738064519
+   },
+   {
+    "index": 10,
+    "year": 1830,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19522492194969712
+   },
+   {
+    "index": 11,
+    "year": 1831,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.18981850240758652
+   },
+   {
+    "index": 12,
+    "year": 1832,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1943549272770777
+   },
+   {
+    "index": 13,
+    "year": 1833,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19581959776461236
+   },
+   {
+    "index": 14,
+    "year": 1834,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1858151787356481
+   },
+   {
+    "index": 15,
+    "year": 1835,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19017363618283908
+   },
+   {
+    "index": 16,
+    "year": 1836,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.183998617325801
+   },
+   {
+    "index": 17,
+    "year": 1837,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1819068263678338
+   },
+   {
+    "index": 18,
+    "year": 1838,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.17013687206992306
+   },
+   {
+    "index": 19,
+    "year": 1839,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.18147048333927895
+   },
+   {
+    "index": 20,
+    "year": 1840,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1659018687998203
+   },
+   {
+    "index": 21,
+    "year": 1841,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15677264979780492
+   },
+   {
+    "index": 22,
+    "year": 1842,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16484540446656473
+   },
+   {
+    "index": 23,
+    "year": 1843,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15306827846840795
+   },
+   {
+    "index": 24,
+    "year": 1844,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15155542523376808
+   },
+   {
+    "index": 25,
+    "year": 1845,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1427139295624546
+   },
+   {
+    "index": 26,
+    "year": 1846,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.14665424374968863
+   },
+   {
+    "index": 27,
+    "year": 1847,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13375547658213904
+   },
+   {
+    "index": 28,
+    "year": 1848,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1334114655211669
+   },
+   {
+    "index": 29,
+    "year": 1849,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13365397599501808
+   },
+   {
+    "index": 30,
+    "year": 1850,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13231564598085296
+   },
+   {
+    "index": 31,
+    "year": 1851,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.149625464556448
+   },
+   {
+    "index": 32,
+    "year": 1852,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.14314669818308723
+   },
+   {
+    "index": 33,
+    "year": 1853,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1428172932563393
+   },
+   {
+    "index": 34,
+    "year": 1854,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.14591150187356966
+   },
+   {
+    "index": 35,
+    "year": 1855,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1454392698005842
+   },
+   {
+    "index": 36,
+    "year": 1856,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13325729229174946
+   },
+   {
+    "index": 37,
+    "year": 1857,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13428239205155115
+   },
+   {
+    "index": 38,
+    "year": 1858,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1298705994428864
+   },
+   {
+    "index": 39,
+    "year": 1859,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11986090284385911
+   },
+   {
+    "index": 40,
+    "year": 1860,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11667775066461107
+   },
+   {
+    "index": 41,
+    "year": 1861,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11724087503485897
+   },
+   {
+    "index": 42,
+    "year": 1862,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.12519692970292176
+   },
+   {
+    "index": 43,
+    "year": 1863,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11230167208209654
+   },
+   {
+    "index": 44,
+    "year": 1864,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11010322013428696
+   },
+   {
+    "index": 45,
+    "year": 1865,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.10938692217021967
+   },
+   {
+    "index": 46,
+    "year": 1866,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11272880117855685
+   },
+   {
+    "index": 47,
+    "year": 1867,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11800350852740632
+   },
+   {
+    "index": 48,
+    "year": 1868,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.11214240788255969
+   },
+   {
+    "index": 49,
+    "year": 1869,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.10310699673571751
+   },
+   {
+    "index": 50,
+    "year": 1870,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.10519798330008016
+   },
+   {
+    "index": 51,
+    "year": 1871,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.10041853027187883
+   },
+   {
+    "index": 52,
+    "year": 1872,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.09712952018437784
+   },
+   {
+    "index": 53,
+    "year": 1873,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.09053764299991315
+   },
+   {
+    "index": 54,
+    "year": 1874,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.10330218555496966
+   },
+   {
+    "index": 55,
+    "year": 1875,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.09088537104801725
+   },
+   {
+    "index": 56,
+    "year": 1876,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07684015856519211
+   },
+   {
+    "index": 57,
+    "year": 1877,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08531853160107278
+   },
+   {
+    "index": 58,
+    "year": 1878,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08815999773508904
+   },
+   {
+    "index": 59,
+    "year": 1879,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07498814961946411
+   },
+   {
+    "index": 60,
+    "year": 1880,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07551444512293048
+   },
+   {
+    "index": 61,
+    "year": 1881,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0815983732560059
+   },
+   {
+    "index": 62,
+    "year": 1882,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07009443856038011
+   },
+   {
+    "index": 63,
+    "year": 1883,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08425811976086245
+   },
+   {
+    "index": 64,
+    "year": 1884,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08058115694648275
+   },
+   {
+    "index": 65,
+    "year": 1885,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.09341580584633495
+   },
+   {
+    "index": 66,
+    "year": 1886,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08183775325454995
+   },
+   {
+    "index": 67,
+    "year": 1887,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06691233412868056
+   },
+   {
+    "index": 68,
+    "year": 1888,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08587185003155416
+   },
+   {
+    "index": 69,
+    "year": 1889,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06979973569886071
+   },
+   {
+    "index": 70,
+    "year": 1890,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07032069807897663
+   },
+   {
+    "index": 71,
+    "year": 1891,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07783325703691629
+   },
+   {
+    "index": 72,
+    "year": 1892,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06431000623250582
+   },
+   {
+    "index": 73,
+    "year": 1893,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06304921923496914
+   },
+   {
+    "index": 74,
+    "year": 1894,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06941636555017605
+   },
+   {
+    "index": 75,
+    "year": 1895,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05971487985250272
+   },
+   {
+    "index": 76,
+    "year": 1896,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04933246542191432
+   },
+   {
+    "index": 77,
+    "year": 1897,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05628139840315982
+   },
+   {
+    "index": 78,
+    "year": 1898,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05861506288487522
+   },
+   {
+    "index": 79,
+    "year": 1899,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.055817562967107534
+   },
+   {
+    "index": 80,
+    "year": 1900,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.052038029819164666
+   },
+   {
+    "index": 81,
+    "year": 1901,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06327195485480015
+   },
+   {
+    "index": 82,
+    "year": 1902,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06959687086370579
+   },
+   {
+    "index": 83,
+    "year": 1903,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06320218843537544
+   },
+   {
+    "index": 84,
+    "year": 1904,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0761311576870548
+   },
+   {
+    "index": 85,
+    "year": 1905,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07411943974275965
+   },
+   {
+    "index": 86,
+    "year": 1906,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07941296601080669
+   },
+   {
+    "index": 87,
+    "year": 1907,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08968674900551231
+   },
+   {
+    "index": 88,
+    "year": 1908,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07269698358183148
+   },
+   {
+    "index": 89,
+    "year": 1909,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08116583239371515
+   },
+   {
+    "index": 90,
+    "year": 1910,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07567200529486709
+   },
+   {
+    "index": 91,
+    "year": 1911,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08727278956752965
+   },
+   {
+    "index": 92,
+    "year": 1912,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08071365632199172
+   },
+   {
+    "index": 93,
+    "year": 1913,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0858668345044021
+   },
+   {
+    "index": 94,
+    "year": 1914,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.08266739913420722
+   },
+   {
+    "index": 95,
+    "year": 1915,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.09206170688702806
+   },
+   {
+    "index": 96,
+    "year": 1916,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0955123686097918
+   },
+   {
+    "index": 97,
+    "year": 1917,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07679574206525164
+   },
+   {
+    "index": 98,
+    "year": 1918,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07690040911217616
+   },
+   {
+    "index": 99,
+    "year": 1919,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07639479739434522
+   },
+   {
+    "index": 100,
+    "year": 1920,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07270558101789953
+   },
+   {
+    "index": 101,
+    "year": 1921,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07044354501244204
+   },
+   {
+    "index": 102,
+    "year": 1922,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0731766705524332
+   },
+   {
+    "index": 103,
+    "year": 1923,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07664358678744902
+   },
+   {
+    "index": 104,
+    "year": 1924,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07714692454423015
+   },
+   {
+    "index": 105,
+    "year": 1925,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07051799117221093
+   },
+   {
+    "index": 106,
+    "year": 1926,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07145286643923937
+   },
+   {
+    "index": 107,
+    "year": 1927,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0682586458666397
+   },
+   {
+    "index": 108,
+    "year": 1928,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06358076548946058
+   },
+   {
+    "index": 109,
+    "year": 1929,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05583145564219868
+   },
+   {
+    "index": 110,
+    "year": 1930,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05711064915347106
+   },
+   {
+    "index": 111,
+    "year": 1931,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05281320066791906
+   },
+   {
+    "index": 112,
+    "year": 1932,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04763844768493263
+   },
+   {
+    "index": 113,
+    "year": 1933,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04853738977482779
+   },
+   {
+    "index": 114,
+    "year": 1934,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04976581246148017
+   },
+   {
+    "index": 115,
+    "year": 1935,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04429241155109287
+   },
+   {
+    "index": 116,
+    "year": 1936,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04120036549280363
+   },
+   {
+    "index": 117,
+    "year": 1937,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0429364173618042
+   },
+   {
+    "index": 118,
+    "year": 1938,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0393095507868296
+   },
+   {
+    "index": 119,
+    "year": 1939,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.04306680757741607
+   },
+   {
+    "index": 120,
+    "year": 1940,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.03479173097057319
+   },
+   {
+    "index": 121,
+    "year": 1941,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.038022770227834735
+   },
+   {
+    "index": 122,
+    "year": 1942,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.04377270727749729
+   },
+   {
+    "index": 123,
+    "year": 1943,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.038193849417271594
+   },
+   {
+    "index": 124,
+    "year": 1944,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.04339600460318932
+   },
+   {
+    "index": 125,
+    "year": 1945,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.04141321524911286
+   },
+   {
+    "index": 126,
+    "year": 1946,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.04153459680194132
+   },
+   {
+    "index": 127,
+    "year": 1947,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.03342687050507205
+   },
+   {
+    "index": 128,
+    "year": 1948,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03175245344118833
+   },
+   {
+    "index": 129,
+    "year": 1949,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.03584094016435728
+   },
+   {
+    "index": 130,
+    "year": 1950,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03283002401133716
+   },
+   {
+    "index": 131,
+    "year": 1951,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.038195256590669274
+   },
+   {
+    "index": 132,
+    "year": 1952,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03164360861223176
+   },
+   {
+    "index": 133,
+    "year": 1953,
+    "candidate": "direct",
+    "iterations": 15,
+    "p90_area_error": 0.04365122415483244
+   },
+   {
+    "index": 134,
+    "year": 1954,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0354604868919039
+   },
+   {
+    "index": 135,
+    "year": 1955,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.044532016478527746
+   },
+   {
+    "index": 136,
+    "year": 1956,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03900646631559048
+   },
+   {
+    "index": 137,
+    "year": 1957,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.040895886933912495
+   },
+   {
+    "index": 138,
+    "year": 1958,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03976079228865517
+   },
+   {
+    "index": 139,
+    "year": 1959,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03923435841541136
+   },
+   {
+    "index": 140,
+    "year": 1960,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04520635159404125
+   },
+   {
+    "index": 141,
+    "year": 1961,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04437277609841904
+   },
+   {
+    "index": 142,
+    "year": 1962,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03994919659509624
+   },
+   {
+    "index": 143,
+    "year": 1963,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04035365961778601
+   },
+   {
+    "index": 144,
+    "year": 1964,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.039332270605442234
+   },
+   {
+    "index": 145,
+    "year": 1965,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.07091981953593099
+   },
+   {
+    "index": 146,
+    "year": 1965,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06072910825966814
+   },
+   {
+    "index": 147,
+    "year": 1966,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04474345052160306
+   },
+   {
+    "index": 148,
+    "year": 1966,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.06247469853658662
+   },
+   {
+    "index": 149,
+    "year": 1967,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0511426683876945
+   },
+   {
+    "index": 150,
+    "year": 1967,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05771023394081465
+   },
+   {
+    "index": 151,
+    "year": 1968,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.056211770697640474
+   },
+   {
+    "index": 152,
+    "year": 1968,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05703808314627154
+   },
+   {
+    "index": 153,
+    "year": 1969,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03635457537075544
+   },
+   {
+    "index": 154,
+    "year": 1969,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.059057734355637825
+   },
+   {
+    "index": 155,
+    "year": 1970,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.042066863030795994
+   },
+   {
+    "index": 156,
+    "year": 1970,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.061165953323688266
+   },
+   {
+    "index": 157,
+    "year": 1971,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03653910015587201
+   },
+   {
+    "index": 158,
+    "year": 1971,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.051901138514994886
+   },
+   {
+    "index": 159,
+    "year": 1972,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03410914653390022
+   },
+   {
+    "index": 160,
+    "year": 1972,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.052025851196804716
+   },
+   {
+    "index": 161,
+    "year": 1973,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.037310849163079404
+   },
+   {
+    "index": 162,
+    "year": 1973,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.05416920358912412
+   },
+   {
+    "index": 163,
+    "year": 1974,
+    "candidate": "direct",
+    "iterations": 14,
+    "p90_area_error": 0.047593289485908304
+   },
+   {
+    "index": 164,
+    "year": 1974,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.051060931318411426
+   },
+   {
+    "index": 165,
+    "year": 1975,
+    "candidate": "direct",
+    "iterations": 13,
+    "p90_area_error": 0.061424526218964604
+   },
+   {
+    "index": 166,
+    "year": 1975,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.051223106465730826
+   },
+   {
+    "index": 167,
+    "year": 1976,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.0424304598193498
+   },
+   {
+    "index": 168,
+    "year": 1976,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.043726200696677174
+   },
+   {
+    "index": 169,
+    "year": 1977,
+    "candidate": "direct",
+    "iterations": 13,
+    "p90_area_error": 0.057548392168982075
+   },
+   {
+    "index": 170,
+    "year": 1977,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04435410302067931
+   },
+   {
+    "index": 171,
+    "year": 1978,
+    "candidate": "direct",
+    "iterations": 12,
+    "p90_area_error": 0.06384561326630908
+   },
+   {
+    "index": 172,
+    "year": 1978,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.04269496308686721
+   },
+   {
+    "index": 173,
+    "year": 1979,
+    "candidate": "direct",
+    "iterations": 11,
+    "p90_area_error": 0.0597383962523748
+   },
+   {
+    "index": 174,
+    "year": 1979,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.03695145153710468
+   },
+   {
+    "index": 175,
+    "year": 1980,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2914557751405343
+   },
+   {
+    "index": 176,
+    "year": 1981,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2790382763649578
+   },
+   {
+    "index": 177,
+    "year": 1982,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.28578166483074646
+   },
+   {
+    "index": 178,
+    "year": 1983,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2673211222899437
+   },
+   {
+    "index": 179,
+    "year": 1984,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2658143991375033
+   },
+   {
+    "index": 180,
+    "year": 1985,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24657980209058347
+   },
+   {
+    "index": 181,
+    "year": 1986,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2404520378384035
+   },
+   {
+    "index": 182,
+    "year": 1987,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24843322554905942
+   },
+   {
+    "index": 183,
+    "year": 1988,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23811730685402266
+   },
+   {
+    "index": 184,
+    "year": 1989,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23674435081350192
+   },
+   {
+    "index": 185,
+    "year": 1990,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24169102629404032
+   },
+   {
+    "index": 186,
+    "year": 1991,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.25160982639193097
+   },
+   {
+    "index": 187,
+    "year": 1992,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23221455288070023
+   },
+   {
+    "index": 188,
+    "year": 1993,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2500720097358315
+   },
+   {
+    "index": 189,
+    "year": 1994,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24423484660638511
+   },
+   {
+    "index": 190,
+    "year": 1995,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.262305456489594
+   },
+   {
+    "index": 191,
+    "year": 1996,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.254428743976702
+   },
+   {
+    "index": 192,
+    "year": 1997,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2657003657851037
+   },
+   {
+    "index": 193,
+    "year": 1998,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23769164204624435
+   },
+   {
+    "index": 194,
+    "year": 1999,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.24092276443176217
+   },
+   {
+    "index": 195,
+    "year": 2000,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23207446868696258
+   },
+   {
+    "index": 196,
+    "year": 2001,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21654578727700827
+   },
+   {
+    "index": 197,
+    "year": 2002,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21137811670642323
+   },
+   {
+    "index": 198,
+    "year": 2003,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23624629436393915
+   },
+   {
+    "index": 199,
+    "year": 2004,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.22869589407122703
+   },
+   {
+    "index": 200,
+    "year": 2005,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.22312459312332789
+   },
+   {
+    "index": 201,
+    "year": 2006,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21747240250368619
+   },
+   {
+    "index": 202,
+    "year": 2007,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2090277028040735
+   },
+   {
+    "index": 203,
+    "year": 2008,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.23964286596948764
+   },
+   {
+    "index": 204,
+    "year": 2009,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.22527373727904712
+   },
+   {
+    "index": 205,
+    "year": 2010,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.21078875208028286
+   },
+   {
+    "index": 206,
+    "year": 2011,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19624383720546598
+   },
+   {
+    "index": 207,
+    "year": 2012,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1628969499586605
+   },
+   {
+    "index": 208,
+    "year": 2013,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.2144825694968141
+   },
+   {
+    "index": 209,
+    "year": 2014,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.19605087522907189
+   },
+   {
+    "index": 210,
+    "year": 2015,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.17732460690384336
+   },
+   {
+    "index": 211,
+    "year": 2016,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1843956732823096
+   },
+   {
+    "index": 212,
+    "year": 2017,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13442267535973088
+   },
+   {
+    "index": 213,
+    "year": 2018,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15033104923114904
+   },
+   {
+    "index": 214,
+    "year": 2019,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.1669690953726923
+   },
+   {
+    "index": 215,
+    "year": 2020,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15578865143059367
+   },
+   {
+    "index": 216,
+    "year": 2021,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.15560140933650451
+   },
+   {
+    "index": 217,
+    "year": 2022,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.13948267535736392
+   },
+   {
+    "index": 218,
+    "year": 2023,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.14352525135368005
+   },
+   {
+    "index": 219,
+    "year": 2024,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16162865165221488
+   },
+   {
+    "index": 220,
+    "year": 2025,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16288157286762656
+   },
+   {
+    "index": 221,
+    "year": 2025,
+    "candidate": "direct",
+    "iterations": 16,
+    "p90_area_error": 0.16288157286762656
+   }
+  ]
+ },
+ "inputs": {
+  "raw_csv": {
+   "path": "/home/skmue/work/cartogram/ultragram/cartogram-pipeline/data/raw/merged_population_energy_1820_2025.csv",
+   "sha256": "5a6634ea0552dd3db239fe6516ca1bcfca2e0c035fef793f676b99b8d0b107f9"
+  },
+  "natural_earth": {
+   "path": "/home/skmue/work/cartogram/ultragram/cartogram-pipeline/data/reference/ne_110m_admin_0_countries.geojson",
+   "sha256": "6866c877d39cba9c357620878839b336d569f8c662d3cfab4cb1dbe2d39c977f"
+  }
+ },
+ "files": {
+  "boundary_rings.u32": {
+   "bytes": 42096,
+   "sha256": "070f759d492a7faded9d8648ed3254a20f136c787c639714b62e0deb184428d6"
+  },
+  "entities.json": {
+   "bytes": 41350,
+   "sha256": "bf58997f2b38c27637e1c4dff807be96be6f68ebcbbaf608dc290cf5e846532b"
+  },
+  "flags.u8": {
+   "bytes": 167,
+   "sha256": "0bb3e5b0fb9dc63cb684342382f07ffbc4c56dcd407b56b7dbf3199da7e36c25"
+  },
+  "indices.u32": {
+   "bytes": 109584,
+   "sha256": "424f80f5be16dd261167b6c14d9efbb55f103d27766982a1c3ded71647a01122"
+  },
+  "labels.f32": {
+   "bytes": 296592,
+   "sha256": "f9a39446dfef5dcd66aeb58ac97a6f16a477d9851f2341bc68ea330089431b87"
+  },
+  "positions.f32": {
+   "bytes": 12199344,
+   "sha256": "e735654121043fdde92cd28c13223cf87b857afafebd0586ecda6720006aa7f2"
+  },
+  "positions_original.f32": {
+   "bytes": 54952,
+   "sha256": "1252a6d4a91cd21f72dee7589d75333d19c29eac241e44183070aa951de67595"
+  },
+  "quality.parquet": {
+   "bytes": 225480,
+   "sha256": "4a51d22ceda9361d68ae09eff24d3ba00ba31edb8d9e9120ceaff7baab901c62"
+  },
+  "region_draw_ranges.u32": {
+   "bytes": 1336,
+   "sha256": "d78e8b11288f5dd6511413ff78693cb25994baf02c026f3cd9000b04c52c8166"
+  },
+  "ring_names.json": {
+   "bytes": 1744,
+   "sha256": "64d6558d1b5f09c57921279ad096711c818a30ea72d108c650155b50c19218c6"
+  },
+  "surface_vertex_to_canonical.u32": {
+   "bytes": 27476,
+   "sha256": "53f9915a1043120e828e2d65f58dc9fdd139be276dd8f899bf32b0f3c307998c"
+  },
+  "topology.bin": {
+   "bytes": 40992,
+   "sha256": "6e7399c482bb0c4fa6913bfca76e5847f939d5d687fcf51d96d99730de8c8d74"
+  },
+  "triangle_ring.u32": {
+   "bytes": 36528,
+   "sha256": "cd0865a7fbf7e0a67bb05cad08d8f92cc92324269d36a4cdd941f9afc1d78427"
+  },
+  "values.f32": {
+   "bytes": 593184,
+   "sha256": "291155054f8afbf618bc13c76cd4f1a52efc5d60a3dd9872541091081886f673"
+  },
+  "vertices_lonlat.f32": {
+   "bytes": 54952,
+   "sha256": "ae086320d095486a9586c17e9195beb50db30359dff949736d9ec6fea208c79c"
+  }
+ },
+ "entities_file": "entities.json",
+ "quality_file": "quality.parquet"
+}
