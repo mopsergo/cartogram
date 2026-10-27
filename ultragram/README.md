@@ -146,12 +146,14 @@ Dev-Server einfach neu laden, der nimmt die Artefakte direkt aus
   Extrusionsblöcken; in der Original-Ansicht blendet sie sich
   automatisch aus.
 - **Kartogramm-Lauf**: „Aktuell (mit Reparaturen)" ⇄ „OWID 1965–2025"
-  ⇄ „Original (Git-Commit)" – der Originalzustand bleibt als eigener
-  Export (`web/public/cartogram/v0`) erhalten und ist jederzeit
-  umschaltbar (eigener Mesh, darum Seitenwechsel mit beibehaltenem
-  Jahr). Der OWID-Lauf (`web/public/cartogram/owid/`) ist ein eigener
-  Datensatz, siehe Datengrundlage.
-- **Kartogramm-Fläche** (aktueller und OWID-Lauf): Bevölkerungsanteil ·
+  ⇄ „Kombiniert 1820–2025" ⇄ „Original (Git-Commit)" – der
+  Originalzustand bleibt als eigener Export (`web/public/cartogram/v0`)
+  erhalten und ist jederzeit umschaltbar (eigener Mesh, darum
+  Seitenwechsel mit beibehaltenem Jahr). Der OWID-Lauf
+  (`web/public/cartogram/owid/`) und der kombinierte Lauf
+  (`web/public/cartogram/merged/`) sind eigene Datensätze, siehe
+  Datengrundlage.
+- **Kartogramm-Fläche** (alle Läufe außer Original): Bevölkerungsanteil ·
   Gesamtenergie · Energie pro Kopf – drei gelöste Kartogramme über
   derselben Topologie; Wechsel morpht weich zwischen den
   Positions-Sätzen. Entitäten ohne Wert der gewählten Kennzahl
@@ -332,3 +334,20 @@ Review 2026 + EIA, kWh/Kopf; Länder ab 1965 bzw. 1980). Weltbevölkerung
 Tschechoslowakei) erhalten vor Beginn ihrer eigenen Reihe den Pro-Kopf-
 Wert des Aggregats. Gesamtenergie (Mtoe) = Pro-Kopf-Wert × Bevölkerung.
 Pipeline-Profil: `--dataset owid` (siehe PIPELINE.md §3.2a).
+
+Kombinierter Lauf (1820–2025):
+`datasets/merged_population_energy_1820_2025.csv`, erzeugt von
+`datasets/prep_merged_data.py` aus den beiden aufbereiteten Tabellen:
+1820–1964 Malanima unverändert, ab 1965 ersetzt OWID die Jahre der
+Publikation (Bevölkerung, Weltbevölkerung, Energie). 20 Länder, deren
+OWID-Energiereihe erst 1980 beginnt (u. a. DR Kongo, Nigeria, Kuba,
+Syrien), behalten 1965–1979 den Malanima-Pro-Kopf-Wert; die Spalten
+`Source_population`/`Source_energy` nennen die Herkunft jedes Werts.
+Abweichungen im Überlappungszeitraum 1965–2020 stehen in
+`datasets/merged_discrepancies.csv`: Bevölkerung praktisch identisch
+(Ausnahme Togo, bis −10 %; Weltbevölkerung OWID +0,5–0,7 %), Energie
+pro Kopf bei OWID systematisch niedriger (Median 0,82 × Malanima,
+DR Kongo/Malawi ~0,12 ×), weil Malanima traditionelle Biomasse
+einrechnet, die OWID-Primärenergie nicht. Am Quellwechsel (1965 bzw.
+1980) springt die Pro-Kopf-Farbe darum sichtbar nach unten.
+Pipeline-Profil: `--dataset merged` (siehe PIPELINE.md §3.2b).
