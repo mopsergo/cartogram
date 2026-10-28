@@ -4,12 +4,16 @@
  * Die 16:9-Vorschau beschränkt die Canvas auf den Exportausschnitt;
  * Zoom und Perspektive werden dort eingestellt und unverändert in
  * der gewählten Auflösung gerendert. Ziel ist ein vom Nutzer gewählter
- * Ordner (File System Access API, Chromium); ohne diese API lädt der
- * Browser die Bilder einzeln herunter.
+ * Ordner (File System Access API, Chromium); ohne diese API sammelt
+ * der Export die Bilder im Speicher und bietet sie danach als ZIP zum
+ * Herunterladen an (ab ZIP_PART_LIMIT in mehreren Teilen).
  */
 import type { App } from "../app";
+import { ZipBuilder, ZIP_PART_LIMIT } from "./zip";
 
 const ASPECT = 16 / 9;
+/** Einträge je ZIP (Zähler im Archivende sind 16 Bit) */
+const ZIP_MAX_ENTRIES = 65000;
 
 type DirHandle = {
   getFileHandle(name: string, opts: { create: boolean }): Promise<{
@@ -40,6 +44,25 @@ export function wireFrameExport(app: App, yearMin: number,
     HTMLInputElement;
   const button = document.getElementById("exportBtn") as HTMLButtonElement;
   const status = document.getElementById("exportStatus")!;
+  const downloads = document.getElementById("exportDownloads")!;
+  let downloadUrls: string[] = [];
+
+  const clearDownloads = () => {
+    for (const url of downloadUrls) URL.revokeObjectURL(url);
+    downloadUrls = [];
+    downloads.replaceChildren();
+  };
+  const offerDownload = (blob: Blob, name: string, frames: number) => {
+    const url = URL.createObjectURL(blob);
+    downloadUrls.push(url);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.className = "export-download";
+    a.textContent = `${name} herunterladen (${frames} Bilder, `
+      + `${(blob.size / 1024 ** 2).toFixed(0)} MB)`;
+    downloads.append(a);
+  };
 
   fromInput.min = toInput.min = String(yearMin);
   fromInput.max = toInput.max = String(yearMax);
@@ -83,6 +106,7 @@ export function wireFrameExport(app: App, yearMin: number,
 
     // Ziel wählen, bevor gerendert wird (Benutzergeste nötig)
     let write: (name: string, png: Blob) => Promise<void>;
+    let finishZip: (() => void) | null = null;
     const picker = (window as unknown as { showDirectoryPicker?: DirPicker })
       .showDirectoryPicker;
     if (picker) {
@@ -99,15 +123,26 @@ export function wireFrameExport(app: App, yearMin: number,
         await w.close();
       };
     } else {
+      // Bilder sammeln, am Ende als ZIP anbieten (ein Download statt
+      // Hunderter Einzel-Downloads)
+      clearDownloads();
+      const base = `cartogram_${yearFrom}-${yearTo}_${width}x${height}`;
+      const done: { blob: Blob; frames: number }[] = [];
+      let zip = new ZipBuilder();
+      const closePart = () => {
+        if (zip.count > 0) done.push({ blob: zip.finish(), frames: zip.count });
+        zip = new ZipBuilder();
+      };
       write = async (name, png) => {
-        const url = URL.createObjectURL(png);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = name;
-        a.click();
-        // Kurze Pause: Browser drosseln sonst Mehrfach-Downloads
-        await new Promise((r) => setTimeout(r, 150));
-        URL.revokeObjectURL(url);
+        if (zip.count >= ZIP_MAX_ENTRIES
+            || zip.size + png.size > ZIP_PART_LIMIT) closePart();
+        await zip.add(name, png);
+      };
+      finishZip = () => {
+        closePart();
+        done.forEach((d, i) => offerDownload(d.blob,
+          done.length > 1 ? `${base}_teil${i + 1}.zip` : `${base}.zip`,
+          d.frames));
       };
     }
 
@@ -131,9 +166,15 @@ export function wireFrameExport(app: App, yearMin: number,
       status.textContent = cancel
         ? `Abgebrochen nach ${done} Bildern`
         : `Fertig: ${done} Bilder in ${secs} s`;
+      if (finishZip) {
+        status.textContent += " – ZIP bereit:";
+        finishZip();
+      }
     } catch (err) {
       console.error("[export]", err);
       status.textContent = `Fehler: ${String(err)}`;
+      // bereits gerenderte Bilder nicht verwerfen
+      finishZip?.();
     } finally {
       running = false;
       button.textContent = "PNG-Frames exportieren";

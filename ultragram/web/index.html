@@ -78,6 +78,8 @@
     }
     .export-btn:hover { background: var(--accent); color: #06222a; }
     #exportStatus { font-size: 11px; color: var(--muted); min-height: 1em; }
+    #exportDownloads { display: flex; flex-direction: column; gap: 4px; }
+    .export-download { font-size: 11px; color: var(--accent, #6cb4ff); word-break: break-all; }
 
     #legend { padding: 8px 10px; }
     #legend canvas { width: 100%; height: 14px; border-radius: 4px; display: block; }
@@ -283,6 +285,7 @@
         Welt-Verlauf einblenden</label>
       <button id="exportBtn" class="export-btn">PNG-Frames exportieren</button>
       <div class="caption" id="exportStatus"></div>
+      <div id="exportDownloads"></div>
     </div>
     <div class="group"><button id="resetCam" style="width:100%; padding:6px; background:#1c2431; color:var(--text); border:1px solid var(--border); border-radius:7px; cursor:pointer;">Kamera zurücksetzen</button></div>
   </div>
