@@ -1,0 +1,498 @@
+{
+ "entities": [
+  {
+   "index": 0,
+   "id": "BEL",
+   "display_name": "Belgien",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BEL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 1,
+   "id": "DEU",
+   "display_name": "Deutschland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "DEU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 2,
+   "id": "DNK",
+   "display_name": "Dänemark",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "DNK"
+   ],
+   "note": ""
+  },
+  {
+   "index": 3,
+   "id": "FIN",
+   "display_name": "Finnland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "FIN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 4,
+   "id": "FRA",
+   "display_name": "Frankreich",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "FRA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 5,
+   "id": "GRC",
+   "display_name": "Griechenland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "GRC"
+   ],
+   "note": ""
+  },
+  {
+   "index": 6,
+   "id": "IRL",
+   "display_name": "Irland",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "IRL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 7,
+   "id": "ISL",
+   "display_name": "Island",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ISL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 8,
+   "id": "ITA",
+   "display_name": "Italien",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ITA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 9,
+   "id": "LUX",
+   "display_name": "Luxemburg",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "LUX"
+   ],
+   "note": ""
+  },
+  {
+   "index": 10,
+   "id": "NLD",
+   "display_name": "Niederlande",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NLD"
+   ],
+   "note": ""
+  },
+  {
+   "index": 11,
+   "id": "NOR",
+   "display_name": "Norwegen",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "NOR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 12,
+   "id": "PRT",
+   "display_name": "Portugal",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "PRT"
+   ],
+   "note": ""
+  },
+  {
+   "index": 13,
+   "id": "SWE",
+   "display_name": "Schweden",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SWE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 14,
+   "id": "CHE",
+   "display_name": "Schweiz",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CHE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 15,
+   "id": "ESP",
+   "display_name": "Spanien",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ESP"
+   ],
+   "note": ""
+  },
+  {
+   "index": 16,
+   "id": "GBR",
+   "display_name": "Vereinigtes Königreich",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "GBR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 17,
+   "id": "AUT",
+   "display_name": "Österreich",
+   "macroarea": "WE",
+   "macroarea_label": "Westeuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "AUT"
+   ],
+   "note": ""
+  },
+  {
+   "index": 18,
+   "id": "ALB",
+   "display_name": "Albanien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ALB"
+   ],
+   "note": ""
+  },
+  {
+   "index": 19,
+   "id": "BLR",
+   "display_name": "Belarus",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BLR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 20,
+   "id": "BIH",
+   "display_name": "Bosnien und Herzegowina",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BIH"
+   ],
+   "note": ""
+  },
+  {
+   "index": 21,
+   "id": "BGR",
+   "display_name": "Bulgarien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "BGR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 22,
+   "id": "EST",
+   "display_name": "Estland",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "EST"
+   ],
+   "note": ""
+  },
+  {
+   "index": 23,
+   "id": "HRV",
+   "display_name": "Kroatien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "HRV"
+   ],
+   "note": ""
+  },
+  {
+   "index": 24,
+   "id": "LVA",
+   "display_name": "Lettland",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "LVA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 25,
+   "id": "LTU",
+   "display_name": "Litauen",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "LTU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 26,
+   "id": "MDA",
+   "display_name": "Moldau",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MDA"
+   ],
+   "note": ""
+  },
+  {
+   "index": 27,
+   "id": "MNE",
+   "display_name": "Montenegro",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MNE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 28,
+   "id": "MKD",
+   "display_name": "Nordmazedonien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "MKD"
+   ],
+   "note": ""
+  },
+  {
+   "index": 29,
+   "id": "POL",
+   "display_name": "Polen",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "POL"
+   ],
+   "note": ""
+  },
+  {
+   "index": 30,
+   "id": "ROU",
+   "display_name": "Rumänien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "ROU"
+   ],
+   "note": ""
+  },
+  {
+   "index": 31,
+   "id": "RUS",
+   "display_name": "Russland",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "RUS"
+   ],
+   "note": ""
+  },
+  {
+   "index": 32,
+   "id": "SRB",
+   "display_name": "Serbien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SRB"
+   ],
+   "note": ""
+  },
+  {
+   "index": 33,
+   "id": "SVK",
+   "display_name": "Slowakei",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SVK"
+   ],
+   "note": ""
+  },
+  {
+   "index": 34,
+   "id": "SVN",
+   "display_name": "Slowenien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "SVN"
+   ],
+   "note": ""
+  },
+  {
+   "index": 35,
+   "id": "CZE",
+   "display_name": "Tschechien",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "CZE"
+   ],
+   "note": ""
+  },
+  {
+   "index": 36,
+   "id": "UKR",
+   "display_name": "Ukraine",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "UKR"
+   ],
+   "note": ""
+  },
+  {
+   "index": 37,
+   "id": "HUN",
+   "display_name": "Ungarn",
+   "macroarea": "EE",
+   "macroarea_label": "Osteuropa",
+   "is_other_world": false,
+   "historical_aggregate": false,
+   "geometry_members": [
+    "HUN"
+   ],
+   "note": ""
+  }
+ ]
+}
