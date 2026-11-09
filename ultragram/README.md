@@ -152,7 +152,10 @@ Dev-Server einfach neu laden, der nimmt die Artefakte direkt aus
   Seitenwechsel mit beibehaltenem Jahr). Der OWID-Lauf
   (`web/public/cartogram/owid/`) und der kombinierte Lauf
   (`web/public/cartogram/merged/`) sind eigene Datensätze, siehe
-  Datengrundlage.
+  Datengrundlage. „Europa (mit/ohne Russland)" sind eigene
+  Kartogramme nur für Europa (`web/public/cartogram/merged_europe[_norus]/`):
+  Anteile, Höhen, Farbskalen und das Summen-Diagramm („Europa
+  gesamt") beziehen sich auf Europa statt auf die Welt.
 - **Kartogramm-Fläche** (alle Läufe außer Original): Bevölkerungsanteil ·
   Gesamtenergie · Energie pro Kopf – drei gelöste Kartogramme über
   derselben Topologie; Wechsel morpht weich zwischen den
@@ -351,3 +354,14 @@ DR Kongo/Malawi ~0,12 ×), weil Malanima traditionelle Biomasse
 einrechnet, die OWID-Primärenergie nicht. Am Quellwechsel (1965 bzw.
 1980) springt die Pro-Kopf-Farbe darum sichtbar nach unten.
 Pipeline-Profil: `--dataset merged` (siehe PIPELINE.md §3.2b).
+
+Europa-Läufe (1820–2025): derselbe kombinierte Datensatz, beschränkt
+auf die Makroregionen Westeuropa und Osteuropa des Datensatzes –
+38 Länder mit bzw. 37 ohne Russland (Türkei und Zypern zählen dort
+zum Nahen Osten, der Kaukasus zu Asien). Kleinstaaten ohne eigene
+Kartengeometrie (Malta, Andorra, Monaco, …) entfallen, es gibt keine
+Restliche Welt. Bevölkerungsanteil = Anteil an der Bevölkerung dieser
+Länder; die Energie-Kartogramme normieren auf deren Summe. Europa
+umfasst 21 % (1820), bis zu 25 % (um 1910) und 9 % (2025) der
+Weltbevölkerung, ohne Russland 18 %, 21 % und 7 %. Pipeline-Profile: `--dataset merged_europe` bzw.
+`merged_europe_norus` (siehe PIPELINE.md §3.2c).

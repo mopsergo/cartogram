@@ -14,10 +14,11 @@ import { ReferenceGlobe } from "./renderers/ReferenceGlobe";
 import { FrameUpdate, PickResult, lerpPositions }
   from "./renderers/shared";
 import { COLORMAPS, DEFAULT_COLORMAP, NO_DATA_COLOR, ValueScale,
-  formatValue, formatYear, rampColor, setColormap }
+  currentColormapName, formatValue, formatYear, rampColor, setColormap }
   from "./renderers/colormap";
 import type { ColorTransform } from "./renderers/colormap";
 import { Legend } from "./ui/legend";
+import { setRegion, shareShort, totalLabel } from "./data/region";
 import { FrameOverlay } from "./ui/frameOverlay";
 import { DetailPanel } from "./ui/panel";
 
@@ -212,6 +213,19 @@ export class App {
     }
     this.worldWidth = maxX - minX;
 
+    // Bezugsgebiet der Anteile/Summen (Regions-Lauf, z. B. Europa):
+    // vor Legende und Diagramm setzen, die Beschriftungen nutzen es
+    const regionLabel = this.art.manifest.region?.label ?? null;
+    setRegion(regionLabel);
+    for (const id of ["metricSelect", "heightSelect"]) {
+      const opt = document.getElementById(id)
+        ?.querySelector('option[value="1"]');
+      if (opt) opt.textContent = shareShort();
+    }
+    document.getElementById("heightLabel")!.textContent = shareShort();
+    document.getElementById("wcTitle")!.textContent =
+      `${totalLabel()} · relativ zum Maximum`;
+
     this.legend = new Legend();
     this.panel = new DetailPanel(this.art);
     this.panel.onClose = () => { this.selected = null; this.markDirty(); };
@@ -223,9 +237,9 @@ export class App {
     const [yearMin, yearMax] = this.art.manifest.years.data_range;
     this.yearSlider.min = String(yearMin);
     this.yearSlider.max = String(yearMax);
-    document.getElementById("yearRange")!.textContent =
-      `${yearMin}–${yearMax}`;
-    document.title = `Animated Energy Cartogram · ${yearMin}–${yearMax}`;
+    const span = `${regionLabel ? regionLabel + " " : ""}${yearMin}–${yearMax}`;
+    document.getElementById("yearRange")!.textContent = span;
+    document.title = `Animated Energy Cartogram · ${span}`;
     this.yearDisplay = document.getElementById("yearDisplay")!;
 
     this.buildWorldChart();
@@ -438,8 +452,9 @@ export class App {
       geoBlend: this.geoBlend * this.geoBlend * (3 - 2 * this.geoBlend),
     };
     this.views[this.mode].updateFrame(update);
-    // Debug-Kanal: Stichproben der Entitätsfarben (DOM-lesbar)
-    const probe = [0, 30, 72].map((e) =>
+    // Debug-Kanal: Stichproben der Entitätsfarben (DOM-lesbar);
+    // Regions-Läufe haben weniger Entitäten (Europa: 37/38)
+    const probe = [0, 30, 72].filter((e) => e < nE).map((e) =>
       `${e}:${this.entityColors[e * 3].toFixed(2)},` +
       `${this.entityColors[e * 3 + 1].toFixed(2)}`).join(" ");
     document.documentElement.dataset.colorProbe = probe;
@@ -1027,6 +1042,31 @@ export class App {
    * write() erhält je Bild Dateiname + PNG; gibt cancelled() true
    * zurück, bricht der Export nach dem laufenden Bild ab.
    */
+  /** Kurzbeschreibung der aktuellen Darstellung für Export-Namen
+   *  (Ordner/ZIP eines Frame-Satzes): Lauf, Fläche, Farbe + Skala,
+   *  Farbskala, Höhe + Skala + Normierung. Nur ASCII, z. B.
+   *  merged_flaeche-bevoelkerung_farbe-prokopf-sqrt_plasma_hoehe-anteil-sqrt-jahr */
+  exportDescriptor(): string {
+    const metricKeys = ["bevoelkerung", "anteil", "energie", "prokopf"];
+    const variantKeys: Record<VariantId, string> = {
+      population: "bevoelkerung", energy: "energie", percapita: "prokopf",
+    };
+    const area = this.run === "legacy"
+      ? "bevoelkerung" : variantKeys[this.variant];
+    // Höhen wirken nur in 2.5D und auf dem Globus
+    const height = !this.heightEnabled || this.mode === "flat"
+      ? "keine"
+      : `${metricKeys[this.heightMetric]}-${this.heightTransform}-`
+        + (this.heightNormalization === "global" ? "global" : "jahr");
+    return [
+      this.run,
+      `flaeche-${area}`,
+      `farbe-${metricKeys[this.metric]}-${this.colorTransform}`,
+      currentColormapName(),
+      `hoehe-${height}`,
+    ].join("_");
+  }
+
   async exportFrames(opts: {
     width: number; height: number;
     yearFrom: number; yearTo: number; framesPerYear: number;
@@ -1075,7 +1115,7 @@ export class App {
         if (opts.legend) overlay.drawLegend(this.legend.info);
         if (opts.worldChart && this.wcSeries.length > 0) {
           overlay.drawWorldChart({
-            title: "Welt gesamt · relativ zum Maximum",
+            title: `${totalLabel()} · relativ zum Maximum`,
             years: this.wcYears,
             series: this.wcSeries,
             names: ["Bevölkerung", "Gesamtenergie", "Energie pro Kopf"],

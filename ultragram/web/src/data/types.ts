@@ -27,6 +27,14 @@ export interface Manifest {
    *  Antimeridian-Schnitt). Der Globus addiert ihn zurück und zeigt
    *  die wahre Erde; 11.5 bei Naht −168.5°. */
   lon_offset_deg?: number;
+  /** Regions-Lauf (z. B. Europa): Anteile, Summen und Skalen beziehen
+   *  sich auf die Region; fehlt/null = ganze Welt */
+  region?: {
+    id: string;
+    label: string;
+    macroareas: string[];
+    exclude_entities: string[];
+  } | null;
   data_version: string;
   years: { data_range: [number, number]; frames: FrameInfo[] };
   dimensions: {

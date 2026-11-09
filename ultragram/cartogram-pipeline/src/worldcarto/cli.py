@@ -53,6 +53,11 @@ def _build_or_load_mesh(cfg, registry, force: bool = False):
     # ein veraltetes Mesh liefern.
     from . import geometry as _geometry
     h.update(file_sha256(_geometry.__file__).encode())
+    if cfg.region:
+        # Regions-Läufe: Gitter-Bounds hängen von topology.py ab
+        from . import region as _region, topology as _topology
+        h.update(file_sha256(_topology.__file__).encode())
+        h.update(file_sha256(_region.__file__).encode())
     tag = h.hexdigest()[:16]
     stamp = base.with_suffix(".stamp")
     if (not force and stamp.is_file() and stamp.read_text() == tag
@@ -63,9 +68,13 @@ def _build_or_load_mesh(cfg, registry, force: bool = False):
     from .topology import build_mesh
     from .triangulate import coverage_error, triangulate_mesh
     gdf = build_entity_geometries(cfg, registry)
+    if (cfg.region or {}).get("parts_bbox"):
+        from .region import keep_parts_in_bbox
+        gdf = keep_parts_in_bbox(gdf, cfg.region["parts_bbox"], cfg.seam_lon)
     mesh = build_mesh(gdf, registry.ids(),
                       vertex_precision_m=cfg.vertex_precision_m,
-                      crs=cfg.crs)
+                      crs=cfg.crs,
+                      domain_padding=(cfg.region or {}).get("domain_padding"))
     triangulate_mesh(mesh)
     cov = coverage_error(mesh)
     print(f"[mesh] {mesh.num_vertices} Vertices, {len(mesh.rings)} Ringe, "

@@ -321,6 +321,53 @@ kombinierten Laufs aufnehmen – nicht passende Targets werden ohnehin
 neu gelöst. Neu zu lösen bleiben dann nur die Jahre mit geänderten
 Targets (v2/v3 1965–1979 wegen der Malanima-Lückenfüllung).
 
+### 3.2c Regions-Läufe: Europa mit/ohne Russland
+
+Ein Datensatz-Profil kann mit `region:` einen Ausschnitt festlegen
+(`configs/datasets/merged_europe.yaml`, `merged_europe_norus.yaml`):
+
+```yaml
+region:
+  id: europe_norus
+  label: Europa ohne Russland      # Beschriftung in der Webapp
+  macroareas: [WE, EE]             # Makroregionen aus entities.yaml
+  exclude_entities: [RUS]          # optional; include_entities ebenso
+  domain_padding: 0.3              # Rand des Solver-Gitters
+  parts_bbox: [-30, 30, -168.5, 85]  # ferne Polygon-Teile verwerfen
+```
+
+Wirkung in der Pipeline:
+
+- `entities.load_registry` filtert das Register auf die Region und
+  nummeriert neu; `OTHER_WORLD` entfällt (eigener Mesh nur aus den
+  Regionsländern).
+- `ingest.normalize_region` verwirft Zeilen außerhalb der Region
+  (auch Kleinstaaten ohne Geometrie) und setzt `World_population` auf
+  die Regionsbevölkerung, `World_share` auf den Anteil daran. Die
+  Energie-Varianten normieren ihre Ziele ohnehin auf die aktiven
+  Entitäten.
+- `region.keep_parts_in_bbox` verwirft Polygon-Teile, deren
+  repräsentativer Punkt außerhalb von `parts_bbox` liegt (echte Grad;
+  `lon_min > lon_max` = über den Antimeridian, damit Tschukotka bleibt).
+  Für Europa entfällt so Französisch-Guayana, das sonst die
+  Regions-Bounds bis Südamerika zöge.
+- Das Solver-Gitter (`mesh.world_bounds`) deckt statt der ganzen Erde
+  die Regions-Bounds plus `domain_padding` × größere Ausdehnung je
+  Seite ab – bei 1024 Zellen Breite etwa 3–5× feinere Zellen.
+- `manifest.json` trägt `region` (id, label, …); die Webapp beschriftet
+  Anteile, Diagramm und Titel damit („Europa gesamt").
+
+```bash
+for d in merged_europe merged_europe_norus; do
+  python3 -m worldcarto.cli --dataset $d ingest
+  python3 -m worldcarto.cli --dataset $d mesh
+  for m in world_share energy_consumption per_capita_energy_consumption; do
+    python3 -m worldcarto.cli --dataset $d solve  --metric $m
+    python3 -m worldcarto.cli --dataset $d export --metric $m
+  done
+done
+```
+
 ### 3.3 Nach Änderungen – was muss neu laufen?
 
 | Änderung | nötig |

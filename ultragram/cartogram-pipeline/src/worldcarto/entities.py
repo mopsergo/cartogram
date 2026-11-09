@@ -62,6 +62,11 @@ class EntityRegistry:
     def ids(self) -> list[str]:
         return [e.id for e in self.entities]
 
+    @property
+    def has_other_world(self) -> bool:
+        """False für Regions-Läufe (config.active_region)."""
+        return "OTHER_WORLD" in self._by_id
+
     def other_world(self) -> Entity:
         return self._by_id["OTHER_WORLD"]
 
@@ -69,14 +74,40 @@ class EntityRegistry:
         return self.macroarea_labels.get(code, code or "Rest der Welt")
 
 
-def load_registry(path: Path | None = None) -> EntityRegistry:
+_ACTIVE = object()
+
+
+def in_region(entry: dict, region: dict) -> bool:
+    """Gehört ein entities.yaml-Eintrag zum Regions-Ausschnitt?"""
+    if entry.get("is_other_world"):
+        return False
+    if str(entry["id"]) in set(region.get("exclude_entities") or ()):
+        return False
+    return (str(entry.get("macroarea", "")) in set(region.get("macroareas") or ())
+            or str(entry["id"]) in set(region.get("include_entities") or ()))
+
+
+def load_registry(path: Path | None = None,
+                  region: dict | None | object = _ACTIVE) -> EntityRegistry:
+    """Register laden; region: Ausschnitt (Standard: aktives Profil,
+    config.active_region). Mit Region bleiben nur deren Entitäten
+    (neu durchnummeriert), OTHER_WORLD entfällt."""
     if path is None:
         path = Path(__file__).resolve().parents[2] / "configs" / "entities.yaml"
     with open(path, encoding="utf-8") as fh:
         raw = yaml.safe_load(fh)
+    if region is _ACTIVE:
+        from .config import active_region
+        region = active_region()
+
+    rows = raw["entities"]
+    if region:
+        rows = [e for e in rows if in_region(e, region)]
+        if not rows:
+            raise ValueError(f"Region {region.get('id')!r}: keine Entitäten")
 
     entities: list[Entity] = []
-    for i, e in enumerate(raw["entities"]):
+    for i, e in enumerate(rows):
         entities.append(Entity(
             index=i,
             id=str(e["id"]),
@@ -92,7 +123,7 @@ def load_registry(path: Path | None = None) -> EntityRegistry:
     ids = [e.id for e in entities]
     if len(ids) != len(set(ids)):
         raise ValueError("Doppelte Entitäts-IDs im Register")
-    if sum(e.is_other_world for e in entities) != 1:
+    if not region and sum(e.is_other_world for e in entities) != 1:
         raise ValueError("Genau eine Entität muss is_other_world sein")
 
     return EntityRegistry(

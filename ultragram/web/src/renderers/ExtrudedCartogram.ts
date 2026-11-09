@@ -46,6 +46,7 @@ export class ExtrudedCartogram {
   private mouse = new THREE.Vector2();
   private controls: OrbitLike;
   private worldWidth: number;
+  private worldHeight: number;
   private centerX: number;
   private centerY: number;
   private aspect = 1;
@@ -83,6 +84,7 @@ export class ExtrudedCartogram {
       if (y > maxY) maxY = y;
     }
     this.worldWidth = maxX - minX;
+    this.worldHeight = maxY - minY;
     this.centerX = (minX + maxX) / 2;
     this.centerY = (minY + maxY) / 2;
 
@@ -144,8 +146,16 @@ export class ExtrudedCartogram {
     // Extrusionen stehen darauf und wirken massiv statt zu schweben
     // (Benutzeranforderung). Größe: volle Equal-Earth-Welt (inkl.
     // Ozean-Fließbereich), Farbe leicht über dem Hintergrund.
-    const halfW = (this.worldWidth / 2) * 1.04;
-    const halfH = 8.394e6 * 1.04; // Equal-Earth-Pol
+    // Regions-Läufe (manifest.region): Ausdehnung der Region plus
+    // Rand wie das Solver-Gitter (domain_padding 0.3).
+    const regionMargin = art.manifest.region
+      ? 0.3 * Math.max(this.worldWidth, this.worldHeight) : 0;
+    const halfW = art.manifest.region
+      ? this.worldWidth / 2 + regionMargin
+      : (this.worldWidth / 2) * 1.04;
+    const halfH = art.manifest.region
+      ? this.worldHeight / 2 + regionMargin
+      : 8.394e6 * 1.04; // Equal-Earth-Pol
     // Boden ohne depthWrite und zuerst gezeichnet: Er liegt unter
     // allem und kann nichts verdecken – so kann er mit keiner
     // Fläche z-fighten (die Deckflächen der Höhe-0-Regionen liegen

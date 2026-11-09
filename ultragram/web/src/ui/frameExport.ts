@@ -7,6 +7,12 @@
  * Ordner (File System Access API, Chromium); ohne diese API sammelt
  * der Export die Bilder im Speicher und bietet sie danach als ZIP zum
  * Herunterladen an (ab ZIP_PART_LIMIT in mehreren Teilen).
+ *
+ * Jeder Frame-Satz bekommt einen sprechenden Namen aus der aktuellen
+ * Darstellung (App.exportDescriptor: Lauf, Fläche, Farbvariable,
+ * Farbskala, Höhenvariable) plus Jahre und Auflösung. Er benennt das
+ * ZIP und den Unterordner, in dem die frame_NNNN.png liegen (im ZIP
+ * bzw. im gewählten Ordner) – Sätze überschreiben sich nicht.
  */
 import type { App } from "../app";
 import { ZipBuilder, ZIP_PART_LIMIT } from "./zip";
@@ -16,6 +22,8 @@ const ASPECT = 16 / 9;
 const ZIP_MAX_ENTRIES = 65000;
 
 type DirHandle = {
+  getDirectoryHandle(name: string, opts: { create: boolean }):
+    Promise<DirHandle>;
   getFileHandle(name: string, opts: { create: boolean }): Promise<{
     createWritable(): Promise<{
       write(data: Blob): Promise<void>;
@@ -103,6 +111,9 @@ export function wireFrameExport(app: App, yearMin: number,
       Math.round(Number(toInput.value))));
     const framesPerYear = Math.max(1, Math.round(Number(fpyInput.value)));
     const [width, height] = resSelect.value.split("x").map(Number);
+    // Name des Frame-Satzes (Ordner bzw. ZIP), festgehalten beim Start
+    const setName = `${app.exportDescriptor()}_${yearFrom}-${yearTo}`
+      + `_${width}x${height}`;
 
     // Ziel wählen, bevor gerendert wird (Benutzergeste nötig)
     let write: (name: string, png: Blob) => Promise<void>;
@@ -116,8 +127,9 @@ export function wireFrameExport(app: App, yearMin: number,
       } catch {
         return;   // Auswahl abgebrochen
       }
+      const sub = await dir.getDirectoryHandle(setName, { create: true });
       write = async (name, png) => {
-        const file = await dir.getFileHandle(name, { create: true });
+        const file = await sub.getFileHandle(name, { create: true });
         const w = await file.createWritable();
         await w.write(png);
         await w.close();
@@ -126,7 +138,6 @@ export function wireFrameExport(app: App, yearMin: number,
       // Bilder sammeln, am Ende als ZIP anbieten (ein Download statt
       // Hunderter Einzel-Downloads)
       clearDownloads();
-      const base = `cartogram_${yearFrom}-${yearTo}_${width}x${height}`;
       const done: { blob: Blob; frames: number }[] = [];
       let zip = new ZipBuilder();
       const closePart = () => {
@@ -136,12 +147,12 @@ export function wireFrameExport(app: App, yearMin: number,
       write = async (name, png) => {
         if (zip.count >= ZIP_MAX_ENTRIES
             || zip.size + png.size > ZIP_PART_LIMIT) closePart();
-        await zip.add(name, png);
+        await zip.add(`${setName}/${name}`, png);
       };
       finishZip = () => {
         closePart();
         done.forEach((d, i) => offerDownload(d.blob,
-          done.length > 1 ? `${base}_teil${i + 1}.zip` : `${base}.zip`,
+          done.length > 1 ? `${setName}_teil${i + 1}.zip` : `${setName}.zip`,
           d.frames));
       };
     }
@@ -169,6 +180,8 @@ export function wireFrameExport(app: App, yearMin: number,
       if (finishZip) {
         status.textContent += " – ZIP bereit:";
         finishZip();
+      } else {
+        status.textContent += ` → Ordner ${setName}`;
       }
     } catch (err) {
       console.error("[export]", err);
