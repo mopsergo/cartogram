@@ -1,0 +1,40 @@
+# =====================================================================
+# Datensatz-Profil „merged_europe_norus" (kombinierter Lauf, nur Europa
+# ohne Russland, 1820–2025)
+# ---------------------------------------------------------------------
+# Daten wie configs/datasets/merged.yaml (Malanima bis 1964, ab 1965
+# OWID), aber nur die Entitäten der Makroregionen Westeuropa (WE) und
+# Osteuropa (EE) des Datensatzes – 37 Länder ohne Russland. Belarus, Ukraine und
+# Baltikum bleiben enthalten. Türkei/Zypern zählen im Datensatz zum Nahen Osten, der
+# Kaukasus zu Asien. Keine Restliche Welt; Kleinstaaten ohne eigene
+# Geometrie (Malta, Andorra, Monaco, …) fallen heraus.
+#
+# Bevölkerungsanteil = Anteil an der Bevölkerung dieser Länder; die
+# Energie-Varianten normieren auf deren Summe. Das Solver-Gitter deckt
+# Europa + Rand statt der ganzen Erde ab (feinere Zellen).
+# Aktivieren: PYTHONPATH=src python -m worldcarto.cli --dataset merged_europe_norus <command>
+# =====================================================================
+
+paths:
+  raw_csv: data/raw/merged_population_energy_1820_2025.csv
+  intermediate: data/intermediate/merged_europe_norus
+  build_cache: build-cache/merged_europe_norus
+  dist: dist/merged_europe_norus
+  web_public: ../web/public/cartogram/merged_europe_norus
+
+data:
+  year_min: 1820
+  year_max: 2025
+
+region:
+  id: europe_norus
+  label: Europa ohne Russland
+  macroareas: [WE, EE]
+  exclude_entities: [RUS]
+  domain_padding: 0.3
+  # Polygon-Teile außerhalb (echte Grad, über den Antimeridian bis
+  # Tschukotka) entfallen – v. a. Französisch-Guayana bei Frankreich
+  parts_bbox: [-30, 30, -168.5, 85]
+
+temporal:
+  test_years: [1820, 1900, 1964, 1965, 2000, 2025]
