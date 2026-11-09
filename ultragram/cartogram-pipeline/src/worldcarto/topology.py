@@ -93,7 +93,8 @@ def _iter_parts(geom):
 
 
 def build_mesh(gdf, entity_ids: list[str], vertex_precision_m: float = 1e-3,
-               crs: str = "EPSG:8857", max_edge_m: float = 0.0) -> Mesh:
+               crs: str = "EPSG:8857", max_edge_m: float = 0.0,
+               domain_padding: float | None = None) -> Mesh:
     """Kanonisches Mesh aus den projizierten Entitätsgeometrien.
 
     gdf: GeoDataFrame in cfg.crs, Reihenfolge == entity_ids.
@@ -102,6 +103,10 @@ def build_mesh(gdf, entity_ids: list[str], vertex_precision_m: float = 1e-3,
         des Mesh dort, wo die 110m-Generalisierung zu grob für starke
         Cartogramm-Verformungen ist; geteilte Grenzkanten erhalten
         identische Zwischenvertices (dedupliziert über Koordinaten).
+    domain_padding: Regions-Läufe – das Solver-Gitter (world_bounds)
+        deckt statt der ganzen Erde die Mesh-Bounds plus diesen Rand
+        (Anteil der größeren Ausdehnung, je Seite) ab. Feinere Zellen,
+        und der Ozean-Rand lässt Platz zum Ausdehnen.
     """
     n = len(entity_ids)
     assert len(gdf) == n
@@ -223,9 +228,18 @@ def build_mesh(gdf, entity_ids: list[str], vertex_precision_m: float = 1e-3,
         entity_ranges=np.zeros((n, 2), dtype=np.int64),
         adjacency=adjacency,
         bounds=(float(minx), float(miny), float(maxx), float(maxy)),
-        world_bounds=equal_earth_world_bounds(gdf.crs),
+        world_bounds=(
+            padded_bounds((minx, miny, maxx, maxy), domain_padding)
+            if domain_padding else equal_earth_world_bounds(gdf.crs)),
         ring_names=ring_names,
     )
+
+
+def padded_bounds(bounds, padding: float) -> tuple[float, float, float, float]:
+    """Bounds um padding × größere Ausdehnung je Seite erweitert."""
+    minx, miny, maxx, maxy = (float(b) for b in bounds)
+    m = padding * max(maxx - minx, maxy - miny)
+    return (minx - m, miny - m, maxx + m, maxy + m)
 
 
 def equal_earth_world_bounds(crs) -> tuple[float, float, float, float]:

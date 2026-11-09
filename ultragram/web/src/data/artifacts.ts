@@ -9,11 +9,15 @@
  *     --dataset owid; gleiche Topologie wie current, eigene Frames.
  *   - merged:  cartogram/merged/v1 (+ v2/v3) – 1820–2025, Malanima bis
  *     1964, ab 1965 OWID (Pipeline-Profil --dataset merged).
+ *   - merged_europe / merged_europe_norus: cartogram/merged_europe[_norus]
+ *     (+ v2/v3) – derselbe Datensatz, eigene Kartogramme nur für Europa
+ *     mit bzw. ohne Russland (manifest.region; eigener Mesh).
  *   - legacy:  cartogram/v0 – der Originalzustand aus dem Git-Commit
  *     („ursprüngliche Projektion", nur Bevölkerungs-Variante).
  *
  * Gewählt via URL:
- *   ?run=current|owid|merged|legacy&variant=population|energy|percapita
+ *   ?run=current|owid|merged|merged_europe|merged_europe_norus|legacy
+ *   &variant=population|energy|percapita
  */
 import {
   Artifacts, EntityMeta, Manifest, Ring,
@@ -21,7 +25,8 @@ import {
 
 const BASE = import.meta.env.BASE_URL ?? "/";
 
-export type RunId = "current" | "owid" | "merged" | "legacy";
+export type RunId = "current" | "owid" | "merged" | "merged_europe"
+  | "merged_europe_norus" | "legacy";
 export type VariantId = "population" | "energy" | "percapita";
 
 /** run -> Basisordner, Variante -> Unterordner (Export-VARIANT_DIRS) */
@@ -29,6 +34,8 @@ const RUN_DIRS: Record<RunId, string> = {
   current: "cartogram/v1",
   owid: "cartogram/owid/v1",
   merged: "cartogram/merged/v1",
+  merged_europe: "cartogram/merged_europe/v1",
+  merged_europe_norus: "cartogram/merged_europe_norus/v1",
   legacy: "cartogram/v0",
 };
 /** Basisordner der Flächen-Varianten je Lauf (legacy: keine) */
@@ -36,6 +43,8 @@ const VARIANT_BASES: Partial<Record<RunId, string>> = {
   current: "cartogram",
   owid: "cartogram/owid",
   merged: "cartogram/merged",
+  merged_europe: "cartogram/merged_europe",
+  merged_europe_norus: "cartogram/merged_europe_norus",
 };
 export const VARIANT_DIRS: Record<VariantId, string> = {
   population: "v1",
@@ -51,8 +60,7 @@ export const VARIANT_LABELS: Record<VariantId, string> = {
 function parseRun(): RunId {
   const p = new URLSearchParams(location.search);
   const run = p.get("run");
-  return run === "legacy" || run === "owid" || run === "merged"
-    ? run : "current";
+  return run !== null && run in RUN_DIRS ? run as RunId : "current";
 }
 
 function parseVariant(): VariantId {

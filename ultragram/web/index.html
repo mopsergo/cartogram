@@ -172,7 +172,7 @@
     <h1>Bevölkerung &amp; Energie <span id="yearRange">1820–2020</span></h1>
     <p>Cartogramm: Fläche = <span id="areaLabel">Bevölkerungsanteil</span> ·
        Farbe = Energieverbrauch pro Kopf ·
-       Höhe = Anteil Weltbevölkerung (umstellbar, relativ/absolut)</p>
+       Höhe = <span id="heightLabel">Anteil Weltbevölkerung</span> (umstellbar, relativ/absolut)</p>
   </div>
   <div id="controls" class="hud">
     <div class="group">
@@ -194,6 +194,8 @@
         <option value="current">Aktuell (mit Reparaturen)</option>
         <option value="owid">OWID 1965–2025 (UN-Bevölkerung, Energy Institute)</option>
         <option value="merged">Kombiniert 1820–2025 (Malanima, ab 1965 OWID)</option>
+        <option value="merged_europe">Europa 1820–2025 (kombiniert, mit Russland)</option>
+        <option value="merged_europe_norus">Europa 1820–2025 (kombiniert, ohne Russland)</option>
         <option value="legacy">Original (Commit, 16 h)</option>
       </select>
     </div>
@@ -313,7 +315,7 @@
   </div>
   <div id="worldchart" class="hud"
     title="Klick setzt das Jahr">
-    <div class="wc-title"><span>Welt gesamt · relativ zum Maximum</span></div>
+    <div class="wc-title"><span id="wcTitle">Welt gesamt · relativ zum Maximum</span></div>
     <svg id="wcSvg" viewBox="0 0 250 92" preserveAspectRatio="none"></svg>
     <div class="wc-legend">
       <div class="row"><i style="background: var(--accent)"></i>

@@ -68,14 +68,43 @@ def ensure_other_world(df: pd.DataFrame, registry: EntityRegistry,
     return pd.concat([df.loc[~in_ow], other], ignore_index=True)
 
 
+def normalize_region(df: pd.DataFrame, registry: EntityRegistry,
+                     cfg: PipelineConfig) -> pd.DataFrame:
+    """Regions-Lauf (config.active_region): Anteile relativ zur Region.
+
+    Es bleiben nur Länder mit eigener Entität in der Region; Klein-
+    staaten ohne Geometrie (Malta, Andorra, Monaco, …) fallen heraus,
+    da es keine Rest-Entität gibt. World_population wird zur
+    Regionsbevölkerung (Summe dieser Länder), World_share zum Anteil
+    daran – Kartogrammfläche (v1), Höhe und Farbskala beziehen sich
+    damit auf die Region. Energiewerte bleiben unverändert; die
+    Energie-Varianten normieren ihre Ziele ohnehin auf die Summe der
+    aktiven Entitäten (targets_for_year).
+    """
+    keep = df["Country"].map(lambda c: registry.by_source(c) is not None)
+    out = df.loc[keep].copy()
+    region_pop = out.groupby("Year")["Population"].transform("sum")
+    dropped_share = 1.0 - (region_pop / out["World_population"]).groupby(
+        out["Year"]).first()
+    out["World_population"] = region_pop
+    out["World_share"] = out["Population"] / region_pop
+    region = cfg.region or {}
+    print(f"[ingest] Region {region.get('id', '?')}: "
+          f"{out['Country'].nunique()} Länder, Anteil der Region an der "
+          f"Welt {1 - dropped_share.max():.3f}–{1 - dropped_share.min():.3f}")
+    return out.reset_index(drop=True)
+
+
 def build_canonical(cfg: PipelineConfig, registry: EntityRegistry) -> pd.DataFrame:
     """CSV -> kanonischer DataFrame (entity_id + year ist der Schlüssel)."""
     raw = load_raw(cfg)
-    raw = ensure_other_world(raw, registry, cfg)
+    if registry.has_other_world:
+        raw = ensure_other_world(raw, registry, cfg)
+    else:
+        raw = normalize_region(raw, registry, cfg)
 
     validate_raw(raw, cfg.year_min, cfg.year_max, cfg.share_tolerance)
-    validate_year_shares(raw, registry.other_world().source_names[0],
-                         cfg.remainder_tolerance)
+    validate_year_shares(raw, cfg.other_world_id, cfg.remainder_tolerance)
 
     unresolved = sorted(
         name for name in raw["Country"].unique()

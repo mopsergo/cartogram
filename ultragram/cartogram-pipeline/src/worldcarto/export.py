@@ -322,6 +322,14 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
         # addiert diesen Offset zurück und zeigt die wahre Erde.
         # seam_lon=180 (Identität) ergibt 0 – abwärtskompatibel.
         "lon_offset_deg": round((cfg.seam_lon + 180.0) % 360.0, 6),
+        # Regions-Lauf (config.active_region): Anteile, Summen und
+        # Skalen beziehen sich auf die Region; null = ganze Welt.
+        "region": ({"id": cfg.region.get("id"),
+                    "label": cfg.region.get("label"),
+                    "macroareas": list(cfg.region.get("macroareas") or []),
+                    "exclude_entities":
+                        list(cfg.region.get("exclude_entities") or [])}
+                   if cfg.region else None),
         "data_version": __version__,
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "years": {
@@ -395,7 +403,10 @@ def build_manifest(cfg: PipelineConfig, registry: EntityRegistry,
         },
         "units": {
             "population": "Personen",
-            "world_share": "Anteil an der Weltbevölkerung (0..1)",
+            "world_share": (
+                f"Anteil an der Bevölkerung der Region "
+                f"{cfg.region.get('label')} (0..1)" if cfg.region
+                else "Anteil an der Weltbevölkerung (0..1)"),
             "energy_consumption": "Mtoe",
             "per_capita_energy_consumption": "kWh pro Kopf",
             "positions": "Meter (Equal Earth)",

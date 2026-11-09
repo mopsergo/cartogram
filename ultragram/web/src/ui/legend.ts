@@ -1,6 +1,7 @@
 /** Legende: Farbskala mit Beschriftung in echten Einheiten (Plan §8). */
 import { ValueScale, currentRamp, formatValue } from "../renderers/colormap";
 import type { LegendInfo } from "./frameOverlay";
+import { shareLabel } from "../data/region";
 
 export class Legend {
   private bar: HTMLCanvasElement;
@@ -53,7 +54,7 @@ export class Legend {
     this.maxEl.textContent = max;
     const names: Record<number, string> = {
       0: "Bevölkerung",
-      1: "Anteil an der Weltbevölkerung",
+      1: shareLabel(),
       2: "Gesamtenergieverbrauch (Mtoe)",
       3: "Energieverbrauch pro Kopf (kWh)",
     };

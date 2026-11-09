@@ -41,6 +41,28 @@ def _deep_merge(base: dict, over: dict) -> dict:
             out[k] = v
     return out
 
+
+def _pipeline_yaml() -> dict:
+    """pipeline.yaml, ggf. vom aktiven Datensatz-Profil überschrieben."""
+    pipeline = _load_yaml(BASE_DIR / "configs" / "pipeline.yaml")
+    dataset = active_dataset()
+    if dataset:
+        pipeline = _deep_merge(pipeline,
+                               _load_yaml(dataset_overlay_path(dataset)))
+    return pipeline
+
+
+def active_region() -> dict | None:
+    """Regions-Ausschnitt des aktiven Profils (None = ganze Welt).
+
+    Schlüssel: id, label, macroareas (Liste), exclude_entities (Liste),
+    domain_padding (Rand des Solver-Gitters, Anteil der Ausdehnung).
+    Das Entitätenregister wird darauf gefiltert (entities.load_registry),
+    OTHER_WORLD entfällt, Bevölkerungsanteile beziehen sich auf die
+    Region (ingest.normalize_region).
+    """
+    return _pipeline_yaml().get("region") or None
+
 #: Zielkennzahl -> Export-Varianten-Ordner (dist/cartogram/<dir> bzw.
 #: web/public/cartogram/<dir>). Der Renderer lädt v1 vollständig und
 #: die positions.f32 der weiteren Varianten zusätzlich (gleiche Topologie).
@@ -142,6 +164,8 @@ class PipelineConfig:
     #: Referenzgeometrie nur Ozean treffen (Antarktis ausgenommen);
     #: 180.0 = keine Rotation (klassischer Antimeridian-Schnitt).
     seam_lon: float = 180.0
+    #: Regions-Ausschnitt (config.active_region), None = ganze Welt
+    region: dict | None = None
 
     def area_error_threshold(self, year: float) -> float:
         """Jahres-abhängiger p90-Flächenfehler-Schwellwert."""
@@ -173,11 +197,7 @@ class PipelineConfig:
 
 def load_config(target_metric: str | None = None) -> PipelineConfig:
     entities = _load_yaml(BASE_DIR / "configs" / "entities.yaml")
-    pipeline = _load_yaml(BASE_DIR / "configs" / "pipeline.yaml")
-    dataset = active_dataset()
-    if dataset:
-        pipeline = _deep_merge(pipeline,
-                               _load_yaml(dataset_overlay_path(dataset)))
+    pipeline = _pipeline_yaml()
     solver = _load_yaml(BASE_DIR / "configs" / "solver.yaml")
     viz = _load_yaml(BASE_DIR / "configs" / "visualization.yaml")
 
@@ -208,6 +228,7 @@ def load_config(target_metric: str | None = None) -> PipelineConfig:
         simplify_tolerance_m=float(geo["simplify_tolerance_m"]),
         vertex_precision_m=float(geo["vertex_precision_m"]),
         seam_lon=float(geo.get("seam_lon", 180.0)),
+        region=pipeline.get("region") or None,
         test_years=[int(y) for y in temporal["test_years"]],
         warm_start=bool(temporal["warm_start"]),
         transition_samples=[float(t) for t in temporal["transition_samples"]],

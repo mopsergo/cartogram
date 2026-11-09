@@ -6,6 +6,7 @@
  * Farbskalen und Transformationen. Die Legende zeigt die tatsächlichen
  * Einheiten.
  */
+import { shareSuffix } from "../data/region";
 
 export type Rgb = [number, number, number];
 
@@ -54,10 +55,19 @@ export const DEFAULT_COLORMAP = "plasma";
 
 /** Aktive Rampe (für Legende, PNG-Export und rampColor) */
 let ramp: Rgb[] = COLORMAPS[DEFAULT_COLORMAP].stops;
+let rampName: string = DEFAULT_COLORMAP;
 
 export function setColormap(name: string, reversed = false): void {
-  const stops = (COLORMAPS[name] ?? COLORMAPS[DEFAULT_COLORMAP]).stops;
+  const key = name in COLORMAPS ? name : DEFAULT_COLORMAP;
+  const stops = COLORMAPS[key].stops;
   ramp = reversed ? [...stops].reverse() : stops;
+  rampName = reversed ? `${key}-umgekehrt` : key;
+}
+
+/** Name der aktiven Farbskala (Schlüssel, ggf. „-umgekehrt") –
+ *  für Export-Dateinamen */
+export function currentColormapName(): string {
+  return rampName;
 }
 
 export function currentRamp(): Rgb[] {
@@ -138,10 +148,10 @@ export function formatValue(value: number, component: number): string {
   switch (component) {
     case 0: // Bevölkerung (Personen)
       return `${nf.format(value)} Einw.`;
-    case 1: // Weltbevölkerungsanteil
+    case 1: // Bevölkerungsanteil (Welt bzw. Region)
       return `${(value * 100).toLocaleString("de-DE", {
         maximumFractionDigits: 2,
-      })} % der Weltbevölkerung`;
+      })} % ${shareSuffix()}`;
     case 2: // Gesamtenergie (Mtoe)
       return `${nf.format(value)} Mtoe`;
     case 3: // Energie pro Kopf (kWh)

@@ -1,6 +1,7 @@
 /** Detailpanel: Werte je Entität + Sparkline der Zeitreihe. */
 import { Artifacts, VALUE } from "../data/types";
 import { formatValue } from "../renderers/colormap";
+import { shareTiny } from "../data/region";
 
 export class DetailPanel {
   private root: HTMLElement;
@@ -40,7 +41,7 @@ export class DetailPanel {
 
     const comp = [VALUE.population, VALUE.world_share,
       VALUE.energy_consumption, VALUE.per_capita_energy_consumption];
-    const labels = ["Bevölkerung", "Weltanteil", "Energie (Mtoe)",
+    const labels = ["Bevölkerung", shareTiny(), "Energie (Mtoe)",
       "Energie pro Kopf"];
     let html = "";
     for (let c = 0; c < 4; c++) {
